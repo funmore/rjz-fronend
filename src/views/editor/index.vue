@@ -108,22 +108,6 @@ export default {
         this.dialogFormVisible=true;
     },
     createDialogData(){
-      // this.$refs['dataForm'].validate((valid) => {
-      //   if (valid) {
-      //     this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-      //     this.temp.author = 'vue-element-admin'
-      //     createArticle(this.temp).then(() => {
-      //       this.list.unshift(this.temp)
-      //       this.dialogFormVisible = false
-      //       this.$notify({
-      //         title: '成功',
-      //         message: '创建成功',
-      //         type: 'success',
-      //         duration: 2000
-      //       })
-      //     })
-      //   }
-      // })
       //先校验流程名，再校验流程节点名
       this.$refs['dataForm0'].validate()
           .then(()=>{
