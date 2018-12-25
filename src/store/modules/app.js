@@ -2,6 +2,7 @@ import Cookies from 'js-cookie'
 
 const app = {
   state: {
+    key:'gffjtyrxgh565fyt5fghj',
     sidebar: {
       opened: !+Cookies.get('sidebarStatus'),
       withoutAnimation: false

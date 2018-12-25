@@ -21,120 +21,298 @@ import Layout from '../views/layout/Layout'
     icon: 'svg-name'             the icon show in the sidebar,
   }
 **/
+/**
+*   statics         统计
+        programs       项目进度分析
+        employees       人力分析
+    management      管理
+        programs       项目管理
+        empleyee       用户管理
+        contract       合同管理
+    setting         设置
+    contact         站内信
+*
+*
+*
+**/
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
-
   {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    name: 'Dashboard',
-    hidden: true,
+    name: '首页',
+    //  hidden: true,
     children: [{
       path: 'dashboard',
       component: () => import('@/views/dashboard/index')
     }]
   },
-
+  //统计
   {
-    path: '/example',
+    path: '/statics',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
-    children: [
+    redirect: '/statics/programs',
+    name: 'statics',
+    meta:{title:'统计',icon:'example'},
+    children:[
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        path: 'programs',
+        name: 'programs',
+        component: () => import('@/views/statics/programs/index'),
+        meta: { title: '项目进度分析', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        path: 'employees',
+        name: 'employees',
+        component: () => import('@/views/editor/index'),
+        meta: { title: '人力分析', icon: 'table' }
       }
     ]
   },
-
+    //管理
   {
-    path: '/form',
+    path: '/management',
     component: Layout,
-    children: [
+    redirect: '/management/programs',
+    name: 'management',
+    meta:{title:'管理',icon:'nested'},
+    children:[
+      //list
       {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
-
-  {
-    path: '/nested',
-    component: Layout,
-    redirect: '/nested/menu1',
-    name: 'nested',
-    meta: {
-      title: 'nested',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'menu1',
-        meta: { title: 'menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'menu1-1',
-            meta: { title: 'menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'menu1-2',
-            meta: { title: 'menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'menu1-2-1',
-                meta: { title: 'menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'menu1-2-2',
-                meta: { title: 'menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'menu1-3',
-            meta: { title: 'menu1-3' }
-          }
-        ]
+        path: 'programs',
+        name: 'programs',
+        component: () => import('@/views/management/programs/programsTable'),
+        meta: { title: '项目管理', icon: 'table' }
       },
+      // //create
+      // {
+      //   path: 'create',
+      //   name: 'createProgram',
+      //   component: () => import('@/views/management/programs/create'),
+      //   meta: { title: '创建项目', icon: 'table' },
+      // },
+      //edit
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
+        path: 'programs/edit/:id(\\d+)',
+        name: 'editProgram',
+        component: () => import('@/views/management/programs/edit'),
+        meta: { title: '编辑项目', icon: 'table' },
+        hidden:true
+      },
+
+      //employees
+      {
+        path: 'employees',
+        name: 'employees',
+        component: () => import('@/views/management/employees/employeesTable'),
+        meta: { title: '用户管理', icon: 'table' }
+      },
+
+
+
+      //contract
+      //list
+      {
+        path: 'contract',
+        name: 'contract',
+        component: () => import('@/views/management/contracts/contractsTable'),
+        meta: { title: '合同管理', icon: 'table' }
+      },
+      //edit
+      {
+        path: 'contracts/edit/:id(\\d+)',
+        name: 'editContract',
+        component: () => import('@/views/management/contracts/edit'),
+        meta: { title: '编辑合同', icon: 'table' },
+        hidden:true
+      },
+    ]
+  },
+  //设置
+  {
+    path: '/setting',
+    component: Layout,
+    redirect: '/setting/personal',
+    name: 'setting',
+    meta:{title:'设置',icon:'example'},
+    children:[
+      {
+        path: 'personal',
+        name: 'personal',
+        component: () => import('@/views/editor/index'),
+        meta: { title: '个人设置', icon: 'table' }
       }
     ]
   },
+  
+  // //项目输入信息
+  // {
+  //   path: '/program-input',
+  //   component: Layout,
+  //   redirect: '/program-input/require-doc',
+  //   name: 'program-input',
+  //   meta:{title:'项目输入信息',icon:'example'},
+  //   children:[
+  //     {
+  //       path: 'require-doc',
+  //       name: 'require-doc',
+  //       component: () => import('@/views/editor/index'),
+  //       meta: { title: '测评需求', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'requirefile',
+  //       name: 'requirefile',
+  //       component: () => import('@/views/editor/index'),
+  //       meta: { title: '引用文件', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'software-overview',
+  //       name: 'software-overview',
+  //       component: () => import('@/views/editor/index'),
+  //       meta: { title: '软件概述', icon: 'table' }
+  //     }
+  //   ]
+  // },
+  //   //related-info
+  //   {
+  //   path: '/related-info',
+  //   component: Layout,
+  //   redirect: '/related-info/schema',
+  //   name: 'related-info',
+  //   meta:{title:'测试策略资源与进度',icon:'example'},
+  //   children:[
+  //     {
+  //       path: 'schema',
+  //       name: 'schema',
+  //       component: () => import('@/views/editor/index'),
+  //       meta: { title: '测试策略', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'test-tech',
+  //       name: 'test-tech',
+  //       component: () => import('@/views/editor/test-tech.vue'),
+  //       meta: { title: '测试技术和方法', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'res-require',
+  //       name: 'res-require',
+  //       component: () => import('@/views/tab-res-require'),
+  //       meta: { title: '资源需求', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'test-progress-test',
+  //       name: 'test-progress-test',
+  //       component: () => import('@/views/table/inlineEditTable'),
+  //       meta: { title: '测试进度test', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'test-progress',
+  //       name: 'test-progress',
+  //       component: () => import('@/views/table/complexTable'),
+  //       meta: { title: '测试进度', icon: 'table' }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/example',
+  //   component: Layout,
+  //   redirect: '/example/table',
+  //   name: 'Example',
+  //   meta: { title: 'Example', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'table',
+  //       name: 'Table',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: 'Table', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'tree',
+  //       name: 'Tree',
+  //       component: () => import('@/views/tree/index'),
+  //       meta: { title: 'Tree', icon: 'tree' }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/form',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'Form',
+  //       component: () => import('@/views/form/index'),
+  //       meta: { title: 'Form', icon: 'form' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/nested',
+  //   component: Layout,
+  //   redirect: '/nested/menu1',
+  //   name: 'nested',
+  //   meta: {
+  //     title: 'nested',
+  //     icon: 'nested'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'menu1',
+  //       component: () => import('@/views/nested/menu1/index'), // Parent router-view
+  //       name: 'menu1',
+  //       meta: { title: 'menu1' },
+  //       children: [
+  //         {
+  //           path: 'menu1-1',
+  //           component: () => import('@/views/nested/menu1/menu1-1'),
+  //           name: 'menu1-1',
+  //           meta: { title: 'menu1-1' }
+  //         },
+  //         {
+  //           path: 'menu1-2',
+  //           component: () => import('@/views/nested/menu1/menu1-2'),
+  //           name: 'menu1-2',
+  //           meta: { title: 'menu1-2' },
+  //           children: [
+  //             {
+  //               path: 'menu1-2-1',
+  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
+  //               name: 'menu1-2-1',
+  //               meta: { title: 'menu1-2-1' }
+  //             },
+  //             {
+  //               path: 'menu1-2-2',
+  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
+  //               name: 'menu1-2-2',
+  //               meta: { title: 'menu1-2-2' }
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           path: 'menu1-3',
+  //           component: () => import('@/views/nested/menu1/menu1-3'),
+  //           name: 'menu1-3',
+  //           meta: { title: 'menu1-3' }
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       path: 'menu2',
+  //       component: () => import('@/views/nested/menu2/index'),
+  //       meta: { title: 'menu2' }
+  //     }
+  //   ]
+  // },
 
   { path: '*', redirect: '/404', hidden: true }
 ]
 
 export default new Router({
-  // mode: 'history', //后端支持可开
+  mode: 'history',
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })

@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
-      <h3 class="title">vue-element-admin</h3>
+      <h3 class="title">软件评测中心</h3>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user" />
@@ -30,17 +30,19 @@
 </template>
 
 <script>
-import { isvalidUsername } from '@/utils/validate'
+//import { isvalidUsername } from '@/utils/validate'
+var sha1 = require('@/utils/sha1.js');
 
 export default {
   name: 'login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!isvalidUsername(value)) {
-        callback(new Error('请输入正确的用户名'))
-      } else {
-        callback()
-      }
+      // if (!isvalidUsername(value)) {
+      //   callback(new Error('请输入正确的用户名'))
+      // } else {
+      //   callback()
+      // }
+      callback()
     }
     const validatePass = (rule, value, callback) => {
       if (value.length < 5) {
@@ -51,8 +53,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        username: 'funmore',
+        password: 'funmore'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -70,11 +72,28 @@ export default {
         this.pwdType = 'password'
       }
     },
+    // handleLogin() {
+    //   this.$refs.loginForm.validate(valid => {
+    //     if (valid) {
+    //       this.loading = true
+    //       this.$store.dispatch('Login', this.loginForm).then(() => {
+    //         this.loading = false
+    //         this.$router.push({ path: '/' })
+    //       }).catch(() => {
+    //         this.loading = false
+    //       })
+    //     } else {
+    //       console.log('error submit!!')
+    //       return false
+    //     }
+    //   })
+    // },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('Login', this.loginForm).then(() => {
+          var total={name:this.loginForm.username.trim(),password:this.loginForm.password.trim()};
+          this.$store.dispatch('Login', total).then(() => {
             this.loading = false
             this.$router.push({ path: '/' })
           }).catch(() => {

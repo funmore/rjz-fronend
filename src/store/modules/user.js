@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/login'
+import { login, logout, getInfo,test } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -25,11 +25,11 @@ const user = {
   },
 
   actions: {
+    
     // 登录
-    Login({ commit }, userInfo) {
-      const username = userInfo.username.trim()
+    Login({ commit }, total) {
       return new Promise((resolve, reject) => {
-        login(username, userInfo.password).then(response => {
+        login(total.name,total.password).then(response => {
           const data = response.data
           setToken(data.token)
           commit('SET_TOKEN', data.token)
@@ -51,7 +51,7 @@ const user = {
             reject('getInfo: roles must be a non-null array !')
           }
           commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
+          //commit('SET_AVATAR', data.avatar)
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -62,7 +62,7 @@ const user = {
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
+        logout().then(() => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
           removeToken()
