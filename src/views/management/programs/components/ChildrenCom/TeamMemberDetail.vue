@@ -95,7 +95,7 @@
 
 </template>
 <script>
-  import { fetchMemberInfo } from '@/api/management-programs-memberinfo'
+  import { fetchMemberInfo } from '@/api/management-program-memberinfo'
 
   export default {
     data() {

@@ -8,26 +8,35 @@ var sha1 = require('@/utils/sha1.js');
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.BASE_API, // api的base_url
-  timeout: 5000, // 请求超时时间
+  //timeout: 5000, // 请求超时时间
+  //timeout: 10000, // 请求超时时间
+  //withCredentials: true,
 })
 
 // request拦截器
 service.interceptors.request.use(
   config => {
-     // config.headers['Access-Control-Allow-Origin']='*';
-     // config.headers['Access-Control-Allow-Methods']='POST, GET, OPTIONS, PUT, DELETE';
-     // config.headers['Access-Control-Allow-Headers']='Content-Type, X-Auth-Token, Origin, Authorization';
     var timestamp = Date.parse(new Date());
     var timestamp = timestamp / 1000;
     var key=store.getters.key;
     var s= sha1.hex_sha1(key + timestamp);
-    config.params.t=timestamp;
-    config.params.s=s;
+    config.headers.Time=timestamp;
+    config.headers.Sha=s;
+    //config.headers.Cookie='XDEBUG_SESSION=PHPSTORM';
+    config.headers.funmore='ftest';
+
 
     if (store.getters.token) {
-        config.params.token = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
-    }
+        // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
+        config.headers.AdminToken = getToken();
+      }
 
+    //config.params.XDEBUG_SESSION_START='PHPSTORM';
+    if(config.params!=undefined){
+      config.params.XDEBUG_SESSION_START='PHPSTORM';
+    }else{
+      config.url=config.url+"?XDEBUG_SESSION_START=PHPSTORM";
+    }
     return config
   },
   error => {

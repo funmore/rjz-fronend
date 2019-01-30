@@ -157,7 +157,8 @@
 </template>
 
 <script>
-import { fetchManagementEmployeesList, fetchPv, createArticle, updateArticle } from '@/api/management-employees'
+import { indexManagementEmployee, showManagementEmployee, storeManagementEmployee, updateManagementEmployee,
+         destroyManagementEmployee } from '@/api/management-employee'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils/index.js'
 

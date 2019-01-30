@@ -146,6 +146,21 @@ export const constantRouterMap = [
       }
     ]
   },
+  {
+    path: '/test',
+    component: Layout,
+    redirect: '/test/index',
+    name: 'test',
+    meta:{title:'设置',icon:'example'},
+    children:[
+      {
+        path: 'index',
+        name: 'index',
+        component: () => import('@/views/test/index'),
+        meta: { title: '试验页面', icon: 'table' }
+      }
+    ]
+  },
   
   // //项目输入信息
   // {

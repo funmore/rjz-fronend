@@ -86,7 +86,8 @@
 </template>
 
 <script>
-import { fetchManagementContractsList, fetchPv, createArticle, updateArticle } from '@/api/management-contracts'
+import { indexManagementContract, showManagementContract, storeManagementContract, updateManagementContract,
+         destroyManagementContract } from '@/api/management-contract'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils/index.js'
 

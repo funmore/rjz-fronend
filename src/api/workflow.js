@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function fetchList(query) {
+export function fetchWorkflowList(query) {
   return request({
-    url: '/management/programs/workflow/list',
+    url: '/management/programs/workflow/fetchlist',
     method: 'get',
     params: query
   })
@@ -10,7 +10,7 @@ export function fetchList(query) {
 
 export function fetchWorkflow(id) {
   return request({
-    url: '/management/programs/workflow/detail',
+    url: '/management/programs/workflow/fetch',
     method: 'get',
     params: { id }
   })
