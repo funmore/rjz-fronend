@@ -2,19 +2,25 @@
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <breadcrumb></breadcrumb>
+    <div class="notification" @click="openNoti">
+      <el-badge :value="notice" class="item">
+        <el-button icon="el-icon-bell">通知中心</el-button>
+      </el-badge>
+    </div>
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
-        <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">
-        <i class="el-icon-caret-bottom"></i>
-      </div>
+        <el-button icon="el-icon-caret-bottom">你好！{{name}}</el-button>
+        <!-- <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'"> -->
+<!--         <i class="el-icon-caret-bottom"></i>
+ -->      </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
         <router-link class="inlineBlock" to="/">
           <el-dropdown-item>
-            Home
+            主页
           </el-dropdown-item>
         </router-link>
         <el-dropdown-item divided>
-          <span @click="logout" style="display:block;">LogOut</span>
+          <span @click="logout" style="display:block;">注销</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -34,7 +40,9 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'notice',
+      'name'
     ])
   },
   methods: {
@@ -45,6 +53,9 @@ export default {
       this.$store.dispatch('LogOut').then(() => {
         location.reload() // 为了重新实例化vue-router对象 避免bug
       })
+    },
+    openNoti(){
+      this.$emit('open-notice');
     }
   }
 }
@@ -66,6 +77,12 @@ export default {
     right: 90px;
     top: 16px;
     color: red;
+  }
+  .notification{
+    height: 50px;
+    display: inline-block;
+    position: absolute;
+    right: 200px;
   }
   .avatar-container {
     height: 50px;

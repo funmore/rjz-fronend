@@ -1,6 +1,6 @@
 <template>
   <div class="components-container">
-    <div class="raw">
+<!--     <div class="raw">
       <el-tree
       :data="treeData"
       show-checkbox
@@ -44,7 +44,7 @@
         </span>
       </span>
     </el-tree>
-    </div>>
+    </div> -->
     <div class="raw">
     <el-tag
       :key="tag"

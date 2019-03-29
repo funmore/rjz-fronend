@@ -1,32 +1,24 @@
 import request from '@/utils/request'
 
-export function fetchWorkflowList(query) {
+
+export function indexWorkflow(query) {
   return request({
-    url: '/management/programs/workflow/fetchlist',
+    url: 'workflow',
     method: 'get',
     params: query
   })
 }
 
-export function fetchWorkflow(id) {
+export function showWorkflow(id) {
   return request({
-    url: '/management/programs/workflow/fetch',
-    method: 'get',
-    params: { id }
+    url:'workflow/'+ id,
+    method: 'get'
   })
 }
 
-export function fetchPv(pv) {
+export function storeWorkflow(data) {
   return request({
-    url: '/management/programs/workflow/pv',
-    method: 'get',
-    params: { pv }
-  })
-}
-
-export function createWorkflow(data) {
-  return request({
-    url: '/management/programs/workflow/create',
+    url: 'workflow',
     method: 'post',
     data
   })
@@ -34,9 +26,15 @@ export function createWorkflow(data) {
 
 export function updateWorkflow(data) {
   return request({
-    url: '/management/programs/workflow/update',
-    method: 'post',
+    url: 'workflow/'+data.id,
+    method: 'put',
     data
   })
 }
 
+export function destroyWorkflow(id) {
+  return request({
+    url: 'workflow/'+id,
+    method: 'delete'
+  })
+}

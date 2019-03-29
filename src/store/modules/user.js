@@ -6,7 +6,8 @@ const user = {
     token: getToken(),
     name: '',
     avatar: '',
-    roles: []
+    roles: [],
+    notice:0
   },
 
   mutations: {
@@ -21,6 +22,9 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_NOTICE: (state, notice) => {
+      state.notice = notice
     }
   },
 
@@ -51,6 +55,7 @@ const user = {
             reject('getInfo: roles must be a non-null array !')
           }
           commit('SET_NAME', data.name)
+          commit('SET_NOTICE',data.noticeNum)
           //commit('SET_AVATAR', data.avatar)
           resolve(response)
         }).catch(error => {

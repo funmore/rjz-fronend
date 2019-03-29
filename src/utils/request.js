@@ -22,7 +22,6 @@ service.interceptors.request.use(
     var s= sha1.hex_sha1(key + timestamp);
     config.headers.Time=timestamp;
     config.headers.Sha=s;
-    //config.headers.Cookie='XDEBUG_SESSION=PHPSTORM';
     config.headers.funmore='ftest';
 
 
@@ -31,7 +30,6 @@ service.interceptors.request.use(
         config.headers.AdminToken = getToken();
       }
 
-    //config.params.XDEBUG_SESSION_START='PHPSTORM';
     if(config.params!=undefined){
       config.params.XDEBUG_SESSION_START='PHPSTORM';
     }else{
@@ -57,7 +55,7 @@ service.interceptors.response.use(
     console.log(res.success);
         if (res.success !== 0) {
       Message({
-        message: res.message,
+        message: res.note,
         type: 'error',
         duration: 5 * 1000
       })

@@ -1,6 +1,7 @@
 <template>
        
-      <el-form :rules="rules" ref="dataForm" :model="workflow" :label123456781-position="position" :label-width="width" >
+
+      <el-form :rules="rules" :ref="propRef" :model="workflow" :label123456781-position="position" :label-width="width" >
         <el-form-item label="流程名称" prop="workflow_name">
               <el-input v-model="workflow.workflow_name"></el-input>
         </el-form-item>
@@ -8,27 +9,29 @@
           <el-steps :active="workflow.active" finish-status="success">
             <el-step v-for="index in workflow.workflowArray.length" :title="'S'+index" :description="workflow.workflowArray[index-1].name" :icon="icon[0]"></el-step>
           </el-steps> 
-           <el-button-group>
-              <el-button type="primary" icon="el-icon-arrow-left" @click="previous">上一个节点</el-button>
+            <el-button-group>
+              <el-button type="primary" icon="el-icon-arrow-left" @click="previous">项目推进</el-button>
               <el-button type="primary" @click="next">下一个节点<i class="el-icon-arrow-right el-icon--right"></i></el-button>
             </el-button-group>
             <el-button-group>
               <el-button type="primary" icon="el-icon-delete" @click="deleteNode">删除当前节点</el-button>
               <el-button type="primary" icon="el-icon-plus" @click="createNode">在当前节点后新增节点</el-button> 
             </el-button-group>
-            <div>actvieNum:{{workflow.active}}</div>
-            <div>workflow:{{workflow.workflowArray}}</div>
         </el-form-item>
         <el-form-item label="当前节点名称" prop='name'>
           <el-input v-model="workflow.workflowArray[workflow.active].name"></el-input>
         </el-form-item>
+        <el-form-item label="预期完成时间" prop='plan_day'>
+              <el-date-picker v-model="workflow.workflowArray[workflow.active].plan_day" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="Please pick a date">
+              </el-date-picker>        
+        </el-form-item>
         <el-form-item label="当前节点类型">
           <el-select v-model="workflow.workflowArray[workflow.active].type" placeholder="请选择" >
             <el-option
-              v-for="item in nodeType"
-              :key="item.type"
+              v-for="(item,index) in nodeType"
+              :key="index"
               :label="item.name"
-              :value="item.type">
+              :value="item.name">
             </el-option>
           </el-select>      
         </el-form-item>
@@ -36,16 +39,24 @@
 </template>
 
 <script>
-
+const constNodeType = [
+                      {name:"建项"},
+                      {name:"需求接受"},
+                      {name:"环境准备"},
+                      {name:"测试执行"},
+                      {name:"评审"},
+                      {name:"报告"}
+                      ]
 
 export default {
   name: 'workflow-demo',
   //components: { 'tinymce':Tinymce },
   //components: { 'workflow':workflow},
   props:{
-    workflow: Array,
+    workflow: Object,
     position: String,
-    width: String
+    width: String,
+    propRef:String
   },
   data() {
       var validatePass = (rule, value, callback) => {
@@ -64,18 +75,21 @@ export default {
 
       nodeType:constNodeType,
       icon:['el-icon-plus'],
+      worklfowTemplate:[]
     }
   },
    methods: {
     next() {
-      this.$refs['dataForm'].validate().then(()=>{
+      this.$refs[this.propRef].validate().then(()=>{
             this.workflow.active++;
             if (this.workflow.active == this.workflow.workflowArray.length) this.workflow.active = 0;
+      }).catch(()=>{
+        this.workflow.isError=true;
       });
 
     },
     previous() {
-      this.$refs['dataForm'].validate().then(()=>{
+      this.$refs[this.propRef].validate().then(()=>{
             this.workflow.active =this.workflow.active-1;
             if (this.workflow.active ==-1) this.workflow.active = this.workflow.workflowArray.length-1;
       });

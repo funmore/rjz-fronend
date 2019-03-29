@@ -1,29 +1,12 @@
 <template>
   <div class="createPost-container">
     <el-row>
-      <el-card class="box-card">
+      <el-card class="box-card" >
         <div slot="header" class="clearfix">
-          <span>项目状态</span>
+          <span>{{items.workflow.workflow_name}}</span>
         </div>
         <div style="margin-bottom:50px;">
-          <el-steps :active="active" finish-status="success">
-            <el-step title="S1" description="项目建立"></el-step>
-            <el-step title="S2" description="接收被测件及测评需求"></el-step>
-            <el-step title="S3" description="静态问题提交"></el-step>
-            <el-step title="S4" description="测试环境就绪"></el-step>
-            <el-step title="S5" description="测试工作产品编写"></el-step>
-            <el-step title="S6" description="入库归档"></el-step>
-            <el-step title="S7" description="测试工作产品内部评审"></el-step>
-            <el-step title="S8" description="评审问题已闭合"></el-step>
-            <el-step title="S9" description="测试需求(大纲)正式评审"></el-step>
-            <el-step title="S10" description="评审问题闭合状态"></el-step>
-            <el-step title="S11" description="入库归档状态"></el-step>
-            <el-step title="S12" description="首轮测试"></el-step>
-            <el-step title="S13" description="软件问题单闭合状态"></el-step>
-            <el-step title="S14" description="报告评审"></el-step>
-            <el-step title="S15" description="评审问题闭合状态"></el-step>
-            <el-step title="S16" description="入库归档状态"></el-step>
-          </el-steps>
+          <workflow-edit ref="WorkflowEdit" :propWorkflow="items.workflow" :propIsLeader="is_leader" v-on:doChangeWorkflow="onChangeWorkflow($event)"></workflow-edit>
         </div>
       </el-card>
     </el-row>
@@ -34,9 +17,7 @@
           <span>项目基本信息</span>
         </div>
         <div style="margin-bottom:50px;">
-          <el-col :span="4" class="text-center">
-            <router-link class="pan-btn blue-btn" to="/documentation/index">PlaceHolder</router-link>
-          </el-col>
+          <program-basic :propProgramBasic="items.programBasic"></program-basic>
         </div>
       </el-card>
     </el-row>
@@ -47,7 +28,7 @@
           <span>项目组信息</span>
         </div>
         <div style="margin-bottom:50px;">
-            <team-member-detail :propActiveName="activeName"></team-member-detail>
+            <team-member-detail propActiveName="0"  :propProgramTeamRole="items.programTeamRole" :propWorkflowArray="items.workflow.workflowArray"  :propIsLeader="is_leader"></team-member-detail>
         </div>
       </el-card>
     </el-row>
@@ -58,105 +39,7 @@
           <span>被测件信息</span>
         </div>
         <div style="margin-bottom:50px;">
-          <el-table :key='tableKey' :data="softwareInfo"   border fit highlight-current-row
-                style="width: 100%;">
-                <el-table-column align="center" label="序号" width="50px">
-                  <template slot-scope="scope">
-                    <span @click="handleUpdate(scope.row)">{{scope.row.id}}</span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column width="85px" align="center" label="软件名称">
-                  <template slot-scope="scope">
-                    <span @click="handleUpdate(scope.row)">{{scope.row.name}}</span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column width="85px" align="center" label="研制单位">
-                  <template slot-scope="scope">
-                    <span @click="handleUpdate(scope.row)">{{scope.row.producer}}</span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column width="85px" align="center" label="开发方联系人">
-                  <template slot-scope="scope">
-                    <span @click="handleUpdate(scope.row)">{{scope.row.contact}}</span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column width="85px" align="center" label="软件领域">
-                  <template slot-scope="scope">
-                    <span @click="handleUpdate(scope.row)">{{scope.row.domain}}</span>
-                  </template>
-                </el-table-column>
-                
-                <el-table-column width="85px" align="center" label="软件规模">
-                  <template slot-scope="scope">
-                    <span @click="handleUpdate(scope.row)">{{scope.row.size}}</span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column width="85px" align="center" label="编译器">
-                  <template slot-scope="scope">
-                    <span @click="handleUpdate(scope.row)">{{scope.row.complier}}</span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column width="85px" align="center" label="运行平台">
-                  <template slot-scope="scope">
-                    <span @click="handleUpdate(scope.row)">{{scope.row.platform}}</span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column width="85px" align="center" label="测试环境">
-                  <template slot-scope="scope">
-                    <span @click="handleUpdate(scope.row)">{{scope.row.runtime}}</span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column width="85px" align="center" label="折算后代码行">
-                  <template slot-scope="scope">
-                    <span @click="handleUpdate(scope.row)">{{scope.row.reducedCodeSize}}</span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column width="85px" align="center" label="折算原因">
-                  <template slot-scope="scope">
-                    <span @click="handleUpdate(scope.row)">{{scope.row.reducedReason}}</span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column width="85px" align="center" label="测试类型">
-                  <template slot-scope="scope">
-                    <span @click="handleUpdate(scope.row)">{{scope.row.type}}</span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column width="85px" align="center" label="录入人">
-                  <template slot-scope="scope">
-                    <span @click="handleUpdate(scope.row)">{{scope.row.inofTyper}}</span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column width="85px" align="center" label="信息来源">
-                  <template slot-scope="scope">
-                    <span @click="handleUpdate(scope.row)">{{scope.row.infoSource}}</span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column width="85px" align="center" label="录入时间">
-                  <template slot-scope="scope">
-                    <span @click="handleUpdate(scope.row)">{{scope.row.inforTypeTime}}</span>
-                  </template>
-                </el-table-column>
-
-                <el-table-column min-width="80px" label="操作">
-                  <template slot-scope="scope">
-                    <el-button type="primary" @click="handleUpdate(scope.row)">更新</el-button>
-                  </template>
-                </el-table-column>
-
-              </el-table>
+          <software-info-detail :SoftwareInfo="items.softwareInfo" v-on:dochange="changeit($event)"></software-info-detail>
 
         </div>
       </el-card>
@@ -283,84 +166,10 @@
     </el-row>
 
       <!-- 各种forms -->
+
       <!-- 被测件信息form start -->
-      <el-dialog :title="'更新被测件信息'" :visible.sync="dialogFormVisible">
-      <el-form :rules="ruleSoftwareInfo" ref="dataForm" :model="temp" label123456781-position="left" label-width="70px" style='width: 400px; margin-left:50px;'>
-
-        <el-form-item label="软件名称">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.name">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="研制单位">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.producer">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="开发方联系人">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.contact">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="软件领域">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.domain">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="软件规模">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.size">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="编译器">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.complier">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="运行平台">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.platform">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="测试环境">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.runtime">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="折算后代码行">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.reducedCodeSize">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="折算原因">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.reducedReason">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="软件类型">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.type">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="录入人">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.infoTyper">
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="信息来源">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.infoSource">
-          </el-input>
-        </el-form-item>
-
-
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button  type="primary" @click="updateData">确认</el-button>
-      </div>
-    </el-dialog>
+      <software-info-edit  :visible="dialogFormVisible" :temp="temp"  v-on:closeVisible="doCloseVisible"></software-info-edit>
     <!-- 被测件信息form end -->
-
 
 
       <!-- 各种forms  end-->
@@ -368,6 +177,9 @@
 </template>
 
 <script>
+
+import { indexManagementProgram, showManagementProgram, storeManagementProgram, updateManagementProgram,
+         destroyManagementProgram } from '@/api/management-program'
 import Tinymce from '@/components/Tinymce'
 import Upload from '@/components/Upload/singleImage3'
 import MDinput from '@/components/MDinput'
@@ -375,12 +187,16 @@ import Multiselect from 'vue-multiselect'// 使用的一个多选框组件，ele
 import 'vue-multiselect/dist/vue-multiselect.min.css'// 多选框组件css
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { validateURL } from '@/utils/validate'
-import { fetchArticle } from '@/api/article'
 import { userSearch } from '@/api/remoteSearch'
+import store from '@/store'
 import Warning from './Warning'
 import { CommentDropdown, PlatformDropdown, SourceUrlDropdown } from './Dropdown'
 import Kanban from './Kanban4Rjz'
 import TeamMemberDetail from './ChildrenCom/TeamMemberDetail'
+import SoftwareInfoDetail from './ChildrenCom/SoftwareInfoDetail'
+import SoftwareInfoEdit from './ChildrenCom/SoftwareInfoEdit'
+import ProgramBasic from './ChildrenCom/ProgramBasic'
+import WorkflowEdit from './ChildrenCom/WorkflowEdit'
 
 const defaultForm = {
   status: 'draft',
@@ -398,7 +214,7 @@ const defaultForm = {
 
 export default {
   name: 'ProgramDetail',
-  components: { Tinymce, MDinput, Upload, Multiselect, Sticky, Warning, CommentDropdown, PlatformDropdown, SourceUrlDropdown, Kanban,TeamMemberDetail },
+  components: { Tinymce, MDinput, Upload, Multiselect, Sticky, Warning, CommentDropdown, PlatformDropdown, SourceUrlDropdown, Kanban,TeamMemberDetail,SoftwareInfoDetail,SoftwareInfoEdit,ProgramBasic, WorkflowEdit },
   props: {
     isEdit: {
       type: Boolean,
@@ -444,12 +260,14 @@ export default {
         content: [{ validator: validateRequire }],
         source_uri: [{ validator: validateSourceUri, trigger: 'blur' }]
       },
+      is_leader:false,
       active:7,
       crews:[
         {id:1,name:'wanghc',role:'0',part:'导航测试',progress:'50%',notes:'需要更多人手！'},
         {id:2,name:'yangjr',role:'1',part:'模型测试',progress:'30%',notes:''},
         {id:3,name:'fanzq',role:'1',part:'环境搭建',progress:'40%',notes:''}
           ],
+      items:null,
       softwareInfo: [{
         id:1,
         name: '1',
@@ -467,32 +285,16 @@ export default {
         infoSource:'13',
         infoTypeTime:'14'
       }],
-      dialogFormVisible: false,
       temp: {
-        id:1,
-        name: '1',
-        producer: '2',
-        contact: '3',
-        domain:'4',
-        size:5,
-        complier:'6',
-        platform:'7',
-        runtime:'8',
-        reducedCodeSize:'9',
-        reducedReason:'10',
-        type:'11',
-        infoTyper:'12',
-        infoSource:'13',
-        infoTypeTime:'14'
       },
+       dialogFormVisible:false,
        ruleSoftwareInfo: {
         // workers: [{ required: true, message: 'type is required', trigger: 'change' }],
         // timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
         // title: [{ required: true, message: 'title is required', trigger: 'blur' }]
       },
+
         fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
-
-
         options: {
         group: 'mission'
       },
@@ -522,20 +324,34 @@ export default {
     }
   },
   created() {
+     store.dispatch('GetInfo').then(res => { // 拉取用户信息
+    }).catch((err) => {
+      store.dispatch('FedLogOut').then(() => {
+        Message.error(err || 'Verification failed, please login again')
+      })
+    })
     if (this.isEdit) {
       const id = this.$route.params && this.$route.params.id
-      this.fetchData(id)
+      this.showProgram(id)
     } else {
       this.postForm = Object.assign({}, defaultForm)
     }
   },
   methods: {
-    fetchData(id) {
-      fetchArticle(id).then(response => {
-        this.postForm = response.data
-        // Just for test
-        this.postForm.title += `   Article Id:${this.postForm.id}`
-        this.postForm.content_short += `   Article Id:${this.postForm.id}`
+    showProgram(id) {
+      const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+      showManagementProgram(id).then(response => {
+
+        var data=response.data
+        this.items = data.items
+        this.is_leader=data.is_leader
+        loading.close();
+
       }).catch(err => {
         console.log(err)
       })
@@ -583,14 +399,7 @@ export default {
       })
     },
     
-    //点击被测件信息更新按钮
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
+
     //被测件信息form内点击确认  如果是创建新信息
     createData() {
       this.$refs['dataForm'].validate((valid) => {
@@ -649,7 +458,22 @@ export default {
       })
     },
 
-
+    //点击被测件信息更新按钮
+    changeit(row) {
+      //this.temp = Object.assign({}, row) // copy obj
+      this.temp=row
+      this.dialogFormVisible = true
+      // this.$nextTick(() => {
+      //   this.$refs['dataForm'].clearValidate()
+      // })
+    },
+    onChangeWorkflow(d){
+      this.items.workflow.active=this.items.workflow.active+d;
+      this.$refs.WorkflowEdit.$refs.ProgramNote.getProgramNote(this.items.workflow.workflowArray[this.items.workflow.active].id);
+    },
+    doCloseVisible(){
+      this.dialogFormVisible = false
+    },
 
       //上传控件提醒函数 start
       handleRemove(file, fileList) {
