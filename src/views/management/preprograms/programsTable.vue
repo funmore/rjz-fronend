@@ -26,10 +26,6 @@
         </el-option>
       </el-select>
 
-
-      <el-checkbox v-model="listQuery.isMeCreated" @change='handleFilter'>我创建的项目</el-checkbox>
-      <el-checkbox v-model="listQuery.isMeLeader" @change='handleFilter'>我任项目组长的项目</el-checkbox>
-      <el-checkbox v-model="listQuery.isMeMember" @change='handleFilter'>我任项目组员的项目</el-checkbox>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" @click="handleProgramCreate" type="primary" icon="el-icon-edit">新增</el-button>
 
@@ -55,17 +51,6 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="80px" align="center" label="项目状态">
-        <template slot-scope="scope">
-          <span>{{scope.row.workflow_state}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100px" align="center" label="待解决问题">
-        <template slot-scope="scope">
-          <span>{{scope.row.issue}}</span>
-        </template>
-      </el-table-column>
 
       <el-table-column width="100px" align="center" label="密级">
         <template slot-scope="scope">
@@ -91,17 +76,6 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="100px" align="center" label="项目组长">
-        <template slot-scope="scope">
-          <span>{{scope.row.program_leader}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="130px" align="center" label="项目组员">
-        <template slot-scope="scope">
-          <span>{{scope.row.program_team_strict}}</span>
-        </template>
-      </el-table-column>
 
 
       <el-table-column width="140px" align="center" label="计划开始时间">
@@ -117,24 +91,24 @@
       </el-table-column>
 
 
-
-
       <el-table-column align="center" label="操作" width="130px" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-            <router-link :to="'/management/programs/edit/'+scope.row.id"> 
-            <el-button type="primary" size="small" icon="el-icon-edit" v-if="scope.row.state!=='项目进行中'">打开</el-button>
-          </router-link>
           <el-popover
             placement="top-start"
             width="200px"
             trigger="hover" 
+            @show="handleCheckedChange(scope.row.create_step,scope.row)"
             >
               <div style="text-align: left; margin: 0">
-                   <el-checkbox :indeterminate="check.isIndeterminate" v-model="check.checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-                   <div style="margin: 15px 0;"></div>
-                   <el-checkbox-group v-model="check.checkedCities" @change="handleCheckedCitiesChange">
-                  <el-checkbox v-for="city in check.cities" :label="city" :key="city">{{city}}</el-checkbox>
-                </el-checkbox-group>
+                   <el-checkbox-group v-model="scope.row.create_step" @change="handleCheckedChange(scope.row.create_step,scope.row)">
+                    <el-checkbox label="项目的信息"></el-checkbox>
+                    <el-checkbox label="联系人配置"></el-checkbox>
+                    <el-checkbox label="被测件信息"></el-checkbox>
+                    <el-checkbox label="工作流配置"></el-checkbox>
+                    <el-checkbox label="项目组配置"></el-checkbox>
+                    
+                  </el-checkbox-group>
+                  <el-button type="warning" @click="handleProgramUpdate(scope.row)">确认</el-button>
               </div>
             <el-button type="danger" slot="reference">配置</el-button>
           </el-popover>
@@ -158,10 +132,9 @@
 </template>
 
 <script>
-import { indexEmployee } from '@/api/employee'
 
-import { indexManagementProgram, showManagementProgram, storeManagementProgram, updateManagementProgram,
-         destroyManagementProgram } from '@/api/management-program'
+import { indexPreProgram, showPreProgram, storePreProgram, updatePreProgram,
+         destroyPreProgram } from '@/api/preprogram'
 import WorkflowItem from '@/components/Workflow'
 import SoftwareInfo from '@/components/SoftwareInfo'
 import Contact from '@/components/Contact'
@@ -321,13 +294,7 @@ export default {
         create: '创建'
       },  
 
-      downloadLoading: false,
-      check:{
-          checkAll: false,
-           checkedCities: ['上海', '北京'],
-           cities: ['上海', '北京', '广州', '深圳'],
-           isIndeterminate: true
-         }
+      downloadLoading: false
     }
   },
   filters: {
@@ -344,13 +311,12 @@ export default {
   },
   created() {
     this.getList()
-    this.getEmployeePrincal()
   },
   methods: {
     getList() {
 
       this.listLoading = true;
-      indexManagementProgram(this.listQuery).then(response => {
+      indexPreProgram(this.listQuery).then(response => {
         var data=response.data
         this.list = Object.values(data.items)
         this.total = data.total
@@ -361,15 +327,7 @@ export default {
         }, 1.5 * 1000)
       })
     },
-    getEmployeePrincal(){
-        var listQuery={
-          checkPM:true
-        }
-        indexEmployee(listQuery).then(response => {
-        var data=response.data
-        this.managers = data.items
-      })
-    },
+
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
@@ -389,10 +347,10 @@ export default {
       })
       row.status = status
     },
-    resetTemp(){
+    resetTemp(id){
       this.temp= {
         programBasic:{
-          id:undefined,
+          id:id,
           program_source:"",
           type:"",
           ref:"",
@@ -548,11 +506,10 @@ export default {
       
     },
 
-    handleProgramUpdate(row,updateType) {
-      this.temp = Object.assign({}, row) // copy obj
+    handleProgramUpdate(row) {
+      this.resetTemp(row.id);
       this.visible=true;
       this.dialogStatus = 'update'
-      this.program_type='pro'
 
     },
  
@@ -605,15 +562,21 @@ export default {
       this.dialogStatus = 'create'
       this.program_step=args
     },
-     handleCheckAllChange(val) {
-        this.check.checkedCities = val ? this.check.cities : [];
-        this.check.isIndeterminate = false;
-      },
-      handleCheckedCitiesChange(value) {
-        let checkedCount = value.length;
-        this.check.checkAll = checkedCount === this.check.cities.length;
-        this.check.isIndeterminate = checkedCount > 0 && checkedCount < this.check.cities.length;
+
+    handleCheckedChange(value,row) {
+      if(value.includes('项目组配置')){
+        row.create_step=['项目的信息','联系人配置','被测件信息','工作流配置','项目组配置']
+        this.program_step=[true,true,true,true,true]
+      }else if(value.includes('工作流配置')){
+        row.create_step=['项目的信息','联系人配置','被测件信息','工作流配置']
+        this.program_step=[true,true,true,true,false]
+      }else if(value.includes('被测件信息')){
+        row.create_step=['项目的信息','联系人配置','被测件信息']
+        this.program_step=[true,true,true,false,false]
+      }else{
+        this.program_step=[true,true,false,false,false]
       }
+    }
   }
 }
 </script>

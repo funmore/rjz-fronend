@@ -180,6 +180,7 @@ const constClassification = ['机密','秘密','内部']
        visible:Boolean
     },
     created(){
+      var a =1;
     },
     methods: {
       cancel(){

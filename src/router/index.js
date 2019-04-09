@@ -86,13 +86,6 @@ export const constantRouterMap = [
         component: () => import('@/views/management/programs/programsTable'),
         meta: { title: '项目管理', icon: 'table' }
       },
-      // //create
-      // {
-      //   path: 'create',
-      //   name: 'createProgram',
-      //   component: () => import('@/views/management/programs/create'),
-      //   meta: { title: '创建项目', icon: 'table' },
-      // },
       //edit
       {
         path: 'programs/edit/:id(\\d+)',
@@ -102,6 +95,13 @@ export const constantRouterMap = [
         hidden:true
       },
 
+
+      {
+        path: 'preprograms',
+        name: 'preprograms',
+        component: () => import('@/views/management/preprograms/programsTable'),
+        meta: { title: '预备项目', icon: 'table' }
+      },
       //employees
       {
         path: 'employees',

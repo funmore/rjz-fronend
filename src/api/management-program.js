@@ -39,10 +39,4 @@ export function destroyManagementProgram(id) {
   })
 }
 
-// export function fetchManagementProgramsList(query){
-//   return request({
-//     url:'/management/programs/index',
-//     method:'get',
-//     params:query
-//   })
-//}
+

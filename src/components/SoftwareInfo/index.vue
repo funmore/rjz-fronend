@@ -1,7 +1,8 @@
 <template>
        
       
-      <el-form :rules="rules" :ref="propRef" :model="softwareInfo" label123456781-position="left" label-width="200px" style='width: 600px; margin-left:50px;'>
+      <!-- <el-form :rules="rules" :ref="propRef" :model="softwareInfo" label123456781-position="left" label-width="200px" style='width: 600px; margin-left:50px;'> -->
+        <el-form :rules="rules" ref="software-info" :model="softwareInfo" label123456781-position="left" label-width="100px" style='width: 600px; '>
 
         <el-form-item label="软件名称" prop='name'>
         <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="softwareInfo.name" >
@@ -149,7 +150,7 @@ export default {
   name: 'workflow-demo',
 
   props:{
-    propSoftwareInfo: Object,
+    propSoftwareInfo: Array,
     propRef:String
   },
   data() {
@@ -176,7 +177,8 @@ export default {
     }
   },
   created(){
-    this.softwareInfo=this.propSoftwareInfo;
+    if(this.propSoftwareInfo.length!=0)
+    this.softwareInfo=this.propSoftwareInfo[0];
   },
    methods: {
     

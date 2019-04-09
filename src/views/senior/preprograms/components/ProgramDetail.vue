@@ -198,8 +198,19 @@ import SoftwareInfoEdit from './ChildrenCom/SoftwareInfoEdit'
 import ProgramBasic from './ChildrenCom/ProgramBasic'
 import WorkflowEdit from './ChildrenCom/WorkflowEdit'
 
-
-
+const defaultForm = {
+  status: 'draft',
+  title: '', // 文章题目
+  content: '', // 文章内容
+  content_short: '', // 文章摘要
+  source_uri: '', // 文章外链
+  image_uri: '', // 文章图片
+  display_time: undefined, // 前台展示时间
+  id: undefined,
+  platforms: ['a-platform'],
+  comment_disabled: false,
+  importance: 0
+}
 
 export default {
   name: 'ProgramDetail',
@@ -240,6 +251,7 @@ export default {
     return {
       activeName:"1",
       tableKey:0,
+      postForm: Object.assign({}, defaultForm),
       loading: false,
       userListOptions: [],
       rules: {
@@ -322,6 +334,7 @@ export default {
       const id = this.$route.params && this.$route.params.id
       this.showProgram(id)
     } else {
+      this.postForm = Object.assign({}, defaultForm)
     }
   },
   methods: {

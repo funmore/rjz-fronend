@@ -1,8 +1,9 @@
 <template>
   <div>
 
-
-      <el-table :data="programTeamRole" v-loading="listLoading" border fit highlight-current-row style="width: 100%">
+      <el-button  style="margin-left: 10px;" @click="createProgramPeople" type="primary" icon="el-icon-edit">新增项目组员</el-button>
+      <el-form :rules="rules" :model="model"  ref="form">
+      <el-table :data="model.programTeamRole" v-loading="listLoading" border fit highlight-current-row style="width: 100%">
 
       <el-table-column align="center" label="序号" width="80">
         <template slot-scope="scope">
@@ -19,54 +20,53 @@
 
       <el-table-column width="100px" label="姓名">
         <template slot-scope="scope">
-            <el-select v-model="scope.row.employee_id" placeholder="请选择" @keyup.enter.native="scope.row.isEdit=!scope.row.isEdit">
-            <el-option
-              v-for="item in employees"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select> 
+            <el-form-item :prop="'programTeamRole.' + scope.$index + '.employee_id'" :rules='rules.employee_id'>
+                <el-select v-model="scope.row.employee_id" placeholder="请选择">
+                  <el-option
+                    v-for="item in employees"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                  </el-option>
+                </el-select> 
+            </el-form-item>
+            
         </template>
       </el-table-column>
 
       <el-table-column width="100px" label="工作内容">
         <template slot-scope="scope" >
-          <template v-if="scope.row.isEdit">
-            <el-input class="edit-input" size="small" v-model="scope.row.workload_note"  @keyup.enter.native="scope.row.isEdit=!scope.row.isEdit"></el-input>
-          </template>
-          <span v-else>{{ scope.row.workload_note }}</span>
+           <el-form-item :prop="'programTeamRole.' + scope.$index + '.workload_note'" :rules='rules.workload_note'>
+              <el-input class="edit-input" size="small" v-model="scope.row.workload_note" ></el-input>
+          </el-form-item>
         </template>
       </el-table-column>
 
       <el-table-column width="100px" label="计划工作时长">
         <template slot-scope="scope">
-          <template v-if="scope.row.isEdit">
-            <el-input class="edit-input" size="small" v-model="scope.row.plan_workload"  @keyup.enter.native="scope.row.isEdit=!scope.row.isEdit"></el-input>
-          </template>
-          <span v-else>{{ scope.row.plan_workload }}</span>
+          <el-form-item :prop="'programTeamRole.' + scope.$index + '.plan_workload'" :rules='rules.plan_workload'>
+              <el-input class="edit-input" size="small" v-model="scope.row.plan_workload" ></el-input>
+          </el-form-item>
         </template>
       </el-table-column>
 
 
 
-      <el-table-column width="100px" label="实际工作时长" v-if="isAllEdit">
+<!--       <el-table-column width="100px" label="实际工作时长" v-if="isAllEdit">
         <template slot-scope="scope">
-          <template v-if="scope.row.isEdit">
-            <el-input class="edit-input" size="small" v-model="scope.row.actual_workload"  @keyup.enter.native="scope.row.isEdit=!scope.row.isEdit"></el-input>
-          </template>
-          <span v-else>{{ scope.row.actual_workload }}</span>
+          <el-form-item prop="actual_workload" :rules='rules.actual_workload'>
+              <el-input class="edit-input" size="small" v-model="scope.row.actual_workload" ></el-input>
+          </el-form-item>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column width="200px" label="操作" >
         <template slot-scope="scope">
-          <el-button v-if="scope.row.isEdit" type="success" @click="confirmEdit(scope.row)" size="small" icon="el-icon-circle-check-outline">确认</el-button>
-          <el-button v-else type="primary" @click='scope.row.isEdit=!scope.row.isEdit' size="small" icon="el-icon-edit">编辑</el-button>
           <el-button v-if="scope.row.role=='项目组员'" type="warning" @click="confirmDelete(scope.row,scope.$index)" size="small" icon="el-icon-circle-check-outline">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+  </el-form>
   </div>
 
 
@@ -84,21 +84,36 @@ export default {
   //components: { 'tinymce':Tinymce },
   //components: { 'workflow':workflow},
   props:{
-    programTeamRole: Array,
+    propProgramTeamRole: Array,
     isAllEdit:Boolean
   },
-  created() {
-    this.listLoading=false;
-  },
+
   data() {
     return {
         employees:new Array(),
         listLoading:true,
+        rules:{
+          workload_note:[ { required: true, message: '请输入工作量', trigger: 'blur' } ],
+          plan_workload:[ { required: true, message: '请输入计划工作时长', trigger: 'blur' } ],
+          actual_workload:[ { required: true, message: '请输入实际工作时长', trigger: 'blur' } ],
+        },
+        model:{
+          programTeamRole:this.propProgramTeamRole
+        }
     }
   },
+
   created() {
     this.getList()
   },
+  // watch:{
+  //   model: {
+  //       handler:function(newVa,oldVa){
+  //         this.
+  //       },
+  //       deep:true
+  //   },
+  // },
    methods: {
     getList() {
       this.listLoading = true;
@@ -130,7 +145,7 @@ export default {
                   cancelButtonText: '取消',
                   type: 'warning'
                 }).then(() => {
-                  this.programTeamRole.splice(index,1)
+                  this.model.programTeamRole.splice(index,1)
                   this.$message({
                     type: 'success',
                     message: '删除成功!'
@@ -143,8 +158,8 @@ export default {
                 });
     },
     createProgramPeople(){
-      var index=this.programTeamRole.length-4;
-      this.programTeamRole.splice(index,0,{role:'项目组员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false});
+      var index=this.model.programTeamRole.length-4;
+      this.model.programTeamRole.splice(index,0,{role:'项目组员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false});
     }
 
 

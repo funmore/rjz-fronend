@@ -1,7 +1,7 @@
 <template>
        
 
-      <el-form :rules="rules" :ref="propRef" :model="workflow" :label123456781-position="position" :label-width="width" >
+      <el-form :rules="rules" ref="workflow" :model="workflow" label123456781-position="left" label-width="100px" >
         <el-form-item label="流程名称" prop="workflow_name">
               <el-input v-model="workflow.workflow_name"></el-input>
         </el-form-item>
@@ -10,7 +10,7 @@
             <el-step v-for="index in workflow.workflowArray.length" :title="'S'+index" :description="workflow.workflowArray[index-1].name" :icon="icon[0]"></el-step>
           </el-steps> 
             <el-button-group>
-              <el-button type="primary" icon="el-icon-arrow-left" @click="previous">项目推进</el-button>
+              <el-button type="primary" icon="el-icon-arrow-left" @click="previous">上一个节点</el-button>
               <el-button type="primary" @click="next">下一个节点<i class="el-icon-arrow-right el-icon--right"></i></el-button>
             </el-button-group>
             <el-button-group>
@@ -55,8 +55,7 @@ export default {
   props:{
     workflow: Object,
     position: String,
-    width: String,
-    propRef:String
+    width: String
   },
   data() {
       var validatePass = (rule, value, callback) => {
@@ -80,7 +79,7 @@ export default {
   },
    methods: {
     next() {
-      this.$refs[this.propRef].validate().then(()=>{
+      this.$refs['workflow'].validate().then(()=>{
             this.workflow.active++;
             if (this.workflow.active == this.workflow.workflowArray.length) this.workflow.active = 0;
       }).catch(()=>{
@@ -89,7 +88,7 @@ export default {
 
     },
     previous() {
-      this.$refs[this.propRef].validate().then(()=>{
+      this.$refs['workflow'].validate().then(()=>{
             this.workflow.active =this.workflow.active-1;
             if (this.workflow.active ==-1) this.workflow.active = this.workflow.workflowArray.length-1;
       });
