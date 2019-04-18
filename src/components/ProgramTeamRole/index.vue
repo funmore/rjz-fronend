@@ -117,6 +117,9 @@ export default {
    methods: {
     getList() {
       this.listLoading = true;
+      var listQuery={
+          checkALL:true
+        }
       indexEmployee(this.listQuery).then(response => {
         var data=response.data
         this.employees = data.items

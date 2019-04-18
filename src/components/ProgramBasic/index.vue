@@ -25,7 +25,7 @@
         <el-form-item label="测试类型" prop="program_type">
           <el-select v-model="program.program_type" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.ProgramType"
+              v-for="(item,index) in propSelection.programType"
               :key="index"
               :label="item"
               :value="item">
@@ -36,7 +36,7 @@
         <el-form-item label="密级">
           <el-select v-model="program.classification" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.Classification"
+              v-for="(item,index) in propSelection.classification"
               :key="index"
               :label="item"
               :value="item">
@@ -47,7 +47,7 @@
         <el-form-item label="研制类型">
           <el-select v-model="program.dev_type" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.DevType"
+              v-for="(item,index) in propSelection.devType"
               :key="index"
               :label="item"
               :value="item">
@@ -58,7 +58,7 @@
         <el-form-item label="项目阶段">
           <el-select v-model="program.program_stage" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.ProgramStage"
+              v-for="(item,index) in propSelection.programStage"
               :key="index"
               :label="item"
               :value="item">
@@ -78,23 +78,12 @@
         </el-form-item>
 
 
-        <el-form-item label="型号负责人">
-          <el-select v-model="program.program_stage" filterable placeholder="请选择">
-            <el-option
-              v-for="(item,index) in propSelection.ProgramStage"
-              :key="index"
-              :label="item"
-              :value="item">
-            </el-option>
-          </el-select>
-        </el-form-item>
-
        <el-form-item label="型号负责人">
         <template slot-scope="scope">
-            <el-select v-model="program.manager_id" placeholder="请选择" @keyup.enter.native="scope.row.isEdit=!scope.row.isEdit">
+            <el-select v-model="manager_id" placeholder="请选择">
             <el-option
-              v-for="(item,index) in managers"
-              :key="index"
+              v-for="item in managers"
+              :key="item.name"
               :label="item.name"
               :value="item.id">
             </el-option>
@@ -123,17 +112,21 @@ export default {
 
       program:this.propProgram,
       managers:[],
-      rules: {}
+      rules: {},
+      manager_id:this.propProgram.manager.id
     }
   },
   watch:{
     propProgram : function (value) {
       this.program=value
+    },
+    manager_id:function(value){
+      this.program.manager=this.propSelection.managers.find(x=>x.id==value);
     }
   },
   created(){
     this.getEmployeePrincal()
-
+    var t=this.propProgram
   },
    methods: {
         getEmployeePrincal(){

@@ -31,16 +31,13 @@
       <el-checkbox v-model="listQuery.isMeLeader" @change='handleFilter'>我任项目组长的项目</el-checkbox>
       <el-checkbox v-model="listQuery.isMeMember" @change='handleFilter'>我任项目组员的项目</el-checkbox>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleProgramCreate" type="primary" icon="el-icon-edit">新增</el-button>
 
       <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">导出EXCEL</el-button>
     </div>
 
     <el-table :key='list.id' :data="list" v-loading="listLoading" border fit highlight-current-row
       style="width: 100%;min-height:1000px;">
-      <el-table-column  label="序号"
-                  type="index"
-                  width="50">
+      <el-table-column  width="50px" align="center" label="序号"  type="index">
       </el-table-column>
 
       <el-table-column width="80px" align="center" label="项目名称">
@@ -122,22 +119,8 @@
       <el-table-column align="center" label="操作" width="130px" class-name="small-padding fixed-width">
         <template slot-scope="scope">
             <router-link :to="'/management/programs/edit/'+scope.row.id"> 
-            <el-button type="primary" size="small" icon="el-icon-edit" v-if="scope.row.state!=='项目进行中'">打开</el-button>
+            <el-button type="primary" size="small" icon="el-icon-edit">打开</el-button>
           </router-link>
-          <el-popover
-            placement="top-start"
-            width="200px"
-            trigger="hover" 
-            >
-              <div style="text-align: left; margin: 0">
-                   <el-checkbox :indeterminate="check.isIndeterminate" v-model="check.checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-                   <div style="margin: 15px 0;"></div>
-                   <el-checkbox-group v-model="check.checkedCities" @change="handleCheckedCitiesChange">
-                  <el-checkbox v-for="city in check.cities" :label="city" :key="city">{{city}}</el-checkbox>
-                </el-checkbox-group>
-              </div>
-            <el-button type="danger" slot="reference">配置</el-button>
-          </el-popover>
         </template>
       </el-table-column>
 
@@ -238,9 +221,9 @@ export default {
         manager:undefined,
         classification:undefined,
         title: undefined,
-        isMeCreated:true,
+        isMeCreated:false,
         isMeLeader:false,
-        isMeMember:true
+        isMeMember:false
       },
 
 

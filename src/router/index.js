@@ -161,6 +161,21 @@ export const constantRouterMap = [
       }
     ]
   },
+  // {
+  //   path: '/train',
+  //   component: Layout,
+  //   redirect: '/gettrain/index',
+  //   name: 'test',
+  //   meta:{title:'设置',icon:'example'},
+  //   children:[
+  //     {
+  //       path: 'train',
+  //       name: 'index',
+  //       component: () => import('@/views/gettrain/index'),
+  //       meta: { title: '火车票', icon: 'table' }
+  //     }
+  //   ]
+  // },
   
   // //项目输入信息
   // {

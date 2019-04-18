@@ -29,7 +29,6 @@
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" @click="handleProgramCreate" type="primary" icon="el-icon-edit">新增</el-button>
 
-      <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">导出EXCEL</el-button>
     </div>
 
     <el-table :key='list.id' :data="list" v-loading="listLoading" border fit highlight-current-row
@@ -72,7 +71,7 @@
 
       <el-table-column width="100px" align="center" label="型号负责人">
         <template slot-scope="scope">
-          <span>{{scope.row.manager_name}}</span>
+          <span>{{scope.row.manager.name}}</span>
         </template>
       </el-table-column>
 
@@ -126,7 +125,7 @@
 
 
   <pre-program  :propVisible="previsible" @pre-completed="onPreCompleted"></pre-program>
-  <program-edit :propStep="program_step" :propDialogStatus="dialogStatus" :propProgram="temp" :propVisible="visible" :propSelection="selection" @close-dia="onCloseDia"></program-edit>
+  <program-edit :propStep="program_step" :propDialogStatus="dialogStatus" :propProgram="temp" :propVisible="visible" :propSelection="selection" @close-dia="onCloseDia" @update-list="onUpdateList"></program-edit>
 
   </div>
 </template>
@@ -135,6 +134,8 @@
 
 import { indexPreProgram, showPreProgram, storePreProgram, updatePreProgram,
          destroyPreProgram } from '@/api/preprogram'
+import { indexEmployee } from '@/api/employee'
+
 import WorkflowItem from '@/components/Workflow'
 import SoftwareInfo from '@/components/SoftwareInfo'
 import Contact from '@/components/Contact'
@@ -179,7 +180,7 @@ export default {
         programStage:constProgramStage,
         programSource:constProgramSource,
         devType:constDevType,
-        managers:undefined,
+        managers:[],
         type:['运载','战术','战略','空军','海军'],
 
         softwareType:constSoftwareType,
@@ -233,7 +234,7 @@ export default {
             dev_type:'',
             plan_start_time:new Date(),  
             plan_end_time :new Date(),
-            manager_id:''
+            manager:null
           },
 
         contact:[
@@ -311,8 +312,18 @@ export default {
   },
   created() {
     this.getList()
+    this.getEmployeePrincal()
   },
   methods: {
+    getEmployeePrincal(){
+        var listQuery={
+          checkPM:true
+        }
+        indexEmployee(listQuery).then(response => {
+        var data=response.data
+        this.selection.managers = data.items
+      })
+    },
     getList() {
 
       this.listLoading = true;
@@ -365,7 +376,7 @@ export default {
           dev_type:'',
           plan_start_time:new Date(),  
           plan_end_time :new Date(),
-          manager_id:''
+          manager:Object.assign({}, this.selection.managers[0])
         },
         contact:[
           {is_12s:'是',organ:'',type:'计划',name:'',tele:'',isEdit:true},
@@ -556,11 +567,43 @@ export default {
       this.visible=false;
     },
     onPreCompleted(args){
+      this.resetTemp()
       this.previsible=false;
       this.visible=true
-      this.resetTemp()
       this.dialogStatus = 'create'
       this.program_step=args
+    },
+    onUpdateList(args){
+      if(args.type=='store'){
+
+            if(this.list==undefined) this.list=[];
+            var data=args.data;
+            this.list.unshift(data);
+            this.$notify({
+              title: '成功',
+              message: '创建成功',
+              type: 'success',
+              duration: 2000
+            })
+      }else if(args.type=='update'){
+
+            if(this.list==undefined) this.list=[];
+              var data=args.data;
+
+             for (const v of this.list) {
+              if (v.id === data.id) {
+                const index = this.list.indexOf(v)
+                this.list.splice(index, 1, data)
+                break
+              }
+            }
+            this.$notify({
+              title: '成功',
+              message: '更新成功',
+              type: 'success',
+              duration: 2000
+            })
+      }
     },
 
     handleCheckedChange(value,row) {

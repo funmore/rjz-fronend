@@ -76,7 +76,8 @@ export default {
       },
       steps:new Number(),
       programItem:new Object(),
-      programChildren:['programBasic','contact','softwareInfo','workflow','programTeamRole']
+      programChildren:['programBasic','contact','softwareInfo','workflow','programTeamRole'],
+      create_step:['项目的信息','联系人配置','被测件信息','工作流配置','项目组配置']
       
     }
   },
@@ -108,23 +109,16 @@ export default {
           this.programItem[this.programChildren[i]]=undefined;
         }
 
-
-
-
         if(this.propDialogStatus=='update'){
           
             showPreProgram(this.propProgram.programBasic.id).then(response => {
 
               var data=response.data.items
-              // for(var i=0;i<this.steps;i++){
-              //     this.programItem[this.programChildren[i]]=data.items[this.programChildren[i]];
-              //   }
-                for (var key in data) {
-                  // check if the property/key is defined in the object itself, not in parent
+              for (var key in data) {
                   if (data.hasOwnProperty(key)) {           
                       this.programItem[key]=data[key];
                   }
-}
+              }
 
             }).catch(err => {
               console.log(err)
@@ -133,35 +127,25 @@ export default {
 
       },
       createProgram() {
-          if(this.steps==2){
-            this.programItem.softwareInfo    = undefined;
-            this.programItem.workflow        = undefined;
-            this.programItem.programTeamRole = undefined;
-          }
           storePreProgram(this.programItem).then((response) => {
-            if(this.list==undefined) this.list=[];
-            this.programItem.id = response.data.id
-            this.list.unshift(this.temp);
-            this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
-            })
+            var data = Object.assign({}, this.programItem.programBasic) 
+            this.create_step.splice(this.steps,this.propStep.length-this.steps);
+            data.create_step=this.create_step;
+            data.id=response.data.id
+            var updateData={data:data,type:'store'};
+            this.$emit('update-list',updateData)
 
         })
     },
       updateProgram() {
             updatePreProgram(this.programItem).then((response) => {
-              if(this.list==undefined) this.list=[];
-              this.programItem.id = response.data.id
-              this.list.unshift(this.temp);
-              this.$notify({
-                title: '成功',
-                message: '创建成功',
-                type: 'success',
-                duration: 2000
-              })
+              var data = Object.assign({}, this.programItem.programBasic)
+              this.create_step.splice(this.steps,this.propStep.length-this.steps);
+              data.create_step=this.create_step;
+              var updateData={data:data,type:'update'};
+              this.$emit('update-list',updateData)
+
+
           })
       },
     }

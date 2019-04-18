@@ -51,7 +51,7 @@
           <span>项目工作产品</span>
         </div>
         <div style="margin-bottom:50px;">
-          <el-col :span="4" class="program-product">
+<!--           <el-col :span="4" class="program-product">
             <div>被测件&测评需求</div>
             <el-upload
                 class="upload-demo"
@@ -114,7 +114,7 @@
                 <el-button size="small" type="primary">点击上传</el-button>
                 <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
-          </el-col>
+          </el-col> -->
         </div>
       </el-card>
     </el-row>
@@ -126,13 +126,13 @@
           <span>在线评审</span>
         </div>
         <div style="margin-bottom:50px;">
-          <el-col :span="12" class="program-product">
+<!--           <el-col :span="12" class="program-product">
             <div class="components-container board">
             <Kanban :key="1" class="kanban todo" :list="list1" :options="options" header-text="专家评审意见"/>
             <Kanban :key="2" class="kanban working" :list="list2" :options="options" header-text="项目组长已确认"/>
             <Kanban :key="3" class="kanban done" :list="list3" :options="options" header-text="质量管理已确认"/>
           </div>
-        </el-col>
+        </el-col> -->
 
         </div>
       </el-card>
@@ -144,7 +144,7 @@
           <span>合同信息</span>
         </div>
         <div style="margin-bottom:50px;">
-          <el-steps :active="active" finish-status="success">
+         <!--  <el-steps :active="active" finish-status="success">
             <el-step title="S1" description="选定乙方"></el-step>
             <el-step title="S2" description="已提交BPM申请"></el-step>
             <el-step title="S3" description="已完成BPM审批"></el-step>
@@ -159,7 +159,7 @@
             <el-step title="S12" description="已完成付款流程审批"></el-step>
             <el-step title="S13" description="已付款"></el-step>
             <el-step title="S14" description="已报销"></el-step>
-          </el-steps>
+          </el-steps> -->
 
         </div>
       </el-card>
