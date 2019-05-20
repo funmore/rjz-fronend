@@ -173,6 +173,9 @@ function binb2b64(binarray) {
 }
 
 
-module.exports = {
+// module.exports = {
+//   hex_sha1: hex_sha1
+// }
+export  default {
   hex_sha1: hex_sha1
 }

@@ -172,8 +172,9 @@
 <script>
 
   import DailyNote from './DailyNote'
-  import { indexProgramTeamRoleNote, showProgramTeamRoleNote, storeProgramTeamRoleNote, updateProgramTeamRoleNote,
-         destroyProgramTeamRoleNote } from '@/api/programteamrolenote'
+  import { indexProgramTeamRoleTask, showProgramTeamRoleTask, storeProgramTeamRoleTask, updateProgramTeamRoleTask,
+         destroyProgramTeamRoleTask } from '@/api/programteamroletask'
+
 
   export default {
     components: {DailyNote },
@@ -223,7 +224,7 @@
     getNote(id){
       this.listLoading = true;
       this.listQuery.id=this.propTeamMemberId;
-      indexProgramTeamRoleNote(this.listQuery).then(response => {
+      indexProgramTeamRoleTask(this.listQuery).then(response => {
         var data=response.data
         if(data.total!=0){
           this.ptr_note = data.items
@@ -264,7 +265,7 @@
         this.$refs['TeamMemberNoteEdit'].validate((valid) => {
           if (valid) {
             this.visible=false;
-            storeProgramTeamRoleNote(item).then(response => {
+            storeProgramTeamRoleTask(item).then(response => {
               var data=response.data
               item = data.items
               this.ptr_note.unshift(item)
@@ -284,7 +285,7 @@
         this.$refs['TeamMemberNoteEdit'].validate((valid) => {
           if (valid) {
             this.visible=false;
-            updateProgramTeamRoleNote(item).then(response => {
+            updateProgramTeamRoleTask(item).then(response => {
               this.$notify({
                 title: '成功',
                 message: '更新成功',

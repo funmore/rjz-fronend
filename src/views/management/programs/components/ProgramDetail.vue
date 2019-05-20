@@ -48,77 +48,30 @@
     <el-row>
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <span>项目工作产品</span>
+          <span>项目输入信息</span>
         </div>
+  
+
         <div style="margin-bottom:50px;">
-<!--           <el-col :span="4" class="program-product">
-            <div>被测件&测评需求</div>
-            <el-upload
-                class="upload-demo"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :before-remove="beforeRemove"
-                multiple
-                :limit="3"
-                :on-exceed="handleExceed"
-                :file-list="fileList">
-                <el-button size="small" type="primary">点击上传</el-button>
-                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-            </el-upload>
-          </el-col>
-          <el-col :span="4" class="program-product">
-            <div>工作产品</div>
-            <el-upload
-                class="upload-demo"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :before-remove="beforeRemove"
-                multiple
-                :limit="3"
-                :on-exceed="handleExceed"
-                :file-list="fileList">
-                <el-button size="small" type="primary">点击上传</el-button>
-                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-            </el-upload>
-          </el-col>
-          <el-col :span="4" class="program-product">
-            <div>问题单</div>
-            <el-upload
-                class="upload-demo"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :before-remove="beforeRemove"
-                multiple
-                :limit="3"
-                :on-exceed="handleExceed"
-                :file-list="fileList">
-                <el-button size="small" type="primary">点击上传</el-button>
-                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-            </el-upload>
-          </el-col>
-          <el-col :span="4" class="program-product">
-            <div>评审意见</div>
-            <el-upload
-                class="upload-demo"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :before-remove="beforeRemove"
-                multiple
-                :limit="3"
-                :on-exceed="handleExceed"
-                :file-list="fileList">
-                <el-button size="small" type="primary">点击上传</el-button>
-                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-            </el-upload>
-          </el-col> -->
+          <file-program-detail :propProgramId="items.programBasic.id" :propFileCategory="'input'" :propActive="'任务书'"></file-program-detail>
         </div>
       </el-card>
     </el-row>
 
+    <el-row>
+      <el-card class="box-card">
+        <div slot="header" class="clearfix">
+          <span>项目工作产品信息</span>
+        </div>
+  
+
+        <div style="margin-bottom:50px;">
+          <file-program-detail :propProgramId="items.programBasic.id" :propFileCategory="'output'" :propActive="'测试计划'"></file-program-detail>
+        </div>
+      </el-card>
+    </el-row>
+<!--         fileCategory:['任务书','软件需求','软件设计','使用手册','接口协议','被测软件','测试任务书','软件更改'],
+        // fileCategoryOutput:['测试计划','测试说明','测试大纲','测试报告','测试记录'], -->
 
     <el-row>
       <el-card class="box-card">
@@ -126,13 +79,8 @@
           <span>在线评审</span>
         </div>
         <div style="margin-bottom:50px;">
-<!--           <el-col :span="12" class="program-product">
-            <div class="components-container board">
-            <Kanban :key="1" class="kanban todo" :list="list1" :options="options" header-text="专家评审意见"/>
-            <Kanban :key="2" class="kanban working" :list="list2" :options="options" header-text="项目组长已确认"/>
-            <Kanban :key="3" class="kanban done" :list="list3" :options="options" header-text="质量管理已确认"/>
-          </div>
-        </el-col> -->
+          <file-review-detail :propProgramId="items.programBasic.id" ></file-review-detail>
+        </el-col>
 
         </div>
       </el-card>
@@ -144,22 +92,7 @@
           <span>合同信息</span>
         </div>
         <div style="margin-bottom:50px;">
-         <!--  <el-steps :active="active" finish-status="success">
-            <el-step title="S1" description="选定乙方"></el-step>
-            <el-step title="S2" description="已提交BPM申请"></el-step>
-            <el-step title="S3" description="已完成BPM审批"></el-step>
-            <el-step title="S4" description="已完成合同评审"></el-step>
-            <el-step title="S5" description="已提交合同系统"></el-step>
-            <el-step title="S6" description="已完成系统审批"></el-step>
-            <el-step title="S7" description="已完成乙方签署盖章"></el-step>
-            <el-step title="S8" description="已完成甲方签署盖章"></el-step>
-            <el-step title="S9" description="已完成验收"></el-step>
-            <el-step title="S10" description="已收到发票"></el-step>
-            <el-step title="S11" description="已发起付款流程"></el-step>
-            <el-step title="S12" description="已完成付款流程审批"></el-step>
-            <el-step title="S13" description="已付款"></el-step>
-            <el-step title="S14" description="已报销"></el-step>
-          </el-steps> -->
+
 
         </div>
       </el-card>
@@ -180,6 +113,7 @@
 
 import { indexManagementProgram, showManagementProgram, storeManagementProgram, updateManagementProgram,
          destroyManagementProgram } from '@/api/management-program'
+
 import Tinymce from '@/components/Tinymce'
 import Upload from '@/components/Upload/singleImage3'
 import MDinput from '@/components/MDinput'
@@ -197,13 +131,15 @@ import SoftwareInfoDetail from './ChildrenCom/SoftwareInfoDetail'
 import SoftwareInfoEdit from './ChildrenCom/SoftwareInfoEdit'
 import ProgramBasic from './ChildrenCom/ProgramBasic'
 import WorkflowEdit from './ChildrenCom/WorkflowEdit'
+import FileProgramDetail from './ChildrenCom/FileProgramDetail'
+import FileReviewDetail from './ChildrenCom/FileReviewDetail'
 
 
 
 
 export default {
   name: 'ProgramDetail',
-  components: { Tinymce, MDinput, Upload, Multiselect, Sticky, Warning, CommentDropdown, PlatformDropdown, SourceUrlDropdown, Kanban,TeamMemberDetail,SoftwareInfoDetail,SoftwareInfoEdit,ProgramBasic, WorkflowEdit },
+  components: { Tinymce, MDinput, Upload, Multiselect, Sticky, Warning, CommentDropdown, PlatformDropdown, SourceUrlDropdown, Kanban,TeamMemberDetail,SoftwareInfoDetail,SoftwareInfoEdit,ProgramBasic, WorkflowEdit,FileProgramDetail,FileReviewDetail },
   props: {
     isEdit: {
       type: Boolean,
@@ -302,7 +238,10 @@ export default {
         { content:'dfad',index: 'Mission', id: 8 },
         { content:'dfad',index: 'Mission', id: 9 },
         { content:'dfad',index: 'Mission', id: 10 }
-      ]
+      ],
+      assignForm: {
+      files: []
+      }
 
     }
   },
@@ -411,22 +350,6 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)   //deep copy this.temp
-          // updateArticle(tempData).then(() => {
-          //   for (const v of this.softwareInfo) {
-          //     if (v.id === this.temp.id) {
-          //       const index = this.softwareInfo.indexOf(v)
-          //       this.softwareInfo.splice(index, 1, this.temp)   //将list中的原有的条目找到，并替换为新的条目
-          //       break
-          //     }
-          //   }
-          //   this.dialogFormVisible = false
-          //   this.$notify({
-          //     title: '成功',
-          //     message: '更新成功',
-          //     type: 'success',
-          //     duration: 2000
-          //   })
-          // })
           for (const v of this.softwareInfo) {
               if (v.id === this.temp.id) {
                 const index = this.softwareInfo.indexOf(v)
@@ -461,6 +384,8 @@ export default {
     doCloseVisible(){
       this.dialogFormVisible = false
     },
+
+
 
       //上传控件提醒函数 start
       handleRemove(file, fileList) {

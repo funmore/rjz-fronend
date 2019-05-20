@@ -2,7 +2,8 @@ import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
 import store from '../store'
 import { getToken } from '@/utils/auth'
-var sha1 = require('@/utils/sha1.js');
+//var sha1 = require('@/utils/sha1.js');
+import sha1  from '@/utils/sha1'
 
 
 // 创建axios实例
@@ -35,6 +36,7 @@ service.interceptors.request.use(
     }else{
       config.url=config.url+"?XDEBUG_SESSION_START=PHPSTORM";
     }
+
     return config
   },
   error => {
@@ -50,6 +52,9 @@ service.interceptors.response.use(
     /**
      * success为非20000是抛错 可结合自己业务进行修改
      */
+     if(!response.headers['content-type'].toString().includes('text/html')){
+      return response
+     }
     const res = response.data;
     console.log(res);
     console.log(res.success);
