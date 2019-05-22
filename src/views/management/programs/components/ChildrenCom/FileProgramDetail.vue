@@ -78,6 +78,7 @@
 <script>
 import { indexFileProgram, showFileProgram, storeFileProgram, updateFileProgram,
          destroyFileProgram } from '@/api/fileprogram'
+import {bus }  from '../ProgramDetail.vue'
   export default {
     data() {
       return {

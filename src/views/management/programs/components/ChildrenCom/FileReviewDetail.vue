@@ -148,10 +148,6 @@ import { indexFileReview, showFileReview, storeFileReview, updateFileReview,
     props:{
         propProgramId:Number
     },
-
-    created(){
-
-    },
     mounted(){
       this.getFileReviewInfo();
     },

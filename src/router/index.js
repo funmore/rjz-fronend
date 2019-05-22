@@ -143,6 +143,12 @@ export const constantRouterMap = [
         name: 'personal',
         component: () => import('@/views/editor/index'),
         meta: { title: '个人设置', icon: 'table' }
+      },
+      {
+        path: 'poll',
+        name: 'poll',
+        component: () => import('@/views/poll/poll'),
+        meta: { title: '投票', icon: 'table' }
       }
     ]
   },
