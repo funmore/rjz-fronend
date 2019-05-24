@@ -395,7 +395,7 @@ export default {
              {id:2,name:'测试二部'},
              {id:3,name:'环境研发部'},
              {id:4,name:'综合管理'},
-             {id:5,name:'市领导'},
+             {id:5,name:'室领导'}
              ],
         isOrNot:[
             {id:1,name:'是'},

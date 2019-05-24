@@ -22,7 +22,7 @@ import Layout from '../views/layout/Layout'
   }
 **/
 /**
-*   statics         统计
+*   statistic         统计
         programs       项目进度分析
         employees       人力分析
     management      管理
@@ -51,24 +51,32 @@ export const constantRouterMap = [
   },
   //统计
   {
-    path: '/statics',
+    path: '/statistic',
     component: Layout,
-    redirect: '/statics/programs',
-    name: 'statics',
+    redirect: '/statistic/programs',
+    name: 'statistic',
     meta:{title:'统计',icon:'example'},
     children:[
       {
         path: 'programs',
         name: 'programs',
-        component: () => import('@/views/statics/programs/index'),
+        component: () => import('@/views/statistic/programs/index'),
         meta: { title: '项目进度分析', icon: 'table' }
       },
       {
-        path: 'employees',
-        name: 'employees',
-        component: () => import('@/views/editor/index'),
+        path: 'people',
+        name: 'people',
+        component: () => import('@/views/statistic/people/peopleTable'),
         meta: { title: '人力分析', icon: 'table' }
-      }
+      },
+      //edit
+      {
+        path: 'people/view/:id(\\d+)',
+        name: 'viewPeople',
+        component: () => import('@/views/management/programs/edit'),
+        meta: { title: '编辑项目', icon: 'table' },
+        hidden:true
+      },
     ]
   },
     //管理
