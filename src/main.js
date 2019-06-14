@@ -15,6 +15,8 @@ import store from './store'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import EleMultiCascader from "ele-multi-cascader"
+import "ele-multi-cascader/dist/cascader.css"
 
 // // Require Froala Editor js file.
 // require('froala-editor/js/froala_editor.pkgd.min')
@@ -29,6 +31,10 @@ import '@/permission' // permission control
 
 
 Vue.use(ElementUI, { locale })
+
+
+// Vue.use(EleMultiCascader, {locale})
+Vue.use(EleMultiCascader,{locale})
 
 Vue.config.productionTip = false
 

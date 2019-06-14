@@ -1,6 +1,6 @@
 <template>
   <div class="components-container">
-<!--     <div class="raw">
+    <div class="raw">
       <el-tree
       :data="treeData"
       show-checkbox
@@ -44,7 +44,7 @@
         </span>
       </span>
     </el-tree>
-    </div> -->
+    </div>
     <div class="raw">
     <el-tag
       :key="tag"
@@ -106,43 +106,6 @@
       </el-table-column>
     </el-table>
 
-<!-- 
-     <el-table :data="tableConnect"  border fit highlight-current-row style="width: 100%">
-
-        <el-table-column  align="center" label="级别" width="80">
-        <template slot-scope="scope">
-          <span>{{scope.row.level}}</span>
-        </template>
-      </el-table-column>
-
-
-      <el-table-column  align="center" label="前序连接词" width="80">
-        <template slot-scope="scope">
-          <template v-if="scope.row.isEdit">
-            <el-input class="edit-input" size="small" v-model="scope.row.prefix" @keyup.enter.native="scope.row.isEdit=!scope.row.isEdit">></el-input>
-          </template>
-          <span v-else  @click="scope.row.isEdit=!scope.row.isEdit">{{ scope.row.prefix }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column  align="center" label="后序连接词" width="80">
-        <template slot-scope="scope">
-          <template v-if="scope.row.isEdit">
-            <el-input class="edit-input" size="small" v-model="scope.row.postfix"  @keyup.enter.native="scope.row.isEdit=!scope.row.isEdit"></el-input>
-  
-          </template>
-          <span v-else @click="scope.row.isEdit=!scope.row.isEdit">{{ scope.row.postfix }}</span>
-        </template>
-      </el-table-column>
-
-       <el-table-column align="center" label="Actions" width="120">
-        <template slot-scope="scope">
-          <el-button v-if="scope.row.isEdit" type="success" @click="confirmEdit(scope.row)" size="small" icon="el-icon-circle-check-outline">确认</el-button>
-          <el-button v-else type="primary" @click='scope.row.isEdit=!scope.row.isEdit' size="small" icon="el-icon-edit">编辑</el-button>
-        </template>
-      </el-table-column>
-
-    </el-table> -->
    
   </div>
 </template>

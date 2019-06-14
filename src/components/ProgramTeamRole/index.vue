@@ -106,21 +106,14 @@ export default {
   created() {
     this.getList()
   },
-  // watch:{
-  //   model: {
-  //       handler:function(newVa,oldVa){
-  //         this.
-  //       },
-  //       deep:true
-  //   },
-  // },
+
    methods: {
     getList() {
       this.listLoading = true;
       var listQuery={
           checkALL:true
         }
-      indexEmployee(this.listQuery).then(response => {
+      indexEmployee(listQuery).then(response => {
         var data=response.data
         this.employees = data.items
         this.listLoading = false

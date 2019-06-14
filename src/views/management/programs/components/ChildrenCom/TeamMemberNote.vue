@@ -223,6 +223,7 @@
     getNote(id){
       this.listLoading = true;
       this.listQuery.id=this.propTeamMemberId;
+      this.listQuery.isOne=true;
       indexProgramTeamRoleTask(this.listQuery).then(response => {
         var data=response.data
         if(data.total!=0){

@@ -71,7 +71,7 @@
 </div>
 </template>
 <script>
-  import { showProgramTeamRoleTask } from '@/api/programteamroletask'
+  import { indexProgramTeamRoleTask,showProgramTeamRoleTask } from '@/api/programteamroletask'
   export default {
     data() {
       return {
@@ -101,18 +101,28 @@
       this.listLoading = true;
       this.tasks=[];
       var count =0;
-      for(var x in this.role_id_array){
-          showProgramTeamRoleTask(this.role_id_array[x]).then(response => {
+      // for(var x in this.role_id_array){
+      //     showProgramTeamRoleTask(this.role_id_array[x]).then(response => {
+      //       var data=response.data
+      //       if(data.total!=0){
+      //         this.tasks.push(data.items)
+      //       }
+      //       if(count==this.role_id_array.length-1){
+      //         this.listLoading=false;
+      //       }
+      //       count++;
+      //     })
+      //   }
+        var listQuery={id:this.role_id_array,isOne:false}
+        indexProgramTeamRoleTask(listQuery).then(response => {
             var data=response.data
             if(data.total!=0){
-              this.tasks.push(data.items)
+              this.tasks=Object.values(data.items);
             }
-            if(count==this.role_id_array.length-1){
-              this.listLoading=false;
-            }
-            count++;
+            this.listLoading=false;
           })
-        }
+
+
       
       }
 

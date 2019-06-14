@@ -157,6 +157,34 @@ export const constantRouterMap = [
         name: 'poll',
         component: () => import('@/views/poll/poll'),
         meta: { title: '投票', icon: 'table' }
+      },
+      {
+        path: 'poll/imports',
+        name: 'imports',
+        component: () => import('@/views/poll/imports'),
+        meta: { title: 'EXCEL创建', icon: 'table' },
+        hidden:true
+      },
+      {
+        path: 'poll/property',
+        name: 'property',
+        component: () => import('@/views/poll/property'),
+        meta: { title: 'EXCEL创建', icon: 'table' },
+        hidden:true
+      },
+      {
+        path: 'poll/fill/:id(\\d+)',
+        name: 'fill',
+        component: () => import('@/views/poll/fill'),
+        meta: { title: '填写', icon: 'table' },
+        hidden:true
+      },
+      {
+        path: 'poll/show/:id(\\d+)',
+        name: 'show',
+        component: () => import('@/views/poll/show'),
+        meta: { title: '查看', icon: 'table' },
+        hidden:true
       }
     ]
   },
