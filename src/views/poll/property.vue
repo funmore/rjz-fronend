@@ -64,7 +64,7 @@
                 </el-form-item>
               </el-form>
               </div>
-              <div v-else>
+              <div v-else-if="scope.row.type=='单项选择'">
                 <el-tag
                 :key="tag"
                 v-for="tag in scope.row.valid_value"
@@ -75,15 +75,39 @@
               </el-tag>
               <el-input
                 class="input-new-tag"
-                v-if="inputVisible"
-                v-model="inputValue"
-                ref="saveTagInput"
+                v-if="scope.row.inputVisible"
+                v-model="scope.row.inputValue"
+                :ref="scope.row.name"
                 size="small"
                 @keyup.enter.native="handleInputConfirm(scope.row)"
                 @blur="handleInputConfirm(scope.row)"
               >
               </el-input>
-              <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 有效值</el-button>
+              <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.row)">+ 有效值</el-button>
+              </div>
+
+              <div v-else-if="scope.row.type=='多项选择'">
+                <el-tag
+                :key="tag"
+                v-for="tag in scope.row.valid_value"
+                closable
+                :disable-transitions="false"
+                @close="handleClose(tag,scope.row)">
+                {{tag}}
+              </el-tag>
+              <el-input
+                class="input-new-tag"
+                v-if="scope.row.inputVisible"
+                v-model="scope.row.inputValue"
+                :ref="scope.row.name"
+                size="small"
+                @keyup.enter.native="handleInputConfirm(scope.row)"
+                @blur="handleInputConfirm(scope.row)"
+              >
+              </el-input>
+              <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.row)">+ 有效值</el-button>
+              </div>
+              <div v-else-if="scope.row.type=='单行文字'">
               </div>
           </template>
         </el-table-column>
@@ -147,20 +171,10 @@ export default {
             }
           }
         ]
-      },
-      inputVisible: false,
-      inputValue: ''
+      }
 
     }
   },
-  // beforeUpdate(){
-  //   this.insertAfterName=this.propertyData[0].name
-  // },
-  // watch:{
-  //   propertyData:function(newVa,oldVa){
-  //     this.insertAfterName=this.propertyData[0].name
-  //   }
-  // },
   methods: {
     toggleSelection(rows) {
         if (rows) {
@@ -177,20 +191,20 @@ export default {
         row.valid_value.splice(row.valid_value.indexOf(tag), 1);
       },
 
-      showInput() {
-        this.inputVisible = true;
+      showInput(row) {
+        row.inputVisible = true;
         this.$nextTick(_ => {
-          this.$refs.saveTagInput.$refs.input.focus();
+          this.$refs[row.name].$refs.input.focus();
         });
       },
 
       handleInputConfirm(row) {
-        let inputValue = this.inputValue;
+        let inputValue = row.inputValue;
         if (inputValue) {
           row.valid_value.push(inputValue);
         }
-        this.inputVisible = false;
-        this.inputValue = '';
+        row.inputVisible = false;
+        row.inputValue = '';
       },
     //有效值tag  end
       OnCreatedClicked(){
@@ -231,7 +245,9 @@ export default {
           let value={
                       name:this.insertName==''?'新增字段'+(++this.id).toString():this.insertName,
                       type:'数字',
-                      valid_value:[]
+                      valid_value:[],
+                      inputValue:'',
+                      inputVisible:false
                           }
                 this.propertyData.push(value);
                 return;
@@ -242,7 +258,9 @@ export default {
                 let value={
                       name:this.insertName==''?'新增字段'+(++this.id).toString():this.insertName,
                       type:'数字',
-                      valid_value:[]
+                      valid_value:[],
+                      inputValue:'',
+                      inputVisible:false
                           }
                 this.propertyData.splice(index+1, 0,value);
                 break

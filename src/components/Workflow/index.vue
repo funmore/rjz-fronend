@@ -53,7 +53,7 @@ export default {
   //components: { 'tinymce':Tinymce },
   //components: { 'workflow':workflow},
   props:{
-    workflow: Object,
+    propWorkflow: Object,
     position: String,
     width: String
   },
@@ -74,7 +74,44 @@ export default {
 
       nodeType:constNodeType,
       icon:['el-icon-plus'],
-      worklfowTemplate:[]
+      worklfowTemplate:[],
+      workflow:null
+    }
+  },
+  watch:{
+    workflow: {
+        handler:function(newVa,oldVa){
+          this.changeFatherData()
+        },
+        deep:true
+    },
+  },
+  created(){
+    if(this.propWorkflow==null){
+      this.workflow={
+          workflow_name:'测试工作流',
+          active:2,
+          workflowArray:[
+            {name:'建项',plan_day:'',type:'建项'},
+            {name:'被测软件接受',plan_day:'',type:'测试执行'},
+            {name:'静态问题提交',plan_day:'',type:'报告'},
+            {name:'测试环境就绪情况',plan_day:'',type:'建项'},
+            {name:'测试工作产品编写',plan_day:'',type:'建项'},
+            {name:'入库归档状态',plan_day:'',type:'建项'},
+            {name:'测试工作产品内部评审',plan_day:'',type:'建项'},
+            {name:'评审问题闭合',plan_day:'',type:'建项'},
+            {name:'需求(大纲)正式评审',plan_day:'',type:'建项'},
+            {name:'评审问题闭合',plan_day:'',type:'建项'},
+            {name:'入库归档状态',plan_day:'',type:'建项'},
+            {name:'首轮测试',plan_day:'',type:'建项'},
+            {name:'软件问题单闭合',plan_day:'',type:'建项'},
+            {name:'报告评审',plan_day:'',type:'建项'},
+            {name:'入库归档状态',plan_day:'',type:'建项'}
+          ],
+          isError:false
+        };
+    }else{
+      this.workflow=this.propWorkflow
     }
   },
    methods: {
@@ -101,8 +138,8 @@ export default {
                   cancelButtonText: '取消',
                   type: 'warning'
                 }).then(() => {
-                  workflow.workflowArray.splice(this.workflow.active,1);
-                  if(workflow.active==workflow.workflowArray.length) workflow.active--;
+                  this.workflow.workflowArray.splice(this.workflow.active,1);
+                  if(this.workflow.active==this.workflow.workflowArray.length) this.workflow.active--;
                   this.$message({
                     type: 'success',
                     message: '删除成功!'
@@ -133,6 +170,10 @@ export default {
                     message: '已取消创建'
                   });          
                 });
+    },
+    changeFatherData(){
+      let data={data:this.workflow,type:'workflow'}
+      this.$emit('dataChange',data)
     }
   }
 

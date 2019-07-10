@@ -80,7 +80,7 @@
 
 		      <el-table-column align="center" label="操作" width="230" class-name="small-padding fixed-width">
 		        <template slot-scope="scope">
-		            <el-button type="primary" size="small" icon="el-icon-edit" @click="edit(scope.row)">编辑</el-button>
+		            <el-button type="primary" size="small" icon="el-icon-edit" @click="handleDialogUpdate(scope.row)">编辑</el-button>
 		        </template>
 		      </el-table-column>
 
@@ -224,9 +224,12 @@ const constDevType = ['1类','2类','3类','4类']
     	cancel(){
     		this.visible=false;
     	},
-        edit(row){
-        	this.temp=row;
-        	this.visible=true;
+        // edit(row){
+        // 	this.temp=row;
+        // 	this.visible=true;
+        // },
+        handleDialogUpdate(row){
+          this.$emit('dochange',row)
         },
         confirm(temp){
 	      this.$refs['programbasic'].validate((valid) => {

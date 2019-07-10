@@ -1,31 +1,16 @@
 <template>
       <el-dialog :title="textMap[propDialogStatus] +'项目'" :visible.sync="propVisible" :before-close="onClose" @open="onOpen">
-        <el-row class="tac" >
-          <el-col :span="4" style="height: 300px;">
-            <el-steps direction="vertical" :active="active">
-              <el-step v-if="propStep[0]" title="项目的配置"></el-step>
-              <el-step v-if="propStep[1]" title="联系人信息"></el-step>
-              <el-step v-if="propStep[2]" title="被测件信息" ></el-step>
-              <el-step v-if="propStep[3]" title="工作流配置"></el-step>
-              <el-step v-if="propStep[4]" title="项目组配置" ></el-step>
-            </el-steps>
-          </el-col>
-          <el-col :span="20">
-            <program-basic :propSelection="propSelection" :propProgram="programItem.programBasic" v-if="active===0"></program-basic>
-            <contact :propContact="programItem.contact" v-if="active===1"></contact>
-            <software-info :propSelection="propSelection" :propSoftwareInfo="programItem.softwareInfo"  v-if="active===2"></software-info>
-            <workflow-item :workflow="programItem.workflow"   position="left" width="200px" v-if="active===3"></workflow-item>
-            <program-team-role :propProgramTeamRole="programItem.programTeamRole"  :isAllEdit="false" v-if="active===4"></program-team-role>
+            <program-basic :propSelection="propSelection" :propProgramBasic="programItem.programBasic" v-if="propProperty==='programBasic'" @dataChange="OnDataChange"></program-basic>
+            <contact :propContact="programItem.contact" v-if="propProperty==='contact'"></contact>
+            <software-info :propSelection="propSelection" :propSoftwareInfo="programItem.softwareInfo"  v-if="propProperty==='softwareInfo'" @dataChange="OnDataChange"></software-info>
+            <workflow-item :propWorkflow="programItem.workflow"   position="left" width="200px" v-if="propProperty==='workflow'" @dataChange="OnDataChange"></workflow-item>
+            <program-team-role :propProgramTeamRole="programItem.programTeamRole"  :isAllEdit="false" v-if="propProperty==='programTeamRole'" @dataChange="OnDataChange"></program-team-role>
 
-          </el-col>
 
-        </el-row>
 
 
         <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="previous">上一步</el-button>
-          <el-button type="primary" @click="next" v-if="active<(steps-1)">下一步</el-button>
-          <el-button type="primary" @click="confirm" v-else>提交</el-button>
+          <el-button type="primary" @click="confirm">提交</el-button>
         </div>
     </el-dialog>
    
@@ -40,7 +25,11 @@ import { indexProgram, showProgram, storeProgram, updateProgram,
 import { indexContact, showContact, storeContact, updateContact,
          destroyContact } from '@/api/contact'
 import { indexSoftwareInfo, showSoftwareInfo, storeSoftwareInfo, updateSoftwareInfo,
-         destroySoftwareInfo } from '@/api/softwareinfo'
+         destroySoftwareInfo } from '@/api/softwareInfo'
+import { indexWorkflow, showWorkflow, storeWorkflow, updateWorkflow,
+         destroyWorkflow } from '@/api/workflow'       
+import { indexProgramTeamRole, showProgramTeamRole, storeProgramTeamRole, updateProgramTeamRole,
+         destroyProgramTeamRole } from '@/api/ProgramTeamRole'
 
 
 import ProgramBasic from '@/components/ProgramBasic'
@@ -60,94 +49,86 @@ export default {
   components: { WorkflowItem, ProgramTeamRole,SoftwareInfo,Contact,ProgramBasic},
 
   props:{
-    propStep:Array,
     propProgram: Object,
     propVisible:Boolean,
     propSelection:Object,
-    propDialogStatus:String
+    propDialogStatus:String,
+    propProperty:String
   },
   data() {
     return {
       active:0,
-      activeName:'program-edit',
       textMap: {
         update: '更新',
         create: '创建'
       },
-      steps:new Number(),
       programItem:new Object(),
-      programChildren:['programBasic','contact','softwareInfo','workflow','programTeamRole'],
-      create_step:['项目的信息','联系人配置','被测件信息','工作流配置','项目组配置']
+      data:{
+        programBasic:null,
+        contact:null,
+        softwareInfo:null,
+        programTeamRole:null,
+        workflow:null
+      },
+      requestStoreArray:{
+        programBasic:storeProgram,
+        contact:storeContact,
+        softwareInfo:storeSoftwareInfo,
+        workflow:storeWorkflow,
+        programTeamRole:storeProgramTeamRole
+      },
+      requestUpdateArray:{
+        programBasic:updateProgram,
+        contact:updateContact,
+        softwareInfo:updateSoftwareInfo,
+        workflow:updateWorkflow,
+        programTeamRole:updateProgramTeamRole
+      }
+      
+
       
     }
   },
    methods: {
-      next(){
-        this.active=this.active+1;
-      },
-      previous(){
-        if(this.active!=0){
-          this.active=this.active-1
-        }
-      },
-      confirm(){
-        this.$emit('close-dia');
-        if(this.propDialogStatus=='update'){
-          this.updateProgram()
-        }else{
-          this.createProgram()
-        }
-      },
+
       onClose(){
         this.$emit('close-dia');
       },
       onOpen(){
-        this.active=0;
-        this.steps=this.propStep.lastIndexOf(true)+1;
         this.programItem=this.propProgram;
-        for(var i=this.steps;i<this.propStep.length;i++){
-          this.programItem[this.programChildren[i]]=undefined;
-        }
-
-        if(this.propDialogStatus=='update'){
-          
-            showPreProgram(this.propProgram.programBasic.id).then(response => {
-
-              var data=response.data.items
-              for (var key in data) {
-                  if (data.hasOwnProperty(key)) {           
-                      this.programItem[key]=data[key];
-                  }
-              }
-
-            }).catch(err => {
-              console.log(err)
-            })
-          }
 
       },
+      confirm(){
+        this.$emit('close-dia');
+        if(this.propDialogStatus=='update'){
+          this.updateProgram();
+        }else{
+          this.createProgram();
+        }
+      },
       createProgram() {
-          storePreProgram(this.programItem).then((response) => {
-            var data = Object.assign({}, this.programItem.programBasic) 
-            this.create_step.splice(this.steps,this.propStep.length-this.steps);
-            data.create_step=this.create_step;
-            data.id=response.data.id
-            var updateData={data:data,type:'store'};
+          let request_data={
+            programId:this.programItem.programBasic.id,
+            data:this.data[this.propProperty]
+          }
+          this.requestStoreArray[this.propProperty](request_data).then((response) => {
+            this.programItem[this.propProperty]=response.data.items
+            var updateData={data:this.programItem[this.propProperty],type:this.propProperty};
             this.$emit('update-list',updateData)
 
         })
     },
       updateProgram() {
-            updatePreProgram(this.programItem).then((response) => {
-              var data = Object.assign({}, this.programItem.programBasic)
-              this.create_step.splice(this.steps,this.propStep.length-this.steps);
-              data.create_step=this.create_step;
-              var updateData={data:data,type:'update'};
+          let request_data=this.data[this.propProperty]
+          this.requestUpdateArray[this.propProperty](request_data).then((response) => {
+            var updateData={data:this.programItem[this.propProperty],type:this.propProperty};
               this.$emit('update-list',updateData)
 
-
-          })
+        })
       },
+      OnDataChange(args){
+        this.data[args.type]=args.data;
+      }
     }
 
 }

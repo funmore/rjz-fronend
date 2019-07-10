@@ -6,8 +6,8 @@
     <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" style="width: 180px;" class="filter-item" placeholder="项目名称(支持模糊查询)" v-model="listQuery.title">
       </el-input>
-      <el-select clearable style="width: 90px" class="filter-item" v-model="listQuery.model" placeholder="按型号" @keyup.enter.native="handleFilter">
-        <el-option v-for="(item, index) in selection.model" :key="index" :label="item" :value="item">
+      <el-select clearable style="width: 90px" class="filter-item" v-model="listQuery.model_id" placeholder="按型号" @keyup.enter.native="handleFilter">
+        <el-option v-for="(item, index) in selection.model" :key="index" :label="item.model_name" :value="item.id">
         </el-option>
       </el-select>
 
@@ -65,7 +65,7 @@
 
       <el-table-column width="100px" align="center" label="所属型号">
         <template slot-scope="scope">
-          <span>{{scope.row.model}}</span>
+          <span>{{selection.model.find(x=>x.id==scope.row.model_id)==null?null:selection.model.find(x=>x.id==scope.row.model_id).model_name}}</span>
         </template>
       </el-table-column>
 
@@ -90,7 +90,7 @@
       </el-table-column>
 
 
-      <el-table-column align="center" label="操作" width="130px" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="操作" width="330px" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-popover
             placement="top-start"
@@ -111,6 +111,7 @@
               </div>
             <el-button type="danger" slot="reference">配置</el-button>
           </el-popover>
+          <el-button type="primary"  :loading="onProgramStarting" @click="onProgramStart(scope.row)">项目启动</el-button>
         </template>
       </el-table-column>
 
@@ -125,48 +126,32 @@
 
 
   <pre-program  :propVisible="previsible" @pre-completed="onPreCompleted"></pre-program>
-  <program-edit :propStep="program_step" :propDialogStatus="dialogStatus" :propProgram="temp" :propVisible="visible" :propSelection="selection" @close-dia="onCloseDia" @update-list="onUpdateList"></program-edit>
+  <pre-program-edit :propStep="program_step" :propDialogStatus="dialogStatus" :propProgram="temp" :propVisible="visible" :propSelection="selection" @close-dia="onCloseDia" @update-list="onUpdateList"></pre-program-edit>
 
   </div>
 </template>
 
 <script>
-
+import { indexModel} from '@/api/model'
 import { indexPreProgram, showPreProgram, storePreProgram, updatePreProgram,
          destroyPreProgram } from '@/api/preprogram'
+import { indexProgram, showProgram, storeProgram, updateProgram,
+         destroyProgram } from '@/api/program'
 import { indexEmployee } from '@/api/employee'
 
 import WorkflowItem from '@/components/Workflow'
 import SoftwareInfo from '@/components/SoftwareInfo'
 import Contact from '@/components/Contact'
 import ProgramTeamRole from '@/components/ProgramTeamRole'
-import ProgramEdit from '@/components/ProgramEdit'
+import PreProgramEdit from '@/components/PreProgramEdit'
 import PreProgram from './components/TableCom/PreProgram.vue'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils/index.js'
 
-const constModel = ['model1','model2','model3']
-const constProgramType = ['配置项测试','定型测试','回归测试']
-const constClassification = ['机密','秘密','内部']
-const constProgramStage = ['方案','初样','试样','定型']
-const constDevType = ['1类','2类','3类','4类']
-const constProgramSource = ['12所','外所软件']
-
-const constSoftwareType = ['A级','B级','C级','D级']
-const constSoftwareUsage = ['弹上','地面']
-const constCodeLangu = ['C','FPGA','PLC']
-const constComplier = ['神舟IDE','IED2','IED3']
-const constRuntime = ['RUNTIME A','RUNTIME B']
-const constSoftwareCate = ['嵌入','非嵌','FPGA','PLC']
-const constSoftwareSubCate = ['飞控','信息处理','组合导航','CPLD','PLC','伺服','综合控制']
-const constCpuType = ['cpu1','cpu2','cpu3','cpu4']
-const constSize = ['大','中','小']
-
-
 
 export default {
   name: 'complexTable',
-  components: { WorkflowItem, ProgramTeamRole,SoftwareInfo,Contact,ProgramEdit,PreProgram },
+  components: { WorkflowItem, ProgramTeamRole,SoftwareInfo,Contact,PreProgramEdit,PreProgram },
   directives: {
     waves
   },
@@ -174,24 +159,24 @@ export default {
     return {
       
       selection:{
-        model:constModel,
-        programType:constProgramType,
-        classification:constClassification,
-        programStage:constProgramStage,
-        programSource:constProgramSource,
-        devType:constDevType,
+        model:['model1','model2','model3'],
+        programType:['配置项测试','定型测试','回归测试'],
+        classification: ['机密','秘密','内部'],
+        programStage:['方案','初样','试样','定型'],
+        devType:['1类','2类','3类','4类'],
+        programSource:['12所','外所软件'],
         managers:[],
         type:['运载','战术','战略','空军','海军'],
 
-        softwareType:constSoftwareType,
-        softwareUsage:constSoftwareUsage,
-        codeLangu:constCodeLangu,
-        complier:constComplier,
-        runtime:constRuntime,
-        softwareCate:constSoftwareCate,
-        softwareSubCate:constSoftwareSubCate,
-        cpuType:constCpuType,
-        size:constSize
+        softwareType:['A级','B级','C级','D级'],
+        softwareUsage: ['弹上','地面'],
+        codeLangu:['C','FPGA','PLC'],
+        complier: ['神舟IDE','IED2','IED3'],
+        runtime: ['RUNTIME A','RUNTIME B'],
+        softwareCate: ['嵌入','非嵌','FPGA','PLC'],
+        softwareSubCate: ['飞控','信息处理','组合导航','CPLD','PLC','伺服','综合控制'],
+        cpuType: ['cpu1','cpu2','cpu3','cpu4'],
+        size: ['大','中','小']
       },
       listLoading: true,
       visible:false,
@@ -207,7 +192,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        model:undefined,   //型号
+        model_id:undefined,   //型号
         program_type:undefined,
         manager:undefined,
         classification:undefined,
@@ -295,7 +280,8 @@ export default {
         create: '创建'
       },  
 
-      downloadLoading: false
+      downloadLoading: false,
+      onProgramStarting:false,
     }
   },
   filters: {
@@ -312,10 +298,24 @@ export default {
   },
   created() {
     this.getList()
-    this.getEmployeePrincal()
+    this.getEmployeeMananger()
+    this.getModel()
   },
   methods: {
-    getEmployeePrincal(){
+
+    
+    getModel(){
+      var listQuery={
+          isAll:true
+        };
+        indexModel(listQuery).then(response => {
+        var data=response.data
+        if(data.total!=0){
+          this.selection.model = Object.values(data.items)
+        }
+      })
+    },
+    getEmployeeMananger(){
         var listQuery={
           checkPM:true
         }
@@ -427,7 +427,7 @@ export default {
           {role:'质量保证人员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false}
         ],
 
-        step:0 
+        step:0,
       }
     },
     handleProgramCreate() {
@@ -619,6 +619,29 @@ export default {
       }else{
         this.program_step=[true,true,false,false,false]
       }
+    },
+    onProgramStart(row){
+        this.onProgramStarting=true;
+        row.state="项目进行中";
+        let data=row;
+        updateProgram(data).then(response => {
+        if(response.data.isOkay==true){
+          for (const v of this.list) {
+                  if (v.id === row.id) {
+                    const index = this.list.indexOf(v)
+                    this.list.splice(index, 1)
+                    break
+                  }
+                }
+                this.$notify({
+                  title: '项目已启动',
+                  message: '请在项目中查看此项目',
+                  type: 'success',
+                  duration: 2000
+                })
+        }
+        this.onProgramStarting=false;
+      })
     }
   }
 }

@@ -12,7 +12,7 @@
             <el-input-number 
             v-if="item.type==='数字'"
             v-model="request_data[item.id]"
-            @input="handleInput($event, item.id)"
+            @input="handleInputNumber($event, item.id)"
             v-bind="item"  
             :min="item.min"
             :max="item.max"
@@ -47,10 +47,14 @@
                   {{valid_item}}
                    </el-checkbox>
             </el-checkbox-group>
-            
-          <div v-else>
-            <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="program.name"></el-input>
-          </div>
+
+            <el-input 
+                  v-else-if="item.type=='单行文字'"
+                  v-model="request_data[item.id]"
+                  @input="handleInput($event, item.id)"
+                  type="textarea" :autosize="{ minRows: 2, maxRows: 4}" 
+                  placeholder="请输入内容"></el-input>
+
         </el-form-item>
 
         <el-form-item   label="操作" >
@@ -132,13 +136,15 @@ export default {
           this.request_data[value.id]=value.valid_value[0]
         }else if(value.type=='多项选择'){
           value.valid_value=value.valid_value.split('|')
-          this.request_data[value.id]=value.valid_value[0];
+          this.request_data[value.id]=[value.valid_value[0]];
+        }else if(value.type=='单行文字'){
+          this.request_data[value.id]='';
         }
       });
      },
-    handleInput(val, key) {
+    handleInputNumber(val, key) {
       this.request_data[key]=val;
-    this.$forceUpdate(); 
+      this.$forceUpdate(); 
     },
     handleOneChange(val,key){
       this.request_data[key]=val;
@@ -147,6 +153,10 @@ export default {
     handleMutiChange(val,key){
       this.$forceUpdate(); 
      },
+     handleInput(val, key) {
+      this.request_data[key]=val;
+      this.$forceUpdate(); 
+    },
      OnPost(){
       var request_data={
         poll_id:this.id,

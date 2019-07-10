@@ -102,8 +102,26 @@ export default {
         }
     }
   },
-
+  watch:{
+    model: {
+        handler:function(newVa,oldVa){
+          this.changeFatherData()
+        },
+        deep:true
+    },
+  },
   created() {
+    if(this.propProgramTeamRole==null){
+      this.model.programTeamRole=[
+          {role:'项目组长',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
+          {role:'项目组员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
+          {role:'监督人员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
+          {role:'配置管理员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
+          {role:'质量保证人员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false}
+        ]
+    }else{
+      this.model.programTeamRole=this.propProgramTeamRole
+    }
     this.getList()
   },
 
@@ -156,8 +174,11 @@ export default {
     createProgramPeople(){
       var index=this.model.programTeamRole.length-4;
       this.model.programTeamRole.splice(index,0,{role:'项目组员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false});
+    },
+    changeFatherData(){
+      let data={data:this.model.programTeamRole,type:'programTeamRole'}
+      this.$emit('dataChange',data)
     }
-
 
  }
     

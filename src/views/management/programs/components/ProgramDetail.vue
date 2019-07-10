@@ -1,12 +1,20 @@
 <template>
   <div class="createPost-container">
     <el-row>
-      <el-card class="box-card" >
+      <el-card class="box-card" v-if="items.workflow!=null">
         <div slot="header" class="clearfix">
           <span>{{items.workflow.workflow_name}}</span>
         </div>
         <div style="margin-bottom:50px;">
           <workflow-edit ref="WorkflowEdit" :propWorkflow="items.workflow" :propIsLeader="is_leader" v-on:doChangeWorkflow="onChangeWorkflow($event)"></workflow-edit>
+        </div>
+      </el-card>
+      <el-card class="box-card" v-else>
+        <div slot="header" class="clearfix">
+          <span>流程尚未配置</span>
+        </div>
+        <div style="margin-bottom:50px;">
+          <el-button type="primary" @click="onConfigure('workflow','create')">点击配置</el-button>
         </div>
       </el-card>
     </el-row>
@@ -17,30 +25,46 @@
           <span>项目基本信息</span>
         </div>
         <div style="margin-bottom:50px;">
-          <program-basic :propProgramBasic="items.programBasic"></program-basic>
+          <program-basic :propProgramBasic="items.programBasic"  :key="updatedKey.programBasic" v-on:dochange="onConfigure('programBasic','update')"></program-basic>
         </div>
       </el-card>
     </el-row>
 
     <el-row>
-      <el-card class="box-card">
+      <el-card class="box-card" v-if="items.programTeamRole!=null">
         <div slot="header" class="clearfix">
           <span>项目组信息</span>
         </div>
         <div style="margin-bottom:50px;">
-            <team-member-detail propActiveName="0"  :propProgramTeamRole="items.programTeamRole" :propWorkflowArray="items.workflow.workflowArray"  :propIsLeader="is_leader"></team-member-detail>
+            <team-member-detail propActiveName="0"  :propProgramTeamRole="items.programTeamRole" :propWorkflowArray="items.workflow==null?null:items.workflow.workflowArray"  :propIsLeader="is_leader"></team-member-detail>
+        </div>
+      </el-card>
+      <el-card class="box-card" v-else>
+        <div slot="header" class="clearfix">
+          <span>项目组尚未配置</span>
+        </div>
+        <div style="margin-bottom:50px;">
+          <el-button type="primary" @click="onConfigure('programTeamRole','create')">点击配置</el-button>
         </div>
       </el-card>
     </el-row>
 
     <el-row>
-      <el-card class="box-card">
+      <el-card class="box-card" v-if="items.softwareInfo!=null">
         <div slot="header" class="clearfix">
           <span>被测件信息</span>
         </div>
         <div style="margin-bottom:50px;">
-          <software-info-detail :SoftwareInfo="items.softwareInfo" v-on:dochange="changeit($event)"></software-info-detail>
+          <software-info-detail :propSoftwareInfo="items.softwareInfo" :key="updatedKey.softwareInfo" v-on:dochange="onConfigure('softwareInfo','update')"></software-info-detail>
 
+        </div>
+      </el-card>
+      <el-card class="box-card" v-else>
+        <div slot="header" class="clearfix">
+          <span>被测件信息未配置</span>
+        </div>
+        <div style="margin-bottom:50px;">
+          <el-button type="primary" @click="onConfigure('softwareInfo','create')">点击配置</el-button>
         </div>
       </el-card>
     </el-row>
@@ -100,9 +124,7 @@
 
       <!-- 各种forms -->
 
-      <!-- 被测件信息form start -->
-      <software-info-edit  :visible="dialogFormVisible" :temp="temp"  v-on:closeVisible="doCloseVisible"></software-info-edit>
-    <!-- 被测件信息form end -->
+     <program-edit :propProperty="property" :propDialogStatus="dialogStatus" :propProgram="items" :propVisible="visible" :propSelection="selection" @close-dia="onCloseDia" @update-list="onUpdateList"></program-edit>
 
 
       <!-- 各种forms  end-->
@@ -113,6 +135,9 @@
 
 import { indexManagementProgram, showManagementProgram, storeManagementProgram, updateManagementProgram,
          destroyManagementProgram } from '@/api/management-program'
+import { indexModel} from '@/api/model'
+import { indexEmployee } from '@/api/employee'
+
 
 import Tinymce from '@/components/Tinymce'
 import Upload from '@/components/Upload/singleImage3'
@@ -128,18 +153,18 @@ import { CommentDropdown, PlatformDropdown, SourceUrlDropdown } from './Dropdown
 import Kanban from './Kanban4Rjz'
 import TeamMemberDetail from './ChildrenCom/TeamMemberDetail'
 import SoftwareInfoDetail from './ChildrenCom/SoftwareInfoDetail'
-import SoftwareInfoEdit from './ChildrenCom/SoftwareInfoEdit'
 import ProgramBasic from './ChildrenCom/ProgramBasic'
 import WorkflowEdit from './ChildrenCom/WorkflowEdit'
 import FileProgramDetail from './ChildrenCom/FileProgramDetail'
 import FileReviewDetail from './ChildrenCom/FileReviewDetail'
+import ProgramEdit from '@/components/ProgramEdit'
 
 
 
 
 export default {
   name: 'ProgramDetail',
-  components: { Tinymce, MDinput, Upload, Multiselect, Sticky, Warning, CommentDropdown, PlatformDropdown, SourceUrlDropdown, Kanban,TeamMemberDetail,SoftwareInfoDetail,SoftwareInfoEdit,ProgramBasic, WorkflowEdit,FileProgramDetail,FileReviewDetail },
+  components: { Tinymce, MDinput, Upload, Multiselect, Sticky, Warning, CommentDropdown, PlatformDropdown, SourceUrlDropdown, Kanban,TeamMemberDetail,SoftwareInfoDetail,ProgramBasic, WorkflowEdit,FileProgramDetail,FileReviewDetail,ProgramEdit },
   props: {
     isEdit: {
       type: Boolean,
@@ -174,6 +199,33 @@ export default {
       }
     }
     return {
+      updatedKey:{
+        softwareInfo:1,
+        programBasic:1,
+        contact:1,
+        programTeamRole:1,
+        workflow:1 
+      },
+      selection:{
+        model:['model1','model2','model3'],
+        programType:['配置项测试','定型测试','回归测试'],
+        classification: ['机密','秘密','内部'],
+        programStage:['方案','初样','试样','定型'],
+        devType:['1类','2类','3类','4类'],
+        programSource:['12所','外所软件'],
+        managers:[],
+        type:['运载','战术','战略','空军','海军'],
+
+        softwareType:['A级','B级','C级','D级'],
+        softwareUsage: ['弹上','地面'],
+        codeLangu:['C','FPGA','PLC'],
+        complier: ['神舟IDE','IED2','IED3'],
+        runtime: ['RUNTIME A','RUNTIME B'],
+        softwareCate: ['嵌入','非嵌','FPGA','PLC'],
+        softwareSubCate: ['飞控','信息处理','组合导航','CPLD','PLC','伺服','综合控制'],
+        cpuType: ['cpu1','cpu2','cpu3','cpu4'],
+        size: ['大','中','小']
+      },
       activeName:"1",
       tableKey:0,
       loading: false,
@@ -186,11 +238,6 @@ export default {
       },
       is_leader:false,
       active:7,
-      crews:[
-        {id:1,name:'wanghc',role:'0',part:'导航测试',progress:'50%',notes:'需要更多人手！'},
-        {id:2,name:'yangjr',role:'1',part:'模型测试',progress:'30%',notes:''},
-        {id:3,name:'fanzq',role:'1',part:'环境搭建',progress:'40%',notes:''}
-          ],
       items:null,
       softwareInfo: [{
         id:1,
@@ -222,26 +269,12 @@ export default {
         options: {
         group: 'mission'
       },
-      list1: [
-        { content:'dfad',index: 'Mission', id: 1 },
-        { content:'dfad',index: 'Mission', id: 2 },
-        { content:'dfad',index: 'Mission', id: 3 },
-        { content:'dfad',index: 'Mission', id: 4 }
-      ]
-      ,
-      list2: [
-        { content:'dfad',index: 'Mission', id: 5 },
-        { content:'dfad',index: 'Mission', id: 6 },
-        { content:'dfad',index: 'Mission', id: 7 }
-      ],
-      list3: [
-        { content:'dfad',index: 'Mission', id: 8 },
-        { content:'dfad',index: 'Mission', id: 9 },
-        { content:'dfad',index: 'Mission', id: 10 }
-      ],
       assignForm: {
       files: []
-      }
+      },
+      dialogStatus: '',
+      visible:false,
+      property:''
 
     }
   },
@@ -262,8 +295,31 @@ export default {
       this.showProgram(id)
     } else {
     }
+    this.getModel()
+    this.getEmployeePrincal()
+
   },
   methods: {
+    getEmployeePrincal(){
+        var listQuery={
+          checkPM:true
+        }
+        indexEmployee(listQuery).then(response => {
+        var data=response.data
+        this.selection.managers = data.items
+      })
+    },
+     getModel(){
+      var listQuery={
+          isAll:true
+        };
+        indexModel(listQuery).then(response => {
+        var data=response.data
+        if(data.total!=0){
+          this.selection.model = Object.values(data.items)
+        }
+      })
+    },
     showProgram(id) {
       const loading = this.$loading({
           lock: true,
@@ -326,25 +382,6 @@ export default {
     },
     
 
-    //被测件信息form内点击确认  如果是创建新信息
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.workers = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
     //被测件信息form内点击确认  如果是更新信息
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
@@ -399,8 +436,27 @@ export default {
       },
       beforeRemove(file, fileList) {
         return this.$confirm(`确定移除 ${ file.name }？`);
-      }
+      },
       //上传控件提醒函数 end
+
+      onCloseDia(){
+      this.visible=false;
+    },
+      onUpdateList(args){
+        this.items[args.type]=args.data;
+        this.updatedKey[args.type]=this.updatedKey[args.type]+1;
+        this.$notify({
+              title: '成功',
+              message: '更新成功',
+              type: 'success',
+              duration: 2000
+            })
+    },
+    onConfigure(property,state){
+      this.visible=true;
+      this.dialogStatus=state;
+      this.property=property;
+    }
 
   }
 }

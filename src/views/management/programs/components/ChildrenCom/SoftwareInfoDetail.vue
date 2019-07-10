@@ -105,18 +105,24 @@
        tableKey:0,
 
 
+       SoftwareInfo:'',
 
-      temp:{
-
-      }
       };
     },
     props:{
-        SoftwareInfo:Array
+        propSoftwareInfo:Array
     },
     created(){
-      var a =1;
+      this.SoftwareInfo=this.propSoftwareInfo
     },
+    // watch:{
+    //   propSoftwareInfo: {
+    //     handler:function(newVa,oldVa){
+    //       this.SoftwareInfo=newVa;
+    //     },
+    //     deep:true
+    // },
+    // },
     methods: {
         handleUpdate(row){
           this.$emit('dochange',row)

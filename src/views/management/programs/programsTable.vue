@@ -6,8 +6,8 @@
     <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" style="width: 180px;" class="filter-item" placeholder="项目名称(支持模糊查询)" v-model="listQuery.title">
       </el-input>
-      <el-select clearable style="width: 90px" class="filter-item" v-model="listQuery.model" placeholder="按型号" @keyup.enter.native="handleFilter">
-        <el-option v-for="(item, index) in selection.model" :key="index" :label="item" :value="item">
+      <el-select clearable style="width: 90px" class="filter-item" v-model="listQuery.model_id" placeholder="按型号" @keyup.enter.native="handleFilter">
+        <el-option v-for="(item, index) in selection.model" :key="index" :label="item.model_name" :value="item.id">
         </el-option>
       </el-select>
 
@@ -41,75 +41,75 @@
       </el-table-column>
 
       <el-table-column width="80px" align="center" label="项目名称">
-        <template slot-scope="scope">
-          <span>{{scope.row.name}}</span>
+        <template slot-scope="{row}">
+          <span>{{row.name}}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="80px" align="center" label="项目标识">
-        <template slot-scope="scope">
-          <span>{{scope.row.program_identity}}</span>
+        <template slot-scope="{row}">
+          <span>{{row.program_identity}}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="80px" align="center" label="项目状态">
-        <template slot-scope="scope">
-          <span>{{scope.row.workflow_state}}</span>
+        <template slot-scope="{row}">
+          <span>{{row.state}}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="100px" align="center" label="待解决问题">
-        <template slot-scope="scope">
-          <span>{{scope.row.issue}}</span>
+        <template slot-scope="{row}">
+          <span>{{row.issue}}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="100px" align="center" label="密级">
-        <template slot-scope="scope">
-          <span>{{scope.row.classification}}</span>
+        <template slot-scope="{row}">
+          <span>{{row.classification}}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="100px" align="center" label="测试类型">
-        <template slot-scope="scope">
-          <span>{{scope.row.program_type}}</span>
+        <template slot-scope="{row}">
+          <span>{{row.program_type}}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="100px" align="center" label="所属型号">
-        <template slot-scope="scope">
-          <span>{{scope.row.model}}</span>
+        <template slot-scope="{row}">
+          <span>{{selection.model.find(x=>x.id==row.model_id).model_name}}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="100px" align="center" label="型号负责人">
-        <template slot-scope="scope">
-          <span>{{scope.row.manager_name}}</span>
+        <template slot-scope="{row}">
+          <span>{{row.manager.name}}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="100px" align="center" label="项目组长">
-        <template slot-scope="scope">
-          <span>{{scope.row.program_leader}}</span>
+        <template slot-scope="{row}">
+          <span>{{row.program_leader}}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="130px" align="center" label="项目组员">
-        <template slot-scope="scope">
-          <span>{{scope.row.program_team_strict}}</span>
+        <template slot-scope="{row}">
+          <span>{{row.program_team_strict}}</span>
         </template>
       </el-table-column>
 
 
       <el-table-column width="140px" align="center" label="计划开始时间">
-        <template slot-scope="scope">
-          <span>{{scope.row.plan_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+        <template slot-scope="{row}">
+          <span>{{row.plan_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="140px" align="center" label="计划结束时间">
-        <template slot-scope="scope">
-          <span>{{scope.row.plan_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+        <template slot-scope="{row}">
+          <span>{{row.plan_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
         </template>
       </el-table-column>
 
@@ -117,8 +117,8 @@
 
 
       <el-table-column align="center" label="操作" width="130px" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-            <router-link :to="'/management/programs/edit/'+scope.row.id"> 
+        <template slot-scope="{row}">
+            <router-link :to="'/management/programs/edit/'+row.id"> 
             <el-button type="primary" size="small" icon="el-icon-edit">打开</el-button>
           </router-link>
         </template>
@@ -141,6 +141,7 @@
 </template>
 
 <script>
+  import { indexModel} from '@/api/model'
 import { indexEmployee } from '@/api/employee'
 
 import { indexManagementProgram, showManagementProgram, storeManagementProgram, updateManagementProgram,
@@ -216,7 +217,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        model:undefined,   //型号
+        model_id:undefined,   //型号
         program_type:undefined,
         manager:undefined,
         classification:undefined,
@@ -328,8 +329,20 @@ export default {
   created() {
     this.getList()
     this.getEmployeePrincal()
+    this.getModel()
   },
   methods: {
+    getModel(){
+      var listQuery={
+          isAll:true
+        };
+        indexModel(listQuery).then(response => {
+        var data=response.data
+        if(data.total!=0){
+          this.selection.model = Object.values(data.items)
+        }
+      })
+    },
     getList() {
 
       this.listLoading = true;
@@ -350,7 +363,7 @@ export default {
         }
         indexEmployee(listQuery).then(response => {
         var data=response.data
-        this.managers = data.items
+        this.selection.managers = data.items
       })
     },
     handleFilter() {

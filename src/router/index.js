@@ -107,8 +107,20 @@ export const constantRouterMap = [
       {
         path: 'preprograms',
         name: 'preprograms',
-        component: () => import('@/views/management/preprograms/programsTable'),
+        component: () => import('@/views/management/preprograms/preProgramsTable'),
         meta: { title: '预备项目', icon: 'table' }
+      },
+      {
+        path: 'batchimport',
+        name: 'batchimport',
+        component: () => import('@/views/management/batchimport/importTable'),
+        meta: { title: '批量导入', icon: 'table' }
+      },
+      {
+        path: 'import',
+        name: 'import',
+        component: () => import('@/views/management/import/importProgram'),
+        meta: { title: '项目通知单导入', icon: 'table' }
       },
       //employees
       {
@@ -116,6 +128,12 @@ export const constantRouterMap = [
         name: 'employees',
         component: () => import('@/views/management/employees/employeesTable'),
         meta: { title: '用户管理', icon: 'table' }
+      },
+      {
+        path: 'model',
+        name: 'model',
+        component: () => import('@/views/model/model'),
+        meta: { title: '型号名称管理', icon: 'table' }
       },
 
 

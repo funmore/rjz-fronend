@@ -176,13 +176,43 @@ export default {
       }
     }
   },
+  watch:{
+    softwareInfo: {
+        handler:function(newVa,oldVa){
+          this.changeFatherData()
+        },
+        deep:true
+    },
+  },
   created(){
-    if(this.propSoftwareInfo.length!=0)
-    this.softwareInfo=this.propSoftwareInfo[0];
+    if(this.propSoftwareInfo==null||this.propSoftwareInfo.length==0){
+      this.softwareInfo={
+          name:'',
+          version_id:new Number(),
+          size:'',
+          reduced_code_size:'',
+          reduced_reason:'',
+          software_type:'',
+          software_usage:'',
+          code_langu:'',
+          complier:'',
+          runtime:'',
+          cpu_type:'',
+          software_cate:'',
+          software_sub_cate:''
+        }
+    }else{
+      this.softwareInfo=this.propSoftwareInfo[0]
+    }
+
   },
    methods: {
-    
+      changeFatherData(){
+      let data={data:this.softwareInfo,type:'softwareInfo'}
+      this.$emit('dataChange',data)
+    }
   }
+
 
 }
 </script>
