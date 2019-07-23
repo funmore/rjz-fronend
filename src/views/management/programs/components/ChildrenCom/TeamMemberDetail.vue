@@ -38,7 +38,7 @@
                   </el-form>
 
                   <keep-alive>
-                  <team-member-note ref="teamMemberNote" :propTeamMemberId="item.id" :propWorkflowArray="propWorkflowArray"  :propPtrNote="ptr_note"  :propIsLeader="propIsLeader"></team-member-note>
+                  <team-member-task ref="teamMemberNote" :propTeamMemberId="item.id" :propWorkflowArray="propWorkflowArray"  :propPtrNote="ptr_note"  :propRole="propRole"></team-member-task>
                   </keep-alive>
               </el-tab-pane>
             </el-tabs>
@@ -46,13 +46,13 @@
 
 </template>
 <script>
-  import TeamMemberNote from './TeamMemberNote'
+  import TeamMemberTask from './TeamMemberTask'
 
   import { indexProgramTeamRole, showProgramTeamRole, storeProgramTeamRole, updateProgramTeamRole,
          destroyProgramTeamRole } from '@/api/programteamrole'
 
   export default {
-      components: {TeamMemberNote },
+      components: {TeamMemberTask },
     data() {
       return {
         programTeamRole:this.propProgramTeamRole,
@@ -64,7 +64,7 @@
         propActiveName:String,
         propProgramTeamRole:Array,
         propWorkflowArray:Array,
-        propIsLeader:Boolean
+        propRole:Array
     },
     computed:{
       //闭包实现传参数

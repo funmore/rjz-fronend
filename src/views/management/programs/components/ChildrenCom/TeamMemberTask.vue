@@ -5,7 +5,7 @@
             <el-option v-for="item in workflowArray" :key="item.array_index" :label="'截止'+item.name" :value="item.id">
             </el-option>
           </el-select>
-          <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit" v-if="propIsLeader">新增任务</el-button>
+          <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit" v-if="isEditable">新增任务</el-button>
         </div>
 
 
@@ -17,7 +17,7 @@
          <el-table-column type="expand" >
               <template slot-scope="props">
                 <el-form label-position="left" inline class="demo-table-expand">
-                                    <daily-note  :propPtrNoteId="props.row.id" :propIsLeader="propIsLeader" ></daily-note>
+                                    <daily-note  :propPtrNoteId="props.row.id" :propIsLeader="isEditable" ></daily-note>
                 </el-form>
       
 
@@ -80,13 +80,13 @@
               </template>
             </el-table-column>
 
-            <el-table-column width="120px" align="center" label="工作系数" v-if="propIsLeader">
+            <el-table-column width="120px" align="center" label="工作系数" v-if="isEditable">
               <template slot-scope="scope">
                 <span >{{scope.row.ratio}}</span>
               </template>
             </el-table-column>
 
-            <el-table-column width="120px" align="center" label="任务评分" v-if="propIsLeader">
+            <el-table-column width="120px" align="center" label="任务评分" v-if="isEditable">
               <template slot-scope="scope">
                 <span >{{scope.row.score}}</span>
               </template>
@@ -142,12 +142,12 @@
                 </el-input>
               </el-form-item>
 
-              <el-form-item label="工作系数" v-if="propIsLeader">
+              <el-form-item label="工作系数" v-if="isEditable">
                 <el-input-number v-model="temp.ratio" :min="1" :max="10" label="描述文字"></el-input-number>
               </el-form-item>
 
 
-              <el-form-item label="任务评分" v-if="propIsLeader">
+              <el-form-item label="任务评分" v-if="isEditable">
                 <el-rate v-model="temp.score" show-score ></el-rate>
               </el-form-item>
 
@@ -206,20 +206,28 @@
         textMap: {
           update: '更新',
           create: '创建'
-        }
+        },
+        isEditable:false
+
       };
     },
     props:{
         propTeamMemberId:Number,
         propWorkflowArray:Array,
-        propIsLeader:Boolean
+        propRole:Array
     },
 
     created(){
 
     },
+    mounted(){
+      this.isEditable=this.checkPermission(this.propRole);
+    },
 
     methods: {
+    checkPermission(propRole){
+      return propRole.includes("项目组长");
+    },
     getNote(id){
       this.listLoading = true;
       this.listQuery.id=this.propTeamMemberId;

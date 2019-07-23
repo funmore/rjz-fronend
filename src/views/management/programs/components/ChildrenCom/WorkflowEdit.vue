@@ -1,7 +1,12 @@
  <template>
 <div>
-      <el-steps :active="workflow.active" finish-status="success" >
-        <el-step v-for="index in workflow.workflowArray.length" :title="workflow.workflowArray[index-1].name" :description="workflow.workflowArray[index-1].plan_day" icon="el-icon-plus"></el-step>
+      <el-steps :active="workflow.active"  >
+       <el-step v-for="index in workflow.workflowArray.length"  :title="workflow.workflowArray[index-1].name" :description="workflow.workflowArray[index-1].plan_day"  :status="workflow.workflowArray[index-1]|statusComputed(workflow)"   @click.native="updateChildData(index)">
+             <el-badge :value="workflow.workflowArray[index-1].undo_task_count" class="item" slot="icon">
+                <i v-if="workflow.workflowArray[index-1].undo_task_count==0" class="el-icon-plus"></i>
+                <i v-else class="el-icon-close"></i>
+              </el-badge>
+        </el-step>
       </el-steps>
       <el-button-group>
           <el-button type="primary" icon="el-icon-arrow-left" @click="previous">项目回滚</el-button>
@@ -10,8 +15,11 @@
 
       <el-tabs v-model="active" >
 
-            <el-tab-pane label="待解决问题汇总" name="note">
-                <program-note ref="ProgramNote"  :propNodeId="workflow.workflowArray[workflow.active].id" :propIsLeader="propIsLeader"></program-note>
+            <el-tab-pane label="当前节点任务" name="task">
+                <node-task ref="NodeTask"  :propNodeId="workflow.workflowArray[workflow.active].id" :propRole="propRole"></node-task>
+            </el-tab-pane>
+            <el-tab-pane label="当前节点问题汇总" name="note">
+                <node-note ref="NodeNote"  :propNodeId="workflow.workflowArray[workflow.active].id" :propRole="propRole"></node-note>
             </el-tab-pane>
 
             <el-tab-pane label="工作流操作记录" name="log">
@@ -72,16 +80,18 @@
 
   import { indexWorkflowNote, showWorkflowNote, storeWorkflowNote, updateWorkflowNote,
          destroyWorkflowNote } from '@/api/Workflownote'
-  import ProgramNote from './ProgramNote'
+  import NodeNote from './NodeNote'
+  import NodeTask from './NodeTask'
 
   export default {
-    components: { ProgramNote },
+    components: { NodeNote,NodeTask },
     data() {
       return {
         reverse:false,
         listLoading:true,
 
         workflow:'',
+        node_id:null,
 
         visible:false,
         rules:{},
@@ -90,13 +100,28 @@
         listQuery:{
           phaseCollection:''
         },
-        active:'note'
+        active:'task'
 
       };
     },
     props:{
         propWorkflow:Object,
-        propIsLeader:Boolean
+        propRole:Array
+    },
+    filters: {
+      statusComputed(node,workflow){
+              if(node.array_index<workflow.active){
+                if(node.undo_task_count!=0){
+                  return 'wait'   //有任务没解决
+                }else{
+                  return 'success'  //全部任务解决了
+                }
+              }else if(node.array_index==workflow.active){
+                return 'process'   //当前状态
+              }else{
+                return ''          //未到达状态
+              }
+     }
     },
     created(){
           this.workflow=this.propWorkflow;
@@ -106,9 +131,16 @@
     computed: {
     to_node_name() {
       return     this.workflow.workflowArray.find( item => item.id === this.temp.to_node_id ).name
-     }
+     },
+
    },
+
     methods: {
+      updateChildData(index){
+        this.$refs.NodeNote.getNodeNote(this.workflow.workflowArray[index-1].id);
+        this.$refs.NodeTask.getNodeTask(this.workflow.workflowArray[index-1].id);
+      },
+
       next() {
         if(this.workflow.active==this.workflow.workflowArray.length-1){
                       const h = this.$createElement;

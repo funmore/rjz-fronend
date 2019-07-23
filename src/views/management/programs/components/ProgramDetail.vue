@@ -6,7 +6,7 @@
           <span>{{items.workflow.workflow_name}}</span>
         </div>
         <div style="margin-bottom:50px;">
-          <workflow-edit ref="WorkflowEdit" :propWorkflow="items.workflow" :propIsLeader="is_leader" v-on:doChangeWorkflow="onChangeWorkflow($event)"></workflow-edit>
+          <workflow-edit ref="WorkflowEdit" :propWorkflow="items.workflow" :propRole="program_role" v-on:doChangeWorkflow="onChangeWorkflow($event)"></workflow-edit>
         </div>
       </el-card>
       <el-card class="box-card" v-else>
@@ -36,7 +36,7 @@
           <span>项目组信息</span>
         </div>
         <div style="margin-bottom:50px;">
-            <team-member-detail propActiveName="0"  :propProgramTeamRole="items.programTeamRole" :propWorkflowArray="items.workflow==null?null:items.workflow.workflowArray"  :propIsLeader="is_leader"></team-member-detail>
+            <team-member-detail propActiveName="0"  :propProgramTeamRole="items.programTeamRole" :propWorkflowArray="items.workflow==null?null:items.workflow.workflowArray"  :propRole="program_role"></team-member-detail>
         </div>
       </el-card>
       <el-card class="box-card" v-else>
@@ -94,8 +94,7 @@
         </div>
       </el-card>
     </el-row>
-<!--         fileCategory:['任务书','软件需求','软件设计','使用手册','接口协议','被测软件','测试任务书','软件更改'],
-        // fileCategoryOutput:['测试计划','测试说明','测试大纲','测试报告','测试记录'], -->
+
 
     <el-row>
       <el-card class="box-card">
@@ -236,7 +235,7 @@ export default {
         content: [{ validator: validateRequire }],
         source_uri: [{ validator: validateSourceUri, trigger: 'blur' }]
       },
-      is_leader:false,
+      program_role:false,
       active:7,
       items:null,
       softwareInfo: [{
@@ -331,7 +330,7 @@ export default {
 
         var data=response.data
         this.items = data.items
-        this.is_leader=data.is_leader
+        this.program_role=data.program_role
         loading.close();
 
       }).catch(err => {
@@ -416,7 +415,8 @@ export default {
     },
     onChangeWorkflow(d){
       this.items.workflow.active=this.items.workflow.active+d;
-      this.$refs.WorkflowEdit.$refs.ProgramNote.getProgramNote(this.items.workflow.workflowArray[this.items.workflow.active].id);
+      this.$refs.WorkflowEdit.$refs.NodeNote.getNodeNote(this.items.workflow.workflowArray[this.items.workflow.active].id);
+      this.$refs.WorkflowEdit.$refs.NodeTask.getNodeTask(this.items.workflow.workflowArray[this.items.workflow.active].id);
     },
     doCloseVisible(){
       this.dialogFormVisible = false

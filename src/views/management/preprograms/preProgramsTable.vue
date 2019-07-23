@@ -285,15 +285,7 @@ export default {
     }
   },
   filters: {
-    parseTime,
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
+    parseTime
 
   },
   created() {

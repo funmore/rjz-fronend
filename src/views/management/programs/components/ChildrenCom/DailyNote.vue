@@ -60,7 +60,7 @@
 
 
           <el-tab-pane label="延期管理" name="delay">
-              <div class="filter-container" v-if="!propIsLeader">
+              <div class="filter-container" v-if="!isEditable">
                    <el-button class="filter-item" style="margin-left: 10px;" @click="handleDelayCreate" type="primary" icon="el-icon-edit">申请延期</el-button>
               </div>
 
@@ -98,7 +98,7 @@
             </el-table-column>
 
 
-            <el-table-column width="160px" align="center" label="操作" v-if="propIsLeader">
+            <el-table-column width="160px" align="center" label="操作" v-if="isEditable">
               <template slot-scope="scope">
                   <el-button type="primary" size="small" icon="el-icon-edit" @click="handleEditDelay(scope.row)">审核</el-button>
               </template>
@@ -154,12 +154,12 @@
                 </el-input>
               </el-form-item>
 
-              <el-form-item label="调整截止日期" v-if="propIsLeader">
+              <el-form-item label="调整截止日期" v-if="isEditable">
                 <el-date-picker v-model="tempDelay.delay_day" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="Please pick a date">
                 </el-date-picker>
               </el-form-item>
 
-              <el-form-item label="意见"  v-if="propIsLeader">
+              <el-form-item label="意见"  v-if="isEditable">
                   <el-select v-model="tempDelay.is_approved" filterable placeholder="请选择" >
                     <el-option
                       v-for="item in approveMes"
@@ -223,12 +223,13 @@ destroyDelayApply } from '@/api/delayapply'
         textMap: {
           update: '更新',
           create: '创建'
-        }
+        },
+        isEditable:false
       };
     },
     props:{
         propPtrNoteId:Number,
-        propIsLeader:Boolean
+        propRole:Array
     },
 
     created(){
@@ -236,9 +237,13 @@ destroyDelayApply } from '@/api/delayapply'
     },
     mounted(){
       this.getDailyNote(this.propPtrNoteId);
-      this.getDelayApply(this.propPtrNoteId)
+      this.getDelayApply(this.propPtrNoteId);
+      this.isEditable=this.checkPermission(this.propRole);
     },
     methods: {
+      checkPermission(propRole){
+      return propRole.includes("项目组长");
+    },
     getDelayApply(){
       this.listQueryDelay.id=this.propPtrNoteId;
       indexDelayApply(this.listQueryDelay).then(response => {

@@ -1,6 +1,6 @@
  <template>
   <div>
-      <div class="filter-container" v-if="propIsLeader">
+      <div class="filter-container" v-if="isEditable">
            <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">新增待解决事项</el-button>
       </div>
 
@@ -39,7 +39,7 @@
           </el-table-column>
 
 
-          <el-table-column width="160px" align="center" label="操作" v-if="propIsLeader">
+          <el-table-column width="160px" align="center" label="操作" v-if="isEditable">
             <template slot-scope="scope">
                 <el-button type="primary" size="small" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
             </template>
@@ -49,14 +49,14 @@
 
 
       <el-dialog :title="textMap[dialogStatus]+'待解决问题'" :visible.sync="visible">
-        <el-form :rules="rules" ref="ProgramNote" :model="temp" label123456781-position="left" label-width="100px" style='width: 600px; margin-left:50px;'>
+        <el-form :rules="rules" ref="NodeNote" :model="temp" label123456781-position="left" label-width="100px" style='width: 600px; margin-left:50px;'>
 
           <el-form-item label="待解决问题">
             <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入" v-model="temp.note">
             </el-input>
           </el-form-item>
 
-          <el-form-item label="状态" v-if="propIsLeader">
+          <el-form-item label="状态" v-if="isEditable">
               <el-select v-model="temp.state" filterable placeholder="请选择" >
                 <el-option
                   v-for="item in state"
@@ -67,7 +67,7 @@
               </el-select>
           </el-form-item>
 
-          <el-form-item label="是否抄送型号周报"  v-if="propIsLeader">
+          <el-form-item label="是否抄送型号周报"  v-if="isEditable">
               <el-select v-model="temp.is_up" filterable placeholder="请选择" >
                 <el-option
                   v-for="item in is_up"
@@ -90,8 +90,8 @@
 </template>
 <script>
 
-import { indexProgramNote, showProgramNote, storeProgramNote, updateProgramNote,
-         destroyProgramNote } from '@/api/ProgramNote'
+import { indexNodeNote, showNodeNote, storeNodeNote, updateNodeNote,
+         destroyNodeNote } from '@/api/NodeNote'
 
 
   export default {
@@ -121,26 +121,31 @@ import { indexProgramNote, showProgramNote, storeProgramNote, updateProgramNote,
         textMap: {
           update: '更新',
           create: '创建'
-        }
+        },
+        isEditable:false
       };
     },
     props:{
         propNodeId:Number,
-        propIsLeader:Boolean
+        propRole:Array
     },
 
     created(){
 
     },
     mounted(){
-      this.getProgramNote(this.propNodeId);
+      this.getNodeNote(this.propNodeId);
+      this.isEditable=this.checkPermission(this.propRole);
     },
     methods: {
-    getProgramNote(id){
+      checkPermission(propRole){
+      return propRole.includes("项目组长");
+    },
+    getNodeNote(id){
       this.program_note=[];
       this.listLoading = true;
       this.listQuery.id=id;
-      indexProgramNote(this.listQuery).then(response => {
+      indexNodeNote(this.listQuery).then(response => {
         var data=response.data
         if(data.total!=0){
           this.program_note = data.items
@@ -169,10 +174,10 @@ import { indexProgramNote, showProgramNote, storeProgramNote, updateProgramNote,
       confirmCreate(item){
         item.NodeId=this.propNodeId;
 
-        this.$refs['ProgramNote'].validate((valid) => {
+        this.$refs['NodeNote'].validate((valid) => {
           if (valid) {
             this.visible=false;
-            storeProgramNote(item).then(response => {
+            storeNodeNote(item).then(response => {
               var data=response.data
               item = data.items
               this.program_note.push(item)
@@ -189,10 +194,10 @@ import { indexProgramNote, showProgramNote, storeProgramNote, updateProgramNote,
       })
       },
       confirmUpdate(item){
-        this.$refs['ProgramNote'].validate((valid) => {
+        this.$refs['NodeNote'].validate((valid) => {
           if (valid) {
             this.visible=false;
-            updateProgramNote(item).then(response => {
+            updateNodeNote(item).then(response => {
               this.$notify({
                 title: '成功',
                 message: '更新成功',

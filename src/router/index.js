@@ -171,6 +171,17 @@ export const constantRouterMap = [
         meta: { title: '个人设置', icon: 'table' }
       },
       {
+        path: 'notestwork',
+        name: 'notestwork',
+        component: () => import('@/views/notestwork/notestwork'),
+        meta: { title: '非测试工作统计', icon: 'table' }
+      },
+
+
+
+
+      //poll start
+      {
         path: 'poll',
         name: 'poll',
         component: () => import('@/views/poll/poll'),
@@ -204,6 +215,7 @@ export const constantRouterMap = [
         meta: { title: '查看', icon: 'table' },
         hidden:true
       }
+      //poll end
     ]
   },
   {

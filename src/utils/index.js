@@ -95,6 +95,33 @@ export function parseTime(time, cFormat) {
   })
   return time_str
 }
+//datetime  --> yy-mm-dd 00:00:00
+export function zeroTime(time, cFormat) {
+  var time_str=parseTime(time,cFormat);
+  return time_str.split(' ')[0]+' 00:00:00'
+}
+//yy-mm-dd hh:ii:ss  -->yy-mm-dd
+export function dateTime(time_str) {
+  return time_str.split(' ')[0]
+}
+
+//yy-mm-dd  -->yy-mm-dd 00:00:00
+export function fullZeroTime(time_str) {
+  return time_str+ ' 00:00:00'
+}
+
+
+export function getLastMonday(month, year) {
+  var d = new Date();
+  if (year) { d.setFullYear(year); }
+  d.setDate(1); // Roll to the first day of ...
+  d.setMonth(month || d.getMonth() + 1); // ... the next month.
+  do { // Roll the days backwards until Monday.
+    d.setDate(d.getDate() - 1);
+  } while (d.getDay() !== 1);
+  return d;
+}
+
 
 export function formatTime(time, option) {
   time = +time * 1000

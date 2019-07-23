@@ -272,20 +272,15 @@ export default {
           active:2,
           workflowArray:[
             {name:'建项',plan_day:'',type:'建项'},
-            {name:'被测软件接受',plan_day:'',type:'测试执行'},
+            {name:'被测件出库',plan_day:'',type:'测试执行'},
             {name:'静态问题提交',plan_day:'',type:'报告'},
-            {name:'测试环境就绪情况',plan_day:'',type:'建项'},
-            {name:'测试工作产品编写',plan_day:'',type:'建项'},
-            {name:'入库归档状态',plan_day:'',type:'建项'},
-            {name:'测试工作产品内部评审',plan_day:'',type:'建项'},
-            {name:'评审问题闭合',plan_day:'',type:'建项'},
-            {name:'需求(大纲)正式评审',plan_day:'',type:'建项'},
-            {name:'评审问题闭合',plan_day:'',type:'建项'},
-            {name:'入库归档状态',plan_day:'',type:'建项'},
-            {name:'首轮测试',plan_day:'',type:'建项'},
-            {name:'软件问题单闭合',plan_day:'',type:'建项'},
-            {name:'报告评审',plan_day:'',type:'建项'},
-            {name:'入库归档状态',plan_day:'',type:'建项'}
+            {name:'大纲/用例初版入库',plan_day:'',type:'建项'},
+            {name:'测试就绪',plan_day:'',type:'建项'},
+            {name:'首轮执行结束(提交动态问题单)',plan_day:'',type:'建项'},
+            {name:'回归版本入库',plan_day:'',type:'建项'},
+            {name:'回归测试结束(提交动态问题单)',plan_day:'',type:'建项'},
+            {name:'报告编写完成(问题单闭环)',plan_day:'',type:'建项'},
+            {name:'工作产品入库',plan_day:'',type:'建项'}
           ],
           isError:false
         },
@@ -430,20 +425,15 @@ export default {
           active:2,
           workflowArray:[
             {name:'建项',plan_day:'',type:'建项'},
-            {name:'被测软件接受',plan_day:'',type:'测试执行'},
+            {name:'被测件出库',plan_day:'',type:'测试执行'},
             {name:'静态问题提交',plan_day:'',type:'报告'},
-            {name:'测试环境就绪情况',plan_day:'',type:'建项'},
-            {name:'测试工作产品编写',plan_day:'',type:'建项'},
-            {name:'入库归档状态',plan_day:'',type:'建项'},
-            {name:'测试工作产品内部评审',plan_day:'',type:'建项'},
-            {name:'评审问题闭合',plan_day:'',type:'建项'},
-            {name:'需求(大纲)正式评审',plan_day:'',type:'建项'},
-            {name:'评审问题闭合',plan_day:'',type:'建项'},
-            {name:'入库归档状态',plan_day:'',type:'建项'},
-            {name:'首轮测试',plan_day:'',type:'建项'},
-            {name:'软件问题单闭合',plan_day:'',type:'建项'},
-            {name:'报告评审',plan_day:'',type:'建项'},
-            {name:'入库归档状态',plan_day:'',type:'建项'}
+            {name:'大纲/用例初版入库',plan_day:'',type:'建项'},
+            {name:'测试就绪',plan_day:'',type:'建项'},
+            {name:'首轮执行结束(提交动态问题单)',plan_day:'',type:'建项'},
+            {name:'回归版本入库',plan_day:'',type:'建项'},
+            {name:'回归测试结束(提交动态问题单)',plan_day:'',type:'建项'},
+            {name:'报告编写完成(问题单闭环)',plan_day:'',type:'建项'},
+            {name:'工作产品入库',plan_day:'',type:'建项'}
           ]
         },
         programTeamRole:[
