@@ -2,137 +2,166 @@
   <div class="app-container">
 
 
+    <el-row class="tac">
+  <el-col :span="2">
+    <h5>项目担任角色</h5>
+    <el-menu
+      default-active="leader"
+      class="el-menu-vertical-demo"
+      @select="handleMenuSelect"
+      >
+      <el-menu-item index="leader">
+        <i class="el-icon-s-custom"></i>
+        <span slot="title">项目组长</span>
+      </el-menu-item>
+      <el-menu-item index="member">
+        <i class="el-icon-s-custom"></i>
+        <span slot="title">项目组员</span>
+      </el-menu-item>
+      <el-menu-item index="supervisor">
+        <i class="el-icon-s-custom"></i>
+        <span slot="title">监督人员</span>
+      </el-menu-item>
+      <el-menu-item index="cm">
+        <i class="el-icon-s-custom"></i>
+        <span slot="title">配置管理员</span>
+      </el-menu-item>
+      <el-menu-item index="qa" >
+        <i class="el-icon-s-custom"></i>
+        <span slot="title">质量保证员</span>
+      </el-menu-item>
+      <el-menu-item index="creator" >
+        <i class="el-icon-s-custom"></i>
+        <span slot="title">项目创建人</span>
+      </el-menu-item>
+    </el-menu>
+  </el-col>
+ <el-col :span="22">
+      <div class="filter-container">
+        <el-input @keyup.enter.native="handleFilter" style="width: 180px;" class="filter-item" placeholder="项目名称(支持模糊查询)" v-model="listQuery.title">
+        </el-input>
+        <el-select clearable style="width: 90px" class="filter-item" v-model="listQuery.model_id" placeholder="按型号" @keyup.enter.native="handleFilter">
+          <el-option v-for="(item, index) in selection.model" :key="index" :label="item.model_name" :value="item.id">
+          </el-option>
+        </el-select>
 
-    <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 180px;" class="filter-item" placeholder="项目名称(支持模糊查询)" v-model="listQuery.title">
-      </el-input>
-      <el-select clearable style="width: 90px" class="filter-item" v-model="listQuery.model_id" placeholder="按型号" @keyup.enter.native="handleFilter">
-        <el-option v-for="(item, index) in selection.model" :key="index" :label="item.model_name" :value="item.id">
-        </el-option>
-      </el-select>
+        <el-select clearable style="width: 130px" class="filter-item" v-model="listQuery.manager" placeholder="按型号负责人">
+          <el-option v-for="(item, index) in selection.managers" :key="index" :label="item.name" :value="item.id">
+          </el-option>
+        </el-select>
 
-      <el-select clearable style="width: 130px" class="filter-item" v-model="listQuery.manager" placeholder="按型号负责人">
-        <el-option v-for="(item, index) in selection.managers" :key="index" :label="item.name" :value="item.id">
-        </el-option>
-      </el-select>
+        <el-select clearable style="width: 90px" class="filter-item" v-model="listQuery.classification" placeholder="按密级">
+          <el-option v-for="(item, index) in selection.classification" :key="index" :label="item" :value="item">
+          </el-option>
+        </el-select>
 
-      <el-select clearable style="width: 90px" class="filter-item" v-model="listQuery.classification" placeholder="按密级">
-        <el-option v-for="(item, index) in selection.classification" :key="index" :label="item" :value="item">
-        </el-option>
-      </el-select>
+        <el-select clearable style="width: 130px" class="filter-item" v-model="listQuery.program_type" placeholder="按测试类型">
+          <el-option v-for="(item, index) in selection.programType" :key="index" :label="item" :value="item">
+          </el-option>
+        </el-select>
 
-      <el-select clearable style="width: 130px" class="filter-item" v-model="listQuery.program_type" placeholder="按测试类型">
-        <el-option v-for="(item, index) in selection.programType" :key="index" :label="item" :value="item">
-        </el-option>
-      </el-select>
+        <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索</el-button>
 
-      <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索</el-button>
+        <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">导出EXCEL</el-button>
+      </div>
 
-      <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">导出EXCEL</el-button>
-    </div>
+      <el-table :key='list.id' :data="list" v-loading="listLoading" border fit highlight-current-row
+        style="width: 100%;min-height:1000px;">
+        <el-table-column  width="50px" align="center" label="序号"  type="index">
+        </el-table-column>
 
-    <el-table :key='list.id' :data="list" v-loading="listLoading" border fit highlight-current-row
-      style="width: 100%;min-height:1000px;">
-      <el-table-column  width="50px" align="center" label="序号"  type="index">
-      </el-table-column>
+        <el-table-column width="80px" align="center" label="项目名称">
+          <template slot-scope="{row}">
+            <span>{{row.name}}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column width="80px" align="center" label="项目名称">
-        <template slot-scope="{row}">
-          <span>{{row.name}}</span>
-        </template>
-      </el-table-column>
+        <el-table-column width="80px" align="center" label="项目标识">
+          <template slot-scope="{row}">
+            <span>{{row.program_identity}}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column width="80px" align="center" label="项目标识">
-        <template slot-scope="{row}">
-          <span>{{row.program_identity}}</span>
-        </template>
-      </el-table-column>
+        <el-table-column width="80px" align="center" label="项目状态">
+          <template slot-scope="{row}">
+            <span>{{row.state}}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column width="80px" align="center" label="项目状态">
-        <template slot-scope="{row}">
-          <span>{{row.state}}</span>
-        </template>
-      </el-table-column>
+        <el-table-column width="100px" align="center" label="待解决问题">
+          <template slot-scope="{row}">
+            <span>{{row.issue}}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column width="100px" align="center" label="待解决问题">
-        <template slot-scope="{row}">
-          <span>{{row.issue}}</span>
-        </template>
-      </el-table-column>
+        <el-table-column width="100px" align="center" label="密级">
+          <template slot-scope="{row}">
+            <span>{{row.classification}}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column width="100px" align="center" label="密级">
-        <template slot-scope="{row}">
-          <span>{{row.classification}}</span>
-        </template>
-      </el-table-column>
+        <el-table-column width="100px" align="center" label="测试类型">
+          <template slot-scope="{row}">
+            <span>{{row.program_type}}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column width="100px" align="center" label="测试类型">
-        <template slot-scope="{row}">
-          <span>{{row.program_type}}</span>
-        </template>
-      </el-table-column>
+        <el-table-column width="100px" align="center" label="所属型号">
+          <template slot-scope="{row}">
+            <span>{{selection.model.find(x=>x.id==row.model_id).model_name}}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column width="100px" align="center" label="所属型号">
-        <template slot-scope="{row}">
-          <span>{{selection.model.find(x=>x.id==row.model_id).model_name}}</span>
-        </template>
-      </el-table-column>
+        <el-table-column width="100px" align="center" label="型号负责人">
+          <template slot-scope="{row}">
+            <span>{{row.manager.name}}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column width="100px" align="center" label="型号负责人">
-        <template slot-scope="{row}">
-          <span>{{row.manager.name}}</span>
-        </template>
-      </el-table-column>
+        <el-table-column width="100px" align="center" label="项目组长">
+          <template slot-scope="{row}">
+            <span>{{row.program_leader}}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column width="100px" align="center" label="项目组长">
-        <template slot-scope="{row}">
-          <span>{{row.program_leader}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="130px" align="center" label="项目组员">
-        <template slot-scope="{row}">
-          <span>{{row.program_team_strict}}</span>
-        </template>
-      </el-table-column>
+        <el-table-column width="130px" align="center" label="项目组员">
+          <template slot-scope="{row}">
+            <span>{{row.program_team_strict}}</span>
+          </template>
+        </el-table-column>
 
 
-      <el-table-column width="140px" align="center" label="计划开始时间">
-        <template slot-scope="{row}">
-          <span>{{row.plan_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
-        </template>
-      </el-table-column>
+        <el-table-column width="140px" align="center" label="计划开始时间">
+          <template slot-scope="{row}">
+            <span>{{row.plan_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+          </template>
+        </el-table-column>
 
-      <el-table-column width="140px" align="center" label="计划结束时间">
-        <template slot-scope="{row}">
-          <span>{{row.plan_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
-        </template>
-      </el-table-column>
+        <el-table-column width="140px" align="center" label="计划结束时间">
+          <template slot-scope="{row}">
+            <span>{{row.plan_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+          </template>
+        </el-table-column>
 
 
 
 
-      <el-table-column align="center" label="操作" width="130px" class-name="small-padding fixed-width">
-        <template slot-scope="{row}">
-            <router-link :to="'/management/programs/edit/'+row.id"> 
-            <el-button type="primary" size="small" icon="el-icon-edit">打开</el-button>
-          </router-link>
-        </template>
-      </el-table-column>
+        <el-table-column align="center" label="操作" width="130px" class-name="small-padding fixed-width">
+          <template slot-scope="{row}">
+              <router-link :to="'/management/programs/edit/'+row.id"> 
+              <el-button type="primary" size="small" icon="el-icon-edit">打开</el-button>
+            </router-link>
+          </template>
+        </el-table-column>
 
-    </el-table>
+      </el-table>
 
-    <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
-    </div>
-
-
-
-
-  <pre-program  :propVisible="previsible" @pre-completed="onPreCompleted"></pre-program>
-  <program-edit :propStep="program_step" :propDialogStatus="dialogStatus" :propProgram="temp" :propVisible="visible" :propSelection="selection" @close-dia="onCloseDia"></program-edit>
-
+      <div class="pagination-container">
+        <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+        </el-pagination>
+      </div>
+  </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -146,8 +175,6 @@ import WorkflowItem from '@/components/Workflow'
 import SoftwareInfo from '@/components/SoftwareInfo'
 import Contact from '@/components/Contact'
 import ProgramTeamRole from '@/components/ProgramTeamRole'
-import ProgramEdit from '@/components/ProgramEdit'
-import PreProgram from './components/TableCom/PreProgram.vue'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils/index.js'
 
@@ -172,7 +199,7 @@ const constSize = ['大','中','小']
 
 export default {
   name: 'complexTable',
-  components: { WorkflowItem, ProgramTeamRole,SoftwareInfo,Contact,ProgramEdit,PreProgram },
+  components: { WorkflowItem, ProgramTeamRole,SoftwareInfo,Contact },
   directives: {
     waves
   },
@@ -217,7 +244,8 @@ export default {
         program_type:undefined,
         manager:undefined,
         classification:undefined,
-        title: undefined
+        title: undefined,
+        type:'isMeLeader'
       },
 
 
@@ -293,8 +321,13 @@ export default {
         create: '创建'
       },  
 
-      downloadLoading: false
-
+      downloadLoading: false,
+      check:{
+          checkAll: false,
+           checkedCities: ['上海', '北京'],
+           cities: ['上海', '北京', '广州', '深圳'],
+           isIndeterminate: true
+         }
     }
   },
   filters: {
@@ -353,6 +386,11 @@ export default {
       this.listQuery.page = 1
       this.getList()
     },
+    handleMenuSelect(key, keyPath) {
+      this.listQuery.type=key
+      this.listQuery.page = 1
+      this.getList()
+      },
     handleSizeChange(val) {
       this.listQuery.limit = val
       this.getList()
@@ -438,98 +476,9 @@ export default {
     handleProgramCreate() {
       this.previsible=true;
     },
-    cancelStep(){
-        this.invisible=this.invisible.map(()=>false);
-    },
-    previousStep(cstepid){
-      if(cstepid<1){
-        this.$refs[this.dataformMap[cstepid]].validate((valid)=>{
-          if(valid){
-                  this.temp.step=this.temp.step-1;
-                  this.invisible=this.invisible.map((eachName,step)=>{
-                      if(step==this.temp.step){
-                      return true;
-                    }else{
-                      return false;
-                    }
-                  });
-          }
-        })
-      }else if(cstepid>1&&cstepid<4){
-        this.$refs[this.dataformMap[cstepid]].$refs[this.dataformMap[cstepid]].validate((valid)=>{
-          if(valid){
-              this.temp.step=this.temp.step-1;
-                      this.invisible=this.invisible.map((eachName,step)=>{
-                          if(step==this.temp.step){
-                          return true;
-                        }else{
-                          return false;
-                        }
-                      });
-                }
-        })
-      }else{
-        this.temp.step=this.temp.step-1;
-                      this.invisible=this.invisible.map((eachName,step)=>{
-                          if(step==this.temp.step){
-                          return true;
-                        }else{
-                          return false;
-                        }
-                      });
-      }
+   
 
-    },
-    nextStep(cstepid){
-      if(cstepid<1){
-        this.$refs[this.dataformMap[cstepid]].validate((valid)=>{
-          if(valid){
-                  this.temp.step=this.temp.step+1;
-                  this.invisible= this.invisible.map((eachName,step)=>{
-                  if(step==this.temp.step){
-                    return true;
-                    }else{
-                    return false;
-                  }
-                  });
-          }
-        });
-      }else if(cstepid>1&&cstepid<4){      
-        this.$refs[this.dataformMap[cstepid]].$refs[this.dataformMap[cstepid]].validate((valid)=>{
-          if(valid){
-                  this.temp.step=this.temp.step+1;
-                  this.invisible= this.invisible.map((eachName,step)=>{
-                  if(step==this.temp.step){
-                    return true;
-                    }else{
-                    return false;
-                  }
-                  });
-          }
-                  
-        })
-                  
-      }else{
-                  this.temp.step=this.temp.step+1;
-                  this.invisible= this.invisible.map((eachName,step)=>{
-                  if(step==this.temp.step){
-                    return true;
-                    }else{
-                    return false;
-                  }
-                  });
-      }
-      
-    },
 
-    handleProgramUpdate(row,updateType) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.visible=true;
-      this.dialogStatus = 'update'
-      this.program_type='pro'
-
-    },
- 
     handleSizeChange(val) {
       this.listQuery.limit = val
       this.getList()
@@ -565,6 +514,10 @@ export default {
         }
       }))
     },
+    createProgramPeople(){
+      var index=this.temp.programTeamRole.length-4;
+      this.temp.programTeamRole.splice(index,0,{role:'项目组员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false});
+    },
     onCloseDia(){
       this.visible=false;
     },
@@ -574,7 +527,16 @@ export default {
       this.resetTemp()
       this.dialogStatus = 'create'
       this.program_step=args
-    }
+    },
+     handleCheckAllChange(val) {
+        this.check.checkedCities = val ? this.check.cities : [];
+        this.check.isIndeterminate = false;
+      },
+      handleCheckedCitiesChange(value) {
+        let checkedCount = value.length;
+        this.check.checkAll = checkedCount === this.check.cities.length;
+        this.check.isIndeterminate = checkedCount > 0 && checkedCount < this.check.cities.length;
+      }
   }
 }
 </script>

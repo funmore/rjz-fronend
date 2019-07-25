@@ -212,7 +212,7 @@ export default {
           if (valid) {
             this.request_data.poll_column=this.propertyData
             storePoll(this.request_data).then(response => {
-              this.$router.push('/setting/poll') 
+              this.$router.push('/dashboard/poll') 
               this.$notify({
                 title: '创建成功',
                 message: '请通知同事填写表单',

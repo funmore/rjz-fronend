@@ -49,12 +49,12 @@
       <el-dialog title="选择创建表单类型" :visible.sync="visible"  >
           <el-row class="tac">
             <el-col :span="12" >
-              <router-link :to="'/setting/poll/property'"> 
+              <router-link :to="'/dashboard/poll/property'"> 
                 <el-button type="primary" class="button" id="left" >创建空白表单</el-button>
               </router-link>
             </el-col>
             <el-col :span="12">
-              <router-link :to="'/setting/poll/imports'"> 
+              <router-link :to="'/dashboard/poll/imports'"> 
                 <el-button type="success" class="button" id="right" >从Excel创建表单</el-button>
               </router-link>
             </el-col>

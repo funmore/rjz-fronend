@@ -165,7 +165,7 @@ export default {
       storePollFill(request_data).then(response => {
         var data=response.data
         if(data.is_okay==true){
-          this.$router.push('/setting/poll') 
+          this.$router.push('/dashboard/poll') 
           this.$notify({
                 title: '填写成功',
                 message: '已成功填写',

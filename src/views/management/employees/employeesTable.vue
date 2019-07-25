@@ -89,14 +89,14 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="70px" align="center" label="质量保证人员权限" sortable prop='is_qa'>
+      <el-table-column width="70px" align="center" label="质量保证员权限" sortable prop='is_qa'>
         <template slot-scope="scope">
           <span @click="handleUpdate(scope.row)" v-if="scope.row.is_qa==1"><i class="el-icon-check"></i></span>
           <!-- <span @click="handleUpdate(scope.row)" v-else>是</span> -->
         </template>
       </el-table-column>
 
-      <el-table-column width="70px" align="center" label="配置管理人员权限" sortable prop='is_cm'>
+      <el-table-column width="70px" align="center" label="配置管理员权限" sortable prop='is_cm'>
         <template slot-scope="scope">
           <span @click="handleUpdate(scope.row)" v-if="scope.row.is_cm==1"><i class="el-icon-check"></i></span>
           <!-- <span @click="handleUpdate(scope.row)" v-else>是</span> -->
@@ -294,7 +294,7 @@
       </el-col>
         
         <el-col :span="12">
-        <el-form-item label="质量保证人员权限">
+        <el-form-item label="质量保证员权限">
           <el-select v-model="temp.is_qa" placeholder="请选择">
             <el-option
               v-for="item in selection.isOrNot"
@@ -307,7 +307,7 @@
       </el-col>
         
         <el-col :span="12">
-        <el-form-item label="配置管理人员权限">
+        <el-form-item label="配置管理员权限">
           <el-select v-model="temp.is_cm" placeholder="请选择">
             <el-option
               v-for="item in selection.isOrNot"

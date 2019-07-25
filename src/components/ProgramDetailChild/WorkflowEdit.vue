@@ -1,7 +1,7 @@
  <template>
 <div>
       <el-steps :active="workflow.active"  >
-       <el-step v-for="index in workflow.workflowArray.length"  :title="workflow.workflowArray[index-1].name" :description="workflow.workflowArray[index-1].plan_day"  :status="workflow.workflowArray[index-1]|statusComputed(workflow)"   @click.native="updateChildData(index)">
+       <el-step v-for="index in workflow.workflowArray.length" :key="index" :title="workflow.workflowArray[index-1].name" :description="workflow.workflowArray[index-1].plan_day"  :status="workflow.workflowArray[index-1]|statusComputed(workflow)"   @click.native="updateChildData(index)">
              <el-badge :value="workflow.workflowArray[index-1].undo_task_count" class="item" slot="icon">
                 <i v-if="workflow.workflowArray[index-1].undo_task_count==0" class="el-icon-plus"></i>
                 <i v-else class="el-icon-close"></i>

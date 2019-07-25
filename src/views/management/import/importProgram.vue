@@ -113,7 +113,7 @@ export default {
               {role:'项目组员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
               {role:'监督人员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
               {role:'配置管理员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-              {role:'质量保证人员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false}
+              {role:'质量保证员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false}
             ]
           },
     }

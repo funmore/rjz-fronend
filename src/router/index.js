@@ -21,20 +21,6 @@ import Layout from '../views/layout/Layout'
     icon: 'svg-name'             the icon show in the sidebar,
   }
 **/
-/**
-*   statistic         统计
-        programs       项目进度分析
-        employees       人力分析
-    management      管理
-        programs       项目管理
-        empleyee       用户管理
-        contract       合同管理
-    setting         设置
-    contact         站内信
-*
-*
-*
-**/
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
@@ -49,143 +35,63 @@ export const constantRouterMap = [
       component: () => import('@/views/dashboard/index')
     }]
   },
-  //统计
   {
-    path: '/statistic',
-    component: Layout,
-    redirect: '/statistic/programs',
-    name: 'statistic',
-    meta:{title:'统计',icon:'example'},
-    children:[
-      {
-        path: 'programs',
-        name: 'programs',
-        component: () => import('@/views/statistic/programs/index'),
-        meta: { title: '项目进度分析', icon: 'table' }
-      },
-      {
-        path: 'people',
-        name: 'people',
-        component: () => import('@/views/statistic/people/peopleTable'),
-        meta: { title: '人力分析', icon: 'table' }
-      },
-      //edit
-      {
-        path: 'people/view/:id(\\d+)',
-        name: 'viewPeople',
-        component: () => import('@/views/management/programs/edit'),
-        meta: { title: '编辑项目', icon: 'table' },
-        hidden:true
-      },
-    ]
+    path: '/management/programs/edit/:id(\\d+)',
+    name: 'editProgram',
+    component: () => import('@/views/management/programs/edit'),
+    meta: { 
+      title: '编辑项目', 
+      icon: 'table' },
+    hidden:true
   },
-    //管理
-  {
-    path: '/management',
+   //个人
+   {
+    path: '/dashboard',
     component: Layout,
-    redirect: '/management/programs',
-    name: 'management',
-    meta:{title:'管理',icon:'nested'},
-    children:[
-      //list
-      {
-        path: 'programs',
-        name: 'programs',
-        component: () => import('@/views/management/programs/programsTable'),
-        meta: { title: '项目管理', icon: 'table' }
-      },
-      //edit
-      {
-        path: 'programs/edit/:id(\\d+)',
-        name: 'editProgram',
-        component: () => import('@/views/management/programs/edit'),
-        meta: { title: '编辑项目', icon: 'table' },
-        hidden:true
-      },
-
-
-      {
-        path: 'preprograms',
-        name: 'preprograms',
-        component: () => import('@/views/management/preprograms/preProgramsTable'),
-        meta: { title: '预备项目', icon: 'table' }
-      },
-      {
-        path: 'batchimport',
-        name: 'batchimport',
-        component: () => import('@/views/management/batchimport/importTable'),
-        meta: { title: '批量导入', icon: 'table' }
-      },
-      {
-        path: 'import',
-        name: 'import',
-        component: () => import('@/views/management/import/importProgram'),
-        meta: { title: '项目通知单导入', icon: 'table' }
-      },
-      //employees
-      {
-        path: 'employees',
-        name: 'employees',
-        component: () => import('@/views/management/employees/employeesTable'),
-        meta: { title: '用户管理', icon: 'table' }
-      },
-      {
-        path: 'model',
-        name: 'model',
-        component: () => import('@/views/model/model'),
-        meta: { title: '型号名称管理', icon: 'table' }
-      },
-
-
-
-      //contract
-      //list
-      {
-        path: 'contract',
-        name: 'contract',
-        component: () => import('@/views/management/contracts/contractsTable'),
-        meta: { title: '合同管理', icon: 'table' }
-      },
-      //edit
-      {
-        path: 'contracts/edit/:id(\\d+)',
-        name: 'editContract',
-        component: () => import('@/views/management/contracts/edit'),
-        meta: { title: '编辑合同', icon: 'table' },
-        hidden:true
-      },
-    ]
-  },
-  //设置
-  {
-    path: '/setting',
-    component: Layout,
-    redirect: '/setting/personal',
-    name: 'setting',
-    meta:{title:'设置',icon:'example'},
+    redirect: '/dashboard/personprogram',
+    name: 'dashboard',
+    meta:{title:'控制台',icon:'dashboard'},
     children:[
       {
-        path: 'personal',
-        name: 'personal',
+        path: 'personprogram',
+        name: 'personprogram',
+        component: () => import('@/views/personprograms/personProgramsTable'),
+        meta: { 
+          title: '个人项目', 
+          icon: 'theme' }
+      },
+      {
+        path: 'info',
+        name: 'info',
+        component: () => import('@/views/dashboard/index'),
+        meta: { 
+          title: '个人信息', 
+          icon: 'dashboard' }
+      },
+      {
+        path: 'setting',
+        name: 'setting',
         component: () => import('@/views/editor/index'),
-        meta: { title: '个人设置', icon: 'table' }
+        meta: { 
+          title: '个人设置', 
+          icon: 'theme' }
       },
       {
         path: 'notestwork',
         name: 'notestwork',
         component: () => import('@/views/notestwork/notestwork'),
-        meta: { title: '非测试工作统计', icon: 'table' }
+        meta: { 
+          title: '非测试工作统计', 
+          icon: 'documentation' }
       },
-
-
-
-
       //poll start
       {
         path: 'poll',
         name: 'poll',
         component: () => import('@/views/poll/poll'),
-        meta: { title: '投票', icon: 'table' }
+        meta: { 
+          title: '投票', 
+          icon: 'international' }
       },
       {
         path: 'poll/imports',
@@ -217,200 +123,7 @@ export const constantRouterMap = [
       }
       //poll end
     ]
-  },
-  {
-    path: '/test',
-    component: Layout,
-    redirect: '/test/index',
-    name: 'test',
-    meta:{title:'设置',icon:'example'},
-    children:[
-      {
-        path: 'index',
-        name: 'index',
-        component: () => import('@/views/test/index'),
-        meta: { title: '试验页面', icon: 'table' }
-      }
-    ]
-  },
-  // {
-  //   path: '/train',
-  //   component: Layout,
-  //   redirect: '/gettrain/index',
-  //   name: 'test',
-  //   meta:{title:'设置',icon:'example'},
-  //   children:[
-  //     {
-  //       path: 'train',
-  //       name: 'index',
-  //       component: () => import('@/views/gettrain/index'),
-  //       meta: { title: '火车票', icon: 'table' }
-  //     }
-  //   ]
-  // },
-  
-  // //项目输入信息
-  // {
-  //   path: '/program-input',
-  //   component: Layout,
-  //   redirect: '/program-input/require-doc',
-  //   name: 'program-input',
-  //   meta:{title:'项目输入信息',icon:'example'},
-  //   children:[
-  //     {
-  //       path: 'require-doc',
-  //       name: 'require-doc',
-  //       component: () => import('@/views/editor/index'),
-  //       meta: { title: '测评需求', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'requirefile',
-  //       name: 'requirefile',
-  //       component: () => import('@/views/editor/index'),
-  //       meta: { title: '引用文件', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'software-overview',
-  //       name: 'software-overview',
-  //       component: () => import('@/views/editor/index'),
-  //       meta: { title: '软件概述', icon: 'table' }
-  //     }
-  //   ]
-  // },
-  //   //related-info
-  //   {
-  //   path: '/related-info',
-  //   component: Layout,
-  //   redirect: '/related-info/schema',
-  //   name: 'related-info',
-  //   meta:{title:'测试策略资源与进度',icon:'example'},
-  //   children:[
-  //     {
-  //       path: 'schema',
-  //       name: 'schema',
-  //       component: () => import('@/views/editor/index'),
-  //       meta: { title: '测试策略', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'test-tech',
-  //       name: 'test-tech',
-  //       component: () => import('@/views/editor/test-tech.vue'),
-  //       meta: { title: '测试技术和方法', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'res-require',
-  //       name: 'res-require',
-  //       component: () => import('@/views/tab-res-require'),
-  //       meta: { title: '资源需求', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'test-progress-test',
-  //       name: 'test-progress-test',
-  //       component: () => import('@/views/table/inlineEditTable'),
-  //       meta: { title: '测试进度test', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'test-progress',
-  //       name: 'test-progress',
-  //       component: () => import('@/views/table/complexTable'),
-  //       meta: { title: '测试进度', icon: 'table' }
-  //     }
-  //   ]
-  // },
-
-  // {
-  //   path: '/example',
-  //   component: Layout,
-  //   redirect: '/example/table',
-  //   name: 'Example',
-  //   meta: { title: 'Example', icon: 'example' },
-  //   children: [
-  //     {
-  //       path: 'table',
-  //       name: 'Table',
-  //       component: () => import('@/views/table/index'),
-  //       meta: { title: 'Table', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'tree',
-  //       name: 'Tree',
-  //       component: () => import('@/views/tree/index'),
-  //       meta: { title: 'Tree', icon: 'tree' }
-  //     }
-  //   ]
-  // },
-
-  // {
-  //   path: '/form',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'Form',
-  //       component: () => import('@/views/form/index'),
-  //       meta: { title: 'Form', icon: 'form' }
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/nested',
-  //   component: Layout,
-  //   redirect: '/nested/menu1',
-  //   name: 'nested',
-  //   meta: {
-  //     title: 'nested',
-  //     icon: 'nested'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'menu1',
-  //       component: () => import('@/views/nested/menu1/index'), // Parent router-view
-  //       name: 'menu1',
-  //       meta: { title: 'menu1' },
-  //       children: [
-  //         {
-  //           path: 'menu1-1',
-  //           component: () => import('@/views/nested/menu1/menu1-1'),
-  //           name: 'menu1-1',
-  //           meta: { title: 'menu1-1' }
-  //         },
-  //         {
-  //           path: 'menu1-2',
-  //           component: () => import('@/views/nested/menu1/menu1-2'),
-  //           name: 'menu1-2',
-  //           meta: { title: 'menu1-2' },
-  //           children: [
-  //             {
-  //               path: 'menu1-2-1',
-  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-  //               name: 'menu1-2-1',
-  //               meta: { title: 'menu1-2-1' }
-  //             },
-  //             {
-  //               path: 'menu1-2-2',
-  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-  //               name: 'menu1-2-2',
-  //               meta: { title: 'menu1-2-2' }
-  //             }
-  //           ]
-  //         },
-  //         {
-  //           path: 'menu1-3',
-  //           component: () => import('@/views/nested/menu1/menu1-3'),
-  //           name: 'menu1-3',
-  //           meta: { title: 'menu1-3' }
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       path: 'menu2',
-  //       component: () => import('@/views/nested/menu2/index'),
-  //       meta: { title: 'menu2' }
-  //     }
-  //   ]
-  // },
-
-  { path: '*', redirect: '/404', hidden: true }
+  }
 ]
 
 export default new Router({
@@ -419,3 +132,179 @@ export default new Router({
   routes: constantRouterMap
 })
 
+
+export const asyncRouterMap = [
+    //统计
+    {
+      path: '/statistic',
+      component: Layout,
+      redirect: '/statistic/programs',
+      name: 'statistic',
+      meta:{
+        title:'统计',
+        roles: ['管理员','主任','副主任'],
+        icon:'example'},
+      children:[
+        {
+          path: 'programs',
+          name: 'programs',
+          component: () => import('@/views/statistic/programs/index'),
+          meta: { 
+            title: '项目进度分析', 
+            roles: ['管理员','主任','副主任'],
+            icon: 'guide' }
+        },
+        {
+          path: 'people',
+          name: 'people',
+          component: () => import('@/views/statistic/people/peopleTable'),
+          meta: { 
+            title: '人力分析', 
+            roles: ['管理员','主任','副主任'],
+            icon: 'peoples' }
+        },
+        //edit
+        {
+          path: 'people/view/:id(\\d+)',
+          name: 'viewPeople',
+          component: () => import('@/views/management/programs/edit'),
+          meta: { 
+            title: '编辑项目', 
+            roles: ['管理员','主任','副主任'],
+            icon: 'table' },
+          hidden:true
+        },
+      ]
+    },
+      //管理
+    {
+      path: '/management',
+      component: Layout,
+      redirect: '/management/programs',
+      name: 'management',
+      meta:{
+        title:'管理',
+        roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员','测试人员'],
+        icon:'nested'},
+      children:[
+        //list
+        {
+          path: 'programs',
+          name: 'programs',
+          component: () => import('@/views/management/programs/programsTable'),
+          meta: { 
+            title: '项目管理',
+            roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员','测试人员'], 
+            icon: 'form' }
+        },
+        //edit
+        {
+          path: 'programs/edit/:id(\\d+)',
+          name: 'editProgram',
+          component: () => import('@/views/management/programs/edit'),
+          meta: { 
+            title: '编辑项目', 
+            roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员','测试人员'],
+            icon: 'table' },
+          hidden:true
+        },
+  
+  
+        {
+          path: 'preprograms',
+          name: 'preprograms',
+          component: () => import('@/views/management/preprograms/preProgramsTable'),
+          meta: { 
+            title: '预备项目', 
+            roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员'],
+            icon: 'form' }
+        },
+        {
+          path: 'batchimport',
+          name: 'batchimport',
+          component: () => import('@/views/management/batchimport/importTable'),
+          meta: { 
+            title: '批量导入', 
+            roles: ['管理员'],
+            icon: 'excel' }
+        },
+        {
+          path: 'import',
+          name: 'import',
+          component: () => import('@/views/management/import/importProgram'),
+          meta: { 
+            title: '项目通知单导入', 
+            roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','配置管理人员','市场人员'],
+            icon: 'email' }
+        },
+        //employees
+        {
+          path: 'employees',
+          name: 'employees',
+          component: () => import('@/views/management/employees/employeesTable'),
+          meta: { 
+            title: '用户管理', 
+            roles: ['管理员','主任','副主任'],
+            icon: 'people' }
+        },
+        {
+          path: 'model',
+          name: 'model',
+          component: () => import('@/views/model/model'),
+          meta: { 
+            title: '型号名称管理', 
+            roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员'],
+            icon: 'tab' }
+        },
+  
+  
+  
+        //contract
+        //list
+        {
+          path: 'contract',
+          name: 'contract',
+          component: () => import('@/views/management/contracts/contractsTable'),
+          meta: { 
+            title: '合同管理', 
+            roles: ['管理员','市场人员'],
+            icon: 'table' }
+        },
+        //edit
+        {
+          path: 'contracts/edit/:id(\\d+)',
+          name: 'editContract',
+          component: () => import('@/views/management/contracts/edit'),
+          meta: { 
+            title: '编辑合同', 
+            roles: ['管理员','市场人员'],
+            icon: 'table' },
+          hidden:true
+        },
+      ]
+    },
+   
+    {
+      path: '/test',
+      component: Layout,
+      redirect: '/test/index',
+      name: 'test',
+      meta:{
+        title:'设置',
+        icon:'example',
+        roles: ['管理员']},
+      children:[
+        {
+          path: 'index',
+          name: 'index',
+          component: () => import('@/views/test/index'),
+          meta: { 
+          title: '试验页面',
+          icon: 'table',
+          roles: ['管理员']}
+        }
+      ]
+    },  
+    { path: '*', redirect: '/404', hidden: true }
+
+]
