@@ -19,7 +19,6 @@
 </template>
 
 <script>
-  import { indexEmployee } from '@/api/employee'
 
 
 export default {
@@ -34,7 +33,7 @@ export default {
       rawList:[],
       list: [
         ],
-      id_list:this.propIdList,
+      // id_list:this.propIdList,
 
       form: {
           isp: []
@@ -45,30 +44,9 @@ export default {
     this.getLists();
   },
    methods: {
-    getLists(){
-      var listQuery={
-          checkForSelect:true
-        }
-      indexEmployee(listQuery).then(response => {
-        var data=response.data
-        this.rawList = Object.values(data.items)
-        //获取一级分组
-        var uniqueTeam=this.rawList.map((value,index,self)=>{
-          var arr=self.map(x=>x.team.id);
-          if(arr.indexOf(value.team.id)===index){
-            return value.team
-          }
-        }).filter(x=>x!==undefined)
-
-        this.list=uniqueTeam.map(x=>{
-          let children=this.rawList.filter(value=>value.team.id===x.id).map(x=>{return {id:x.id,name:x.name,children:null};})
-          x.children=children
-          return x;
-        })
-      })
-    },
     ispChange(values, items) {
-      this.id_list=values.filter(x=>x.includes('/')).map(x=>x.slice(x.indexOf('/')+1));
+      // this.id_list=
+      values.filter(x=>x.includes('/')).map(x=>x.slice(x.indexOf('/')+1));
       this.$emit('rangeChange',this.id_list);
     }
   }

@@ -148,9 +148,9 @@ export const asyncRouterMap = [
         {
           path: 'programs',
           name: 'programs',
-          component: () => import('@/views/statistic/programs/index'),
+          component: () => import('@/views/customPrograms/customProgramsTable.vue'),
           meta: { 
-            title: '项目进度分析', 
+            title: '订制项目信息', 
             roles: ['管理员','主任','副主任'],
             icon: 'guide' }
         },
