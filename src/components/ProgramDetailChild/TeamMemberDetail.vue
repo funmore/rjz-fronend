@@ -3,7 +3,7 @@
             <el-tabs v-model="activeName" @tab-click="handleClick">
               <el-tab-pane
                 :key="item.name"
-                v-for="(item, index) in programTeamRole"
+                v-for="item in programTeamRole"
                 :label="closure(item)"
                 :name="item.name"
                 :data="item"
