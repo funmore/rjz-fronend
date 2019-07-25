@@ -65,9 +65,6 @@ export default {
           x.children=children
           return x;
         })
-
-        var a=1;
-
       })
     },
     ispChange(values, items) {

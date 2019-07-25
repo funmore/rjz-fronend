@@ -8,6 +8,13 @@ export function indexManagementProgram(query) {
     params: query
   })
 }
+export function indexCustomProgram(query) {
+  return request({
+    url: '/management/customprogram',
+    method: 'get',
+    params: query
+  })
+}
 
 export function showManagementProgram(id) {
   return request({
