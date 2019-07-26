@@ -151,7 +151,7 @@ export const asyncRouterMap = [
           component: () => import('@/views/customPrograms/customProgramsTable.vue'),
           meta: { 
             title: '订制项目信息', 
-            roles: ['管理员','主任','副主任'],
+            roles: ['管理员','主任','副主任','测试人员'],
             icon: 'guide' }
         },
         {
