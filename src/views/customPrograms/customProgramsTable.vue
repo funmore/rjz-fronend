@@ -103,7 +103,7 @@
 
       <el-table-column width="140px" align="center" label="计划开始时间" v-if="listQuery.request_data.includes('plan_start_time')">
         <template slot-scope="{row}">
-          <span>{{row.plan_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+          <span>{{row.plan_start_time }}</span>
         </template>
       </el-table-column>
 
