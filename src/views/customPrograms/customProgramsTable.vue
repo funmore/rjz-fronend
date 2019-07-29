@@ -25,7 +25,6 @@
       <select-program-property propLabel="信息集合"  @rangeChange="OnRangeChange"></select-program-property>
 
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索</el-button>
-
       <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">导出EXCEL</el-button>
     </div>
 
