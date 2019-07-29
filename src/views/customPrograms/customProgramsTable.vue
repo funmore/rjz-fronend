@@ -1,8 +1,5 @@
 <template>
   <div class="app-container">
-
-
-
     <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" style="width: 180px;" class="filter-item" placeholder="项目名称(支持模糊查询)" v-model="listQuery.title">
       </el-input>
