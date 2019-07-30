@@ -22,209 +22,36 @@
         <el-option v-for="(item, index) in selection.programType" :key="index" :label="item" :value="item">
         </el-option>
       </el-select>
-      <select-program-property propLabel="信息集合"  @rangeChange="OnRangeChange"></select-program-property>
+      <select-program-property :propList="selectList" :propSeparator="separator" @rangeChange="OnRangeChange"></select-program-property>
 
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索</el-button>
       <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">导出EXCEL</el-button>
     </div>
+
+
+
+
 
     <el-table :key='list.id' :data="list" v-loading="listLoading" border fit highlight-current-row
       style="width: 100%;min-height:1000px;">
       <el-table-column  width="50px" align="center" label="序号"  type="index">
       </el-table-column>
 
-      <el-table-column width="80px" align="center" label="项目名称" v-if="listQuery.request_data.includes('program_name')">
+      <el-table-column 
+          width="80px" align="center"
+          v-for="(item,index) in columnConfig.objArr" 
+          :key="item.name"  
+          :label="item.name"   >
         <template slot-scope="{row}">
-          <span>{{row.name}}</span>
+          <!-- <span>{{row|valueComputed(index,columnConfig,separator)}}</span> -->
+          <span>{{valueComputed(row,index)}}</span>
         </template>
       </el-table-column>
-
-      <el-table-column width="80px" align="center" label="项目标识" v-if="listQuery.request_data.includes('program_identity')">
-        <template slot-scope="{row}">
-          <span>{{row.program_identity}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="80px" align="center" label="项目状态" v-if="listQuery.request_data.includes('state')">
-        <template slot-scope="{row}">
-          <span>{{row.state}}</span>
-        </template>
-      </el-table-column>
-    
-
-      <el-table-column width="100px" align="center" label="密级" v-if="listQuery.request_data.includes('classification')">
-        <template slot-scope="{row}">
-          <span>{{row.classification}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100px" align="center" label="测试类型" v-if="listQuery.request_data.includes('program_type')">
-        <template slot-scope="{row}">
-          <span>{{row.program_type}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100px" align="center" label="所属型号" v-if="listQuery.request_data.includes('model_name')">
-        <template slot-scope="{row}">
-          <span>{{selection.model.find(x=>x.id==row.model_id).model_name}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100px" align="center" label="型号负责人" v-if="listQuery.request_data.includes('manager')">
-        <template slot-scope="{row}">
-          <span>{{row.manager.name}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="85px" align="center" label="计划联系人" v-if="listQuery.request_data.includes('plan')">
-        <template slot-scope="scope">
-          <span>{{scope.row.contact.plan}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="85px" align="center" label="质量联系人" v-if="listQuery.request_data.includes('quality')">
-        <template slot-scope="scope">
-          <span>{{scope.row.contact.quality}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="85px" align="center" label="设计联系人" v-if="listQuery.request_data.includes('code')">
-        <template slot-scope="scope">
-          <span>{{scope.row.contact.code}}</span>
-        </template>
-      </el-table-column>
-
-      
-
-
-      <el-table-column width="140px" align="center" label="计划开始时间" v-if="listQuery.request_data.includes('plan_start_time')">
-        <template slot-scope="{row}">
-          <span>{{row.plan_start_time }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="140px" align="center" label="计划结束时间" v-if="listQuery.request_data.includes('plan_start_time')">
-        <template slot-scope="{row}">
-          <span>{{row.plan_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="140px" align="center" label="实际开始时间" v-if="listQuery.request_data.includes('actual_start_time')">
-        <template slot-scope="{row}">
-          <span>{{row.actual_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="140px" align="center" label="实际结束时间" v-if="listQuery.request_data.includes('actual_start_time')">
-        <template slot-scope="{row}">
-          <span>{{row.actual_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
-        </template>
-      </el-table-column>
-
-
-
-      <el-table-column width="85px" align="center" label="软件名称" v-if="listQuery.request_data.includes('software_name')">
-        <template slot-scope="scope">
-          <span>{{scope.row.softwareInfoCol[0].name}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="85px" align="center" label="版本号" v-if="listQuery.request_data.includes('version_id')">
-        <template slot-scope="scope">
-          <span>{{scope.row.softwareInfoCol[0].version_id}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="85px" align="center" label="编译器"  v-if="listQuery.request_data.includes('complier')">
-        <template slot-scope="scope">
-          <span>{{scope.row.softwareInfoCol[0].complier}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="85px" align="center" label="运行环境" v-if="listQuery.request_data.includes('runtime')">
-        <template slot-scope="scope">
-          <span>{{scope.row.softwareInfoCol[0].runtime}}</span>
-        </template>
-      </el-table-column>
-      
-
-      <el-table-column width="85px" align="center" label="折算后代码行" v-if="listQuery.request_data.includes('reduced_code_size')">
-        <template slot-scope="scope">
-          <span>{{scope.row.softwareInfoCol[0].reduced_code_size}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="85px" align="center" label="折算原因" v-if="listQuery.request_data.includes('reduced_reason')">
-        <template slot-scope="scope">
-          <span>{{scope.row.softwareInfoCol[0].reduced_reason}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="85px" align="center" label="软件类型" v-if="listQuery.request_data.includes('software_cate')">
-        <template slot-scope="scope">
-          <span>{{scope.row.softwareInfoCol[0].software_cate}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="85px" align="center" label="软件子类型" v-if="listQuery.request_data.includes('software_sub_cate')">
-        <template slot-scope="scope">
-          <span>{{scope.row.softwareInfoCol[0].software_sub_cate}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="85px" align="center" label="CPU类型" v-if="listQuery.request_data.includes('cpu_type')">
-        <template slot-scope="scope">
-          <span>{{scope.row.softwareInfoCol[0].cpu_type}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="85px" align="center" label="编程语言" v-if="listQuery.request_data.includes('code_langu')">
-        <template slot-scope="scope">
-          <span>{{scope.row.softwareInfoCol[0].code_langu}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="85px" align="center" label="软件用途" v-if="listQuery.request_data.includes('software_usage')">
-        <template slot-scope="scope">
-          <span>{{scope.row.softwareInfoCol[0].software_usage}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="85px" align="center" label="软件类型" v-if="listQuery.request_data.includes('software_type')">
-        <template slot-scope="scope">
-          <span>{{scope.row.softwareInfoCol[0].software_type}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100px" align="center" label="流程节点" v-if="listQuery.request_data.includes('workflow_state')">
-        <template slot-scope="{row}">
-          <span>{{row.workflow_state}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100px" align="center" label="当前节点问题" v-if="listQuery.request_data.includes('issue')">
-        <template slot-scope="{row}">
-          <span>{{row.issue}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100px" align="center" label="项目组长" v-if="listQuery.request_data.includes('program_leader')">
-        <template slot-scope="{row}">
-          <span>{{row.program_leader}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="130px" align="center" label="项目组员" v-if="listQuery.request_data.includes('program_team_strict')">
-        <template slot-scope="{row}">
-          <span>{{row.program_team_strict}}</span>
-        </template>
-      </el-table-column>
-
 
 
       <el-table-column align="center" label="操作" width="130px" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-            <router-link :to="'/management/programs/edit/'+row.id"> 
+            <router-link :to="'/management/programs/edit/'+row.programBasic.id"> 
             <el-button type="primary" size="small" icon="el-icon-edit">打开</el-button>
           </router-link>
         </template>
@@ -287,7 +114,7 @@ export default {
   },
   data() {
     return {
-      
+      separator:'.',
       selection:{
         model:constModel,
         programType:constProgramType,
@@ -325,9 +152,10 @@ export default {
         program_type:undefined,
         manager:undefined,
         classification:undefined,
-        title: undefined,
-        request_data:[]
+        title: undefined
       },
+
+      columnConfig:[],
 
       dialogStatus: '',
       textMap: {
@@ -336,12 +164,255 @@ export default {
       },  
 
       downloadLoading: false,
-      
+      selectList: [
+        {
+          key:'programBasic',
+          name:'项目基本信息',
+          children:[
+            {
+              key:'program_source',
+              name:'项目来源',
+              children:null
+            },
+            {
+              key:'type',
+              name:'类型',
+              children:null
+            },
+            {
+              key:'ref',
+              name:'参考基线',
+              children:null
+            },
+            {
+              key:'state',
+              name:'项目状态',
+              children:null
+            },
+            {
+              key:'classification',
+              name:'密级',
+              children:null
+            },
+            {
+              key:'name',
+              name:'项目名称',
+              children:null
+            },
+            {
+              key:'model_name',
+              name:'型号名称',
+              children:null
+            },
+            {
+              key:'program_type',
+              name:'测试类型',
+              children:null
+            },
+            {
+              key:'program_identity',
+              name:'项目标识',
+              children:null
+            },
+            {
+              key:'program_stage',
+              name:'项目阶段',
+              children:null
+            },
+            {
+              key:'dev_type',
+              name:'研制类型',
+              children:null
+            },
+            {
+              key:'plan_start_time',
+              name:'计划开始时间',
+              children:null
+            },
+            {
+              key:'plan_end_time',
+              name:'计划结束时间',
+              children:null
+            },
+            {
+              key:'actual_start_time',
+              name:'实际开始时间',
+              children:null
+            },
+            {
+              key:'actual_end_time',
+              name:'实际结束时间',
+              children:null
+            },
+            {
+              key:'manager_name',
+              name:'型号负责人',
+              children:null
+            }
+          ]
+        },
+        {
+          key:'contact',
+          name:'联系人',
+          children:[
+            {
+              key:'plan',
+              name:'计划',
+              children:null
+            },
+            {
+              key:'quality',
+              name:'质量',
+              children:null
+            },
+            {
+              key:'code',
+              name:'设计',
+              children:null
+            }
+            ]
+        },
+         {
+          key:'softwareInfoCol',
+          name:'软件信息',
+          children:[
+            {
+              key:'software_name',
+              name:'软件名称',
+              children:null
+            },
+            {
+              key:'version_id',
+              name:'版本号',
+              children:null
+            },
+            {
+              key:'reduced_code_size',
+              name:'折算后代码',
+              children:null
+            },
+            {
+              key:'reduced_reason',
+              name:'折算原因',
+              children:null
+            },
+            {
+              key:'software_type',
+              name:'软件类型',
+              children:null
+            },
+            {
+              key:'software_usage',
+              name:'软件用途',
+              children:null
+            },
+            {
+              key:'code_langu',
+              name:'编程语言',
+              children:null
+            },
+            {
+              key:'complier',
+              name:'编译器',
+              children:null
+            },
+            {
+              key:'runtime',
+              name:'运行环境',
+              children:null
+            },
+            {
+              key:'cpu_type',
+              name:'CPU类型',
+              children:null
+            },
+             {
+              key:'software_cate',
+              name:'被测软件类型',
+              children:null
+            },
+            {
+              key:'software_sub_cate',
+              name:'被测软件子类',
+              children:null
+            }
+          ]
+        },
+        {
+          key:'workflow',
+          name:'流程信息',
+          children:[
+            {
+              key:'workflow_state',
+              name:'当前节点',
+              children:null
+            },
+            {
+              key:'workflow_issue',
+              name:'当前节点问题',
+              children:null
+            }
+          ]
+        },
+        {
+          key:'programTeamRole',
+          name:'项目组信息',
+          children:[
+            {
+              key:'program_leader',
+              name:'项目组长',
+              children:null
+            },
+            {
+              key:'program_team_strict',
+              name:'项目组员',
+              children:null
+            }
+          ]
+        }
+        ]
 
     }
   },
-  filters: {
-    parseTime
+  // filters: {
+    // valueComputed(row,index,columnConfig,separator){
+    //         var ret=null;
+    //         var father=null;
+    //         let keyPath=columnConfig.keyPathArr[index];
+    //         let fatherProperty=keyPath.slice(0,keyPath.indexOf(separator))
+    //         let childProperty=keyPath.slice(keyPath.indexOf(separator)+1)
+    //         if(fatherProperty=='softwareInfoCol'){
+    //             father=row[fatherProperty][0]
+    //         }else{
+    //             father=row[fatherProperty]
+    //         }
+    //         if(father==null){
+    //           return '尚未配置'
+    //         }else{
+    //           return father[childProperty]
+    //         }
+    //     }
+  // },
+  computed:{
+      valueComputed(){
+          return (row,index)=>{
+            var ret=null;
+            var father=null;
+            let keyPath=this.columnConfig.keyPathArr[index];
+            let fatherProperty=keyPath.slice(0,keyPath.indexOf(this.separator))
+            let childProperty=keyPath.slice(keyPath.indexOf(this.separator)+1)
+            if(fatherProperty=='softwareInfoCol'){
+                father=row[fatherProperty][0]
+            }else{
+                father=row[fatherProperty]
+            }
+            if(father==null){
+              return '尚未配置'
+            }else{
+              return father[childProperty]
+            }
+        }
+      }
   },
   created() {
     this.getList()
@@ -349,8 +420,27 @@ export default {
     this.getModel()
   },
   methods: {
+    //   valueComputed(row,index){
+    //     var ret=null;
+    //     var father=null;
+    //     let keyPath=this.columnConfig.keyPathArr[index];
+    //     let fatherProperty=keyPath.slice(0,keyPath.indexOf(this.separator))
+    //     let childProperty=keyPath.slice(keyPath.indexOf(this.separator)+1)
+    //     if(fatherProperty=='softwareInfoCol'){
+    //         father=row[fatherProperty][0]
+    //     }else{
+    //         father=row[fatherProperty]
+    //     }
+    //     if(father==null){
+    //       return '尚未配置'
+    //     }else{
+    //       return father[childProperty]
+    //     }
+    // },
+
+
     OnRangeChange(args){
-        this.listQuery.request_data=args;
+        this.columnConfig=args;
     },
     getModel(){
       var listQuery={
@@ -411,9 +501,9 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['序号', '软件名称','项目成员', '当前状态','待解决问题','预计完成时间']
-        const filterVal = ['id', 'name', 'program_team_strict', 'state', 'issue','plan_end_time']
-        const data = this.formatJson(filterVal, this.list)
+        var tHeader = this.columnConfig.objArr.map(x=>x.name);
+        tHeader.unshift('序号');
+        const data = this.formatJson(this.columnConfig.keyPathArr, this.list)
         var today = new Date();
         var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -426,14 +516,31 @@ export default {
         this.downloadLoading = false
       })
     },
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === '') {
-          return '';//parseTime(v[j])
-        } else {
-          return v[j]
+    formatJson(keyPathArr, list) {
+      var id=1;
+      return list.map(row => {
+          var ret=keyPathArr.map(keyPath => {
+            var ret=null;
+            var father=null;
+            let fatherProperty=keyPath.slice(0,keyPath.indexOf(this.separator))
+            let childProperty=keyPath.slice(keyPath.indexOf(this.separator)+1)
+            if(fatherProperty=='softwareInfoCol'){
+                father=row[fatherProperty][0]
+            }else{
+                father=row[fatherProperty]
+            }
+            if(father==null){
+              return '尚未配置'
+            }else{
+              return father[childProperty]
+            }
+          }
+        )
+        ret.unshift(id);
+        id++;
+        return ret;
         }
-      }))
+      )
     }
   }
 }
