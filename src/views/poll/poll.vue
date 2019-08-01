@@ -30,10 +30,10 @@
               </el-form-item>
               <el-form-item label="操作">
                 <el-button  v-waves type="primary" size="small" disabled v-if="value.is_me_polled">已填写</el-button>
-                <router-link :to="'/setting/poll/fill/'+value.id" v-else> 
+                <router-link :to="'/dashboard/poll/fill/'+value.id" v-else> 
                   <el-button type="primary" size="small"  v-waves icon="el-icon-edit" >填写</el-button>
                 </router-link>
-                <router-link :to="'/setting/poll/show/'+value.id" > 
+                <router-link :to="'/dashboard/poll/show/'+value.id" > 
                   <el-button type="primary" size="small"  v-waves icon="el-icon-view" @click="OnPollCreate">查看</el-button>
                 </router-link>
                 <el-button type="primary" size="small"  v-waves :loading="onDeleting" icon="el-icon-view" @click="OnPollDelete(value.id)">删除</el-button>
