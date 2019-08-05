@@ -33,77 +33,77 @@
 
     <el-table :key='list.id' :data="list" v-loading="listLoading" border fit highlight-current-row
       style="width: 100%;min-height:1000px;">
-      <el-table-column  width="50px" align="center" label="序号"  type="index">
+      <el-table-column   width="50px" align="center" label="序号"  type="index">
       </el-table-column>
 
-      <el-table-column width="80px" align="center" label="项目名称">
+      <el-table-column  width="80px" align="center" label="项目名称">
         <template slot-scope="{row}">
           <span>{{row.name}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="80px" align="center" label="项目标识">
+      <el-table-column  width="80px" align="center" label="项目标识">
         <template slot-scope="{row}">
           <span>{{row.program_identity}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="80px" align="center" label="项目状态">
+      <el-table-column  width="80px" align="center" label="项目状态">
         <template slot-scope="{row}">
           <span>{{row.state}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="100px" align="center" label="待解决问题">
+      <el-table-column  width="100px" align="center" label="待解决问题">
         <template slot-scope="{row}">
           <span>{{row.issue}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="100px" align="center" label="密级">
+      <el-table-column  width="100px" align="center" label="密级">
         <template slot-scope="{row}">
           <span>{{row.classification}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="100px" align="center" label="测试类型">
+      <el-table-column  width="100px" align="center" label="测试类型">
         <template slot-scope="{row}">
           <span>{{row.program_type}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="100px" align="center" label="所属型号">
+      <el-table-column  width="100px" align="center" label="所属型号">
         <template slot-scope="{row}">
           <span>{{selection.model.find(x=>x.id==row.model_id).model_name}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="100px" align="center" label="型号负责人">
+      <el-table-column  width="100px" align="center" label="型号负责人">
         <template slot-scope="{row}">
           <span>{{row.manager.name}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="100px" align="center" label="项目组长">
+      <el-table-column  width="100px" align="center" label="项目组长">
         <template slot-scope="{row}">
           <span>{{row.program_leader}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="130px" align="center" label="项目组员">
+      <el-table-column  width="130px" align="center" label="项目组员">
         <template slot-scope="{row}">
           <span>{{row.program_team_strict}}</span>
         </template>
       </el-table-column>
 
 
-      <el-table-column width="140px" align="center" label="计划开始时间">
+      <el-table-column  width="140px" align="center" label="计划开始时间">
         <template slot-scope="{row}">
           <span>{{row.plan_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="140px" align="center" label="计划结束时间">
+      <el-table-column  width="140px" align="center" label="计划结束时间">
         <template slot-scope="{row}">
           <span>{{row.plan_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
         </template>
@@ -117,6 +117,7 @@
             <router-link :to="'/management/programs/edit/'+row.id"> 
             <el-button type="primary" size="small" icon="el-icon-edit">打开</el-button>
           </router-link>
+          <el-button type="primary" size="small" icon="el-icon-edit" :loading="onDeleting" @click="handleDelete(row)">删除</el-button>
         </template>
       </el-table-column>
 
@@ -178,6 +179,7 @@ export default {
   },
   data() {
     return {
+      onDeleting:false,
       
       selection:{
         model:constModel,
@@ -217,7 +219,8 @@ export default {
         program_type:undefined,
         manager:undefined,
         classification:undefined,
-        title: undefined
+        title: undefined,
+        first:true
       },
 
 
@@ -329,16 +332,17 @@ export default {
     getList() {
 
       this.listLoading = true;
+      this.list=[];
       indexManagementProgram(this.listQuery).then(response => {
         var data=response.data
         this.list = Object.values(data.items)
         this.total = data.total
 
         // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+        this.listLoading = false
+        this.listQuery.first=false
       })
+      
     },
     getEmployeePrincal(){
         var listQuery={
@@ -438,90 +442,48 @@ export default {
     handleProgramCreate() {
       this.previsible=true;
     },
-    cancelStep(){
-        this.invisible=this.invisible.map(()=>false);
-    },
-    previousStep(cstepid){
-      if(cstepid<1){
-        this.$refs[this.dataformMap[cstepid]].validate((valid)=>{
-          if(valid){
-                  this.temp.step=this.temp.step-1;
-                  this.invisible=this.invisible.map((eachName,step)=>{
-                      if(step==this.temp.step){
-                      return true;
-                    }else{
-                      return false;
-                    }
-                  });
-          }
-        })
-      }else if(cstepid>1&&cstepid<4){
-        this.$refs[this.dataformMap[cstepid]].$refs[this.dataformMap[cstepid]].validate((valid)=>{
-          if(valid){
-              this.temp.step=this.temp.step-1;
-                      this.invisible=this.invisible.map((eachName,step)=>{
-                          if(step==this.temp.step){
-                          return true;
-                        }else{
-                          return false;
-                        }
-                      });
+     handleDelete(row){
+        this.$confirm('此操作将永久删除此项目, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.onDeleting=true;
+          destroyManagementProgram(row.id).then(response => {
+            var data=response.data
+            if(data.is_okay==true){
+              for (const v of this.list) {
+                  if (v.id === row.id) {
+                    const index = this.list.indexOf(v)
+                    this.list.splice(index, 1)
+                    break
+                  }
                 }
-        })
-      }else{
-        this.temp.step=this.temp.step-1;
-                      this.invisible=this.invisible.map((eachName,step)=>{
-                          if(step==this.temp.step){
-                          return true;
-                        }else{
-                          return false;
-                        }
-                      });
-      }
+                this.$notify({
+                  title: '成功',
+                  message: '删除成功',
+                  type: 'success',
+                  duration: 2000
+                })
+              }else{
+                this.$notify({
+                  title: '删除失败',
+                  message: data.note,
+                  type: 'success',
+                  duration: 2000
+                })
+              }
+              this.onDeleting=false;
 
-    },
-    nextStep(cstepid){
-      if(cstepid<1){
-        this.$refs[this.dataformMap[cstepid]].validate((valid)=>{
-          if(valid){
-                  this.temp.step=this.temp.step+1;
-                  this.invisible= this.invisible.map((eachName,step)=>{
-                  if(step==this.temp.step){
-                    return true;
-                    }else{
-                    return false;
-                  }
-                  });
-          }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
         });
-      }else if(cstepid>1&&cstepid<4){      
-        this.$refs[this.dataformMap[cstepid]].$refs[this.dataformMap[cstepid]].validate((valid)=>{
-          if(valid){
-                  this.temp.step=this.temp.step+1;
-                  this.invisible= this.invisible.map((eachName,step)=>{
-                  if(step==this.temp.step){
-                    return true;
-                    }else{
-                    return false;
-                  }
-                  });
-          }
-                  
-        })
-                  
-      }else{
-                  this.temp.step=this.temp.step+1;
-                  this.invisible= this.invisible.map((eachName,step)=>{
-                  if(step==this.temp.step){
-                    return true;
-                    }else{
-                    return false;
-                  }
-                  });
-      }
       
-    },
-
+      },
     handleProgramUpdate(row,updateType) {
       this.temp = Object.assign({}, row) // copy obj
       this.visible=true;

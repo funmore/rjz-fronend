@@ -32,10 +32,18 @@
     </div>
 
     <el-table :key='list.id' :data="list" v-loading="listLoading" border fit highlight-current-row
+     :row-class-name="tableRowClassName"
       style="width: 100%;min-height:1000px;">
       <el-table-column  label="序号"
                   type="index"
                   width="50">
+      </el-table-column>
+
+      <el-table-column width="80px" align="center" label="项目备注">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.note==''" type="primary" size="small" @click="onNoteClick(scope.row)">新增</el-button>
+          <span v-else @click="onNoteClick(scope.row)">{{scope.row.note}}</span>
+        </template>
       </el-table-column>
 
       <el-table-column width="80px" align="center" label="项目名称">
@@ -109,9 +117,10 @@
                   </el-checkbox-group>
                   <el-button type="warning" @click="handleProgramUpdate(scope.row)">确认</el-button>
               </div>
-            <el-button type="danger" slot="reference">配置</el-button>
+            <el-button type="danger" size="small"  slot="reference">配置</el-button>
           </el-popover>
-          <el-button type="primary"  :loading="onProgramStarting" @click="onProgramStart(scope.row)">项目启动</el-button>
+          <el-button type="primary" size="small"  :loading="onProgramStarting" @click="onProgramStart(scope.row)">项目启动</el-button>
+          <el-button type="primary" size="small" icon="el-icon-edit" :loading="onDeleting" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
 
@@ -127,7 +136,21 @@
 
   <pre-program  :propVisible="previsible" @pre-completed="onPreCompleted"></pre-program>
   <pre-program-edit :propStep="program_step" :propDialogStatus="dialogStatus" :propProgram="temp" :propVisible="visible" :propSelection="selection" @close-dia="onCloseDia" @update-list="onUpdateList"></pre-program-edit>
+  
+  <el-dialog :title="'项目备注'" :visible.sync="dialogNoteVisible">
+            <el-form  :model="choosenRow" label123456781-position="left" label-width="200px" style='width: 600px; margin-left:50px;'>
 
+              <el-form-item label="项目备注">
+                <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="choosenRow.note">
+                </el-input>
+              </el-form-item>
+
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+              <el-button @click="cancelNote()">取消</el-button>
+              <el-button type="primary"  @click="confirmNote(choosenRow)">确认</el-button>
+           </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -137,6 +160,8 @@ import { indexPreProgram, showPreProgram, storePreProgram, updatePreProgram,
          destroyPreProgram } from '@/api/preprogram'
 import { indexProgram, showProgram, storeProgram, updateProgram,
          destroyProgram } from '@/api/program'
+import { indexManagementProgram, showManagementProgram, storeManagementProgram, updateManagementProgram,
+         destroyManagementProgram } from '@/api/management-program'
 import { indexEmployee } from '@/api/employee'
 
 import WorkflowItem from '@/components/Workflow'
@@ -157,7 +182,9 @@ export default {
   },
   data() {
     return {
-      
+      choosenRow:{note:null},
+      dialogNoteVisible:false,
+      onDeleting:false,
       selection:{
         model:['model1','model2','model3'],
         programType:['配置项测试','定型测试','回归测试'],
@@ -196,7 +223,8 @@ export default {
         program_type:undefined,
         manager:undefined,
         classification:undefined,
-        title: undefined
+        title: undefined,
+        first:true
       },
 
 
@@ -291,7 +319,32 @@ export default {
     this.getModel()
   },
   methods: {
-
+    tableRowClassName({row, rowIndex}) {
+        if (row.note !='') {
+          return 'warning-row';
+        } 
+        return '';
+    },
+    onNoteClick(row){
+      this.choosenRow=row;
+      this.dialogNoteVisible=true;
+    },
+    cancelNote(){
+      this.dialogNoteVisible=false;
+    },
+    confirmNote(row){
+        updateProgram(row).then(response => {
+        if(response.data.isOkay==true){
+                this.dialogNoteVisible=false;
+                this.$notify({
+                  title: '项目备注已更新',
+                  message: '请在项目中查看此项目',
+                  type: 'success',
+                  duration: 2000
+                })
+        }
+      })
+    },
     
     getModel(){
       var listQuery={
@@ -322,9 +375,8 @@ export default {
         this.total = data.total
 
         // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+        this.listLoading = false
+        this.listQuery.first=false
       })
     },
 
@@ -422,90 +474,49 @@ export default {
     handleProgramCreate() {
       this.previsible=true;
     },
-    cancelStep(){
-        this.invisible=this.invisible.map(()=>false);
-    },
-    previousStep(cstepid){
-      if(cstepid<1){
-        this.$refs[this.dataformMap[cstepid]].validate((valid)=>{
-          if(valid){
-                  this.temp.step=this.temp.step-1;
-                  this.invisible=this.invisible.map((eachName,step)=>{
-                      if(step==this.temp.step){
-                      return true;
-                    }else{
-                      return false;
-                    }
-                  });
-          }
-        })
-      }else if(cstepid>1&&cstepid<4){
-        this.$refs[this.dataformMap[cstepid]].$refs[this.dataformMap[cstepid]].validate((valid)=>{
-          if(valid){
-              this.temp.step=this.temp.step-1;
-                      this.invisible=this.invisible.map((eachName,step)=>{
-                          if(step==this.temp.step){
-                          return true;
-                        }else{
-                          return false;
-                        }
-                      });
+    
+    handleDelete(row){
+        this.$confirm('此操作将永久删除此项目, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.onDeleting=true;
+          destroyManagementProgram(row.id).then(response => {
+            var data=response.data
+            if(data.is_okay==true){
+              for (const v of this.list) {
+                  if (v.id === row.id) {
+                    const index = this.list.indexOf(v)
+                    this.list.splice(index, 1)
+                    break
+                  }
                 }
-        })
-      }else{
-        this.temp.step=this.temp.step-1;
-                      this.invisible=this.invisible.map((eachName,step)=>{
-                          if(step==this.temp.step){
-                          return true;
-                        }else{
-                          return false;
-                        }
-                      });
-      }
+                this.$notify({
+                  title: '成功',
+                  message: '删除成功',
+                  type: 'success',
+                  duration: 2000
+                })
+              }else{
+                this.$notify({
+                  title: '删除失败',
+                  message: data.note,
+                  type: 'success',
+                  duration: 2000
+                })
+              }
+              this.onDeleting=false;
 
-    },
-    nextStep(cstepid){
-      if(cstepid<1){
-        this.$refs[this.dataformMap[cstepid]].validate((valid)=>{
-          if(valid){
-                  this.temp.step=this.temp.step+1;
-                  this.invisible= this.invisible.map((eachName,step)=>{
-                  if(step==this.temp.step){
-                    return true;
-                    }else{
-                    return false;
-                  }
-                  });
-          }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
         });
-      }else if(cstepid>1&&cstepid<4){      
-        this.$refs[this.dataformMap[cstepid]].$refs[this.dataformMap[cstepid]].validate((valid)=>{
-          if(valid){
-                  this.temp.step=this.temp.step+1;
-                  this.invisible= this.invisible.map((eachName,step)=>{
-                  if(step==this.temp.step){
-                    return true;
-                    }else{
-                    return false;
-                  }
-                  });
-          }
-                  
-        })
-                  
-      }else{
-                  this.temp.step=this.temp.step+1;
-                  this.invisible= this.invisible.map((eachName,step)=>{
-                  if(step==this.temp.step){
-                    return true;
-                    }else{
-                    return false;
-                  }
-                  });
-      }
       
-    },
-
+      },
     handleProgramUpdate(row) {
       this.resetTemp(row.id);
       this.visible=true;
@@ -611,7 +622,7 @@ export default {
     },
     onProgramStart(row){
         this.onProgramStarting=true;
-        row.state="项目进行中";
+        row.state="首轮测试执行中";
         let data=row;
         updateProgram(data).then(response => {
         if(response.data.isOkay==true){
@@ -635,3 +646,8 @@ export default {
   }
 }
 </script>
+<style>
+.el-table .warning-row {
+    background: oldlace;
+  }
+</style>

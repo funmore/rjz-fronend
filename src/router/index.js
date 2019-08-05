@@ -151,7 +151,7 @@ export const asyncRouterMap = [
           component: () => import('@/views/customPrograms/customProgramsTable.vue'),
           meta: { 
             title: '订制项目信息', 
-            roles: ['管理员','主任','副主任','测试人员'],
+            roles: ['管理员','主任','副主任','测试人员','主任设计师','副主任设计师','项目组长','型号负责人'],
             icon: 'guide' }
         },
         {
@@ -160,7 +160,7 @@ export const asyncRouterMap = [
           component: () => import('@/views/statistic/people/peopleTable'),
           meta: { 
             title: '人力分析', 
-            roles: ['管理员','主任','副主任'],
+            roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人'],
             icon: 'peoples' }
         },
         //edit
