@@ -22,7 +22,7 @@
         <el-option v-for="(item, index) in selection.programType" :key="index" :label="item" :value="item">
         </el-option>
       </el-select>
-      <select-program-property :propList="selectList" :propSeparator="separator" @rangeChange="OnRangeChange"></select-program-property>
+      <select-program-property  class="multi-select" :propList="selectList" :propSeparator="separator" @rangeChange="OnRangeChange"></select-program-property>
 
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索</el-button>
       <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">导出EXCEL</el-button>
@@ -72,7 +72,10 @@
 </template>
 
 <script>
-  import { indexModel} from '@/api/model'
+
+
+
+import { indexModel} from '@/api/model'
 import { indexEmployee } from '@/api/employee'
 import SelectEmployee from '@/components/SelectEmployee/index.vue'
 

@@ -1,6 +1,6 @@
 <template>
   <div class="createPost-container">
-    <el-row>
+    <el-row id="workflow">
       <el-card class="box-card" v-if="items.workflow!=null">
         <div slot="header" class="clearfix">
           <span>{{items.workflow.workflow_name}}</span>
@@ -19,7 +19,7 @@
       </el-card>
     </el-row>
 
-    <el-row>
+    <el-row id="programBasic">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>项目基本信息</span>
@@ -30,7 +30,7 @@
       </el-card>
     </el-row>
 
-    <el-row>
+    <el-row id="programTeamRole">
       <el-card class="box-card" v-if="items.programTeamRole!=null">
         <div slot="header" class="clearfix">
           <span>项目组信息</span>
@@ -49,7 +49,7 @@
       </el-card>
     </el-row>
 
-    <el-row>
+    <el-row id="softwareInfo">
       <el-card class="box-card" v-if="items.softwareInfo!=null">
         <div slot="header" class="clearfix">
           <span>被测件信息</span>
@@ -69,7 +69,7 @@
       </el-card>
     </el-row>
 
-    <el-row>
+    <el-row id="inputFile">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>项目输入信息</span>
@@ -82,7 +82,7 @@
       </el-card>
     </el-row>
 
-    <el-row>
+    <el-row id="outputFile">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>项目工作产品信息</span>
@@ -163,12 +163,6 @@ import ProgramEdit from '@/components/ProgramEdit'
 export default {
   name: 'ProgramDetail',
   components: { Tinymce, MDinput, Upload, Multiselect, Sticky, Warning, CommentDropdown, PlatformDropdown, SourceUrlDropdown, Kanban,TeamMemberDetail,SoftwareInfoDetail,ProgramBasic, WorkflowEdit,FileProgramDetail,FileReviewDetail,ProgramEdit },
-  props: {
-    isEdit: {
-      type: Boolean,
-      default: false
-    }
-  },
   data() {
     const validateRequire = (rule, value, callback) => {
       if (value === '') {
@@ -289,11 +283,9 @@ export default {
         Message.error(err || 'Verification failed, please login again')
       })
     })
-    if (this.isEdit) {
       const id = this.$route.params && this.$route.params.id
       this.showProgram(id)
-    } else {
-    }
+
     this.getModel()
     this.getEmployeePrincal()
 

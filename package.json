@@ -17,6 +17,7 @@
     "ajv": "^6.10.2",
     "axios": "0.17.1",
     "codemirror": "^5.39.2",
+    "driver.js": "^0.9.7",
     "echarts": "^4.2.0-rc.2",
     "ele-multi-cascader": "^2.2.4",
     "element-ui": "^2.10.1",

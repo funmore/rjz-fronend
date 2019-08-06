@@ -33,7 +33,7 @@
 
     <el-table :key='list.id' :data="list" v-loading="listLoading" border fit highlight-current-row
       style="width: 100%;min-height:1000px;">
-      <el-table-column   width="50px" align="center" label="序号"  type="index">
+      <el-table-column   width="50px" align="center" label="序号"  type="index" :index="indexMethod">
       </el-table-column>
 
       <el-table-column  width="80px" align="center" label="项目名称">
@@ -48,13 +48,19 @@
         </template>
       </el-table-column>
 
-      <el-table-column  width="80px" align="center" label="项目状态">
+      <el-table-column  width="80px" align="center" label="项目状态" class-name="state">
         <template slot-scope="{row}">
           <span>{{row.state}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column  width="100px" align="center" label="待解决问题">
+      <el-table-column  width="80px" align="center" label="流程状态" class-name="workflow_state">
+        <template slot-scope="{row}">
+          <span>{{row.workflow_state}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column  width="100px" align="center" label="流程节点问题" class-name="issue">
         <template slot-scope="{row}">
           <span>{{row.issue}}</span>
         </template>
@@ -112,7 +118,7 @@
 
 
 
-      <el-table-column align="center" label="操作" width="130px" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="操作" width="130px" class-name="small-padding fixed-width operation">
         <template slot-scope="{row}">
             <router-link :to="'/management/programs/edit/'+row.id"> 
             <el-button type="primary" size="small" icon="el-icon-edit">打开</el-button>
@@ -318,6 +324,9 @@ export default {
     this.getModel()
   },
   methods: {
+    indexMethod(index){
+      return index+(this.listQuery.page-1)*this.listQuery.limit+1;
+    },
     getModel(){
       var listQuery={
           isAll:true
@@ -340,7 +349,6 @@ export default {
 
         // Just to simulate the time of the request
         this.listLoading = false
-        this.listQuery.first=false
       })
       
     },
@@ -354,6 +362,7 @@ export default {
       })
     },
     handleFilter() {
+      this.listQuery.first=false;
       this.listQuery.page = 1
       this.getList()
     },

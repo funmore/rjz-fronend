@@ -29,7 +29,6 @@
       </el-table-column>
 
 
-      </el-table-column>
 
 
 

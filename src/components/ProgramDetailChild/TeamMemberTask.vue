@@ -2,7 +2,7 @@
       <el-card class="box-card" >
         <div class="filter-container">
           <el-select @change='handleFilter' style="width: 140px" class="filter-item" v-model="listQuery.workflowArray" >
-            <el-option v-for="item in workflowArray" :key="item.array_index" :label="'截止'+item.name" :value="item.id">
+            <el-option v-for="item in workflowArray" :key="item.id" :label="'截止'+item.name" :value="item.id">
             </el-option>
           </el-select>
           <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit" v-if="isEditable">新增任务</el-button>

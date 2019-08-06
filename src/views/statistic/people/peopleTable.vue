@@ -39,7 +39,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" width="130px" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="操作" width="130px" class-name="small-padding fixed-width arrow">
         <template slot-scope="scope">
             <el-button type="primary" size="small" icon="el-icon-arrow-right" plain round  @click="OnPeopleChange(scope.row)"> </el-button>
         </template>
@@ -50,7 +50,7 @@
       </el-pagination>
     </div>
      </el-col>
-     <el-col :span="16">
+     <el-col :span="16" class="info">
 
            <el-table :key='detail_list.id' :data="detail_list" v-loading="detailLoading" border fit highlight-current-row
               style="width: 100%;min-height:1000px;">

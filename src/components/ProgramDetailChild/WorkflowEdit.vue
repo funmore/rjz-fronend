@@ -56,7 +56,7 @@
         </el-form-item>
 
         <el-form-item label="更新目标节点">
-          {{to_node_name}}
+          {{to_node_name(workflow,temp)}}
         </el-form-item>
 
         <el-form-item label="更新日志">
@@ -130,7 +130,7 @@
     },
     computed: {
     to_node_name() {
-      return     this.workflow.workflowArray.find( item => item.id === this.temp.to_node_id ).name
+      return (workflow,temp)=>{ return    workflow.workflowArray.find( item => item.id === temp.to_node_id ).name}
      },
 
    },

@@ -2,6 +2,11 @@
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <breadcrumb></breadcrumb>
+    <div class="guide" @click.prevent.stop="guide">
+      <el-badge class="item">
+        <el-button icon="el-icon-guide">不知道怎么用？</el-button>
+      </el-badge>
+    </div>
     <div class="notification" @click="openNoti">
       <el-badge :value="notice" class="item">
         <el-button icon="el-icon-bell">通知中心</el-button>
@@ -10,9 +15,7 @@
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
         <el-button icon="el-icon-caret-bottom">你好！{{name}}</el-button>
-        <!-- <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'"> -->
-<!--         <i class="el-icon-caret-bottom"></i>
- -->      </div>
+      </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
         <router-link class="inlineBlock" to="/">
           <el-dropdown-item>
@@ -28,6 +31,9 @@
 </template>
 
 <script>
+import * as Driver from 'driver.js' // import driver.js
+import 'driver.js/dist/driver.min.css' // import driver.js css
+
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
@@ -45,7 +51,19 @@ export default {
       'name'
     ])
   },
+  data() {
+    return {
+      driver: null
+    }
+  },
+  mounted() {
+    this.driver = new Driver()
+  },
   methods: {
+    guide() {
+      this.driver.defineSteps(this.$store.getters.steps)
+      this.driver.start()
+    },
     toggleSideBar() {
       this.$store.dispatch('ToggleSideBar')
     },
@@ -77,6 +95,12 @@ export default {
     right: 90px;
     top: 16px;
     color: red;
+  }
+  .guide{
+    height: 50px;
+    display: inline-block;
+    position: absolute;
+    right: 337px;
   }
   .notification{
     height: 50px;

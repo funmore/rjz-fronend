@@ -3,7 +3,7 @@
 
 
     <el-row class="tac">
-  <el-col :span="2">
+  <el-col :span="2" id="rolemenu">
     <h5>项目担任角色</h5>
     <el-menu
       default-active="leader"
@@ -36,7 +36,7 @@
       </el-menu-item>
     </el-menu>
   </el-col>
- <el-col :span="22">
+ <el-col :span="22" >
       <div class="filter-container">
         <el-input @keyup.enter.native="handleFilter" style="width: 180px;" class="filter-item" placeholder="项目名称(支持模糊查询)" v-model="listQuery.title">
         </el-input>

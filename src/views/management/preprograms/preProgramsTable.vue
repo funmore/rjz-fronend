@@ -27,7 +27,7 @@
       </el-select>
 
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleProgramCreate" type="primary" icon="el-icon-edit">新增</el-button>
+      <el-button class="filter-item new" style="margin-left: 10px;" @click="handleProgramCreate" type="primary" icon="el-icon-edit">新增</el-button>
 
     </div>
 
@@ -39,7 +39,7 @@
                   width="50">
       </el-table-column>
 
-      <el-table-column width="80px" align="center" label="项目备注">
+      <el-table-column width="80px" align="center" label="项目备注" class-name="note">
         <template slot-scope="scope">
           <el-button v-if="scope.row.note==''" type="primary" size="small" @click="onNoteClick(scope.row)">新增</el-button>
           <span v-else @click="onNoteClick(scope.row)">{{scope.row.note}}</span>
@@ -98,7 +98,7 @@
       </el-table-column>
 
 
-      <el-table-column align="center" label="操作" width="330px" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="操作" width="330px" class-name="small-padding fixed-width operation">
         <template slot-scope="scope">
           <el-popover
             placement="top-start"
@@ -376,11 +376,11 @@ export default {
 
         // Just to simulate the time of the request
         this.listLoading = false
-        this.listQuery.first=false
       })
     },
 
     handleFilter() {
+      this.listQuery.first=false;
       this.listQuery.page = 1
       this.getList()
     },

@@ -35,15 +35,6 @@ export const constantRouterMap = [
       component: () => import('@/views/dashboard/index')
     }]
   },
-  {
-    path: '/management/programs/edit/:id(\\d+)',
-    name: 'editProgram',
-    component: () => import('@/views/management/programs/edit'),
-    meta: { 
-      title: '编辑项目', 
-      icon: 'table' },
-    hidden:true
-  },
    //个人
    {
     path: '/dashboard',
@@ -146,8 +137,8 @@ export const asyncRouterMap = [
         icon:'example'},
       children:[
         {
-          path: 'programs',
-          name: 'programs',
+          path: 'customprogram',
+          name: 'customprogram',
           component: () => import('@/views/customPrograms/customProgramsTable.vue'),
           meta: { 
             title: '订制项目信息', 
@@ -162,18 +153,7 @@ export const asyncRouterMap = [
             title: '人力分析', 
             roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人'],
             icon: 'peoples' }
-        },
-        //edit
-        {
-          path: 'people/view/:id(\\d+)',
-          name: 'viewPeople',
-          component: () => import('@/views/management/programs/edit'),
-          meta: { 
-            title: '编辑项目', 
-            roles: ['管理员','主任','副主任'],
-            icon: 'table' },
-          hidden:true
-        },
+        }
       ]
     },
       //管理
@@ -193,15 +173,15 @@ export const asyncRouterMap = [
           name: 'programs',
           component: () => import('@/views/management/programs/programsTable'),
           meta: { 
-            title: '项目管理',
+            title: '正式项目',
             roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员','测试人员'], 
             icon: 'form' }
         },
         //edit
         {
           path: 'programs/edit/:id(\\d+)',
-          name: 'editProgram',
-          component: () => import('@/views/management/programs/edit'),
+          name: 'programDetail',
+          component: () => import('@/views/management/programs/components/ProgramDetail'),
           meta: { 
             title: '编辑项目', 
             roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员','测试人员'],
