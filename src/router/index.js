@@ -133,7 +133,7 @@ export const asyncRouterMap = [
       name: 'statistic',
       meta:{
         title:'统计',
-        roles: ['管理员','主任','副主任'],
+        roles: ['管理员','主任','副主任','测试人员','主任设计师','副主任设计师','项目组长','型号负责人'],
         icon:'example'},
       children:[
         {

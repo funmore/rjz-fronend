@@ -22,10 +22,12 @@
         <el-option v-for="(item, index) in selection.programType" :key="index" :label="item" :value="item">
         </el-option>
       </el-select>
-      <select-program-property  class="multi-select" :propList="selectList" :propSeparator="separator" @rangeChange="OnRangeChange"></select-program-property>
-
+      
+      <select-program-property  class="multi-select" :propValue="columnSelect.values" :propList="selectList" :propSeparator="separator" @rangeChange="OnRangeChange"></select-program-property>
+      <favor propType="custom"    :propColumnSelect="columnSelect" @favorChange="onFavorChange"></favor>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索</el-button>
       <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">导出EXCEL</el-button>
+
     </div>
 
 
@@ -39,7 +41,7 @@
 
       <el-table-column 
           width="80px" align="center"
-          v-for="(item,index) in columnConfig.objArr" 
+          v-for="(item,index) in columnConfig.items" 
           :key="item.name"  
           :label="item.name"   >
         <template slot-scope="{row}">
@@ -49,13 +51,13 @@
       </el-table-column>
 
 
-      <el-table-column align="center" label="操作" width="130px" class-name="small-padding fixed-width">
+      <!-- <el-table-column align="center" label="操作" width="130px" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
             <router-link :to="'/management/programs/edit/'+row.programBasic.id"> 
             <el-button type="primary" size="small" icon="el-icon-edit">打开</el-button>
           </router-link>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
     </el-table>
 
@@ -78,7 +80,8 @@
 import { indexModel} from '@/api/model'
 import { indexEmployee } from '@/api/employee'
 import SelectEmployee from '@/components/SelectEmployee/index.vue'
-
+import { indexFavor, showFavor, storeFavor, updateFavor,
+         destroyFavor } from '@/api/favor'
 
 import { indexManagementProgram,indexCustomProgram, showManagementProgram, storeManagementProgram, updateManagementProgram,
          destroyManagementProgram } from '@/api/management-program'
@@ -89,8 +92,9 @@ import Contact from '@/components/Contact'
 import ProgramTeamRole from '@/components/ProgramTeamRole'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils/index.js'
+import Favor from '@/components/Favor.vue'
 
-const constModel = ['model1','model2','model3']
+
 const constProgramType = ['配置项测试','定型测试','回归测试']
 const constClassification = ['机密','秘密','内部']
 const constProgramStage = ['方案','初样','试样','定型']
@@ -111,7 +115,7 @@ const constSize = ['大','中','小']
 
 export default {
   name: 'complexTable',
-  components: { WorkflowItem, ProgramTeamRole,SoftwareInfo,Contact,SelectProgramProperty,SelectEmployee},
+  components: { WorkflowItem, ProgramTeamRole,SoftwareInfo,Contact,SelectProgramProperty,SelectEmployee,Favor},
   directives: {
     waves
   },
@@ -119,7 +123,7 @@ export default {
     return {
       separator:'.',
       selection:{
-        model:constModel,
+        model:[],
         programType:constProgramType,
         classification:constClassification,
         programStage:constProgramStage,
@@ -136,7 +140,7 @@ export default {
         softwareCate:constSoftwareCate,
         softwareSubCate:constSoftwareSubCate,
         cpuType:constCpuType,
-        size:constSize
+        size:constSize,
       },
       listLoading: true,
       visible:false,
@@ -157,8 +161,9 @@ export default {
         classification:undefined,
         title: undefined
       },
-
-      columnConfig:[],
+      columnSelect:{values:[],items:[]},  //保存多选多选出的原生数据
+      columnConfig:{values:[],items:[]},  //监视columnSelect 把根节点去除后的数据
+  
 
       dialogStatus: '',
       textMap: {
@@ -381,7 +386,7 @@ export default {
     // valueComputed(row,index,columnConfig,separator){
     //         var ret=null;
     //         var father=null;
-    //         let keyPath=columnConfig.keyPathArr[index];
+    //         let keyPath=columnConfig.values[index];
     //         let fatherProperty=keyPath.slice(0,keyPath.indexOf(separator))
     //         let childProperty=keyPath.slice(keyPath.indexOf(separator)+1)
     //         if(fatherProperty=='softwareInfoCol'){
@@ -401,7 +406,7 @@ export default {
           return (row,index)=>{
             var ret=null;
             var father=null;
-            let keyPath=this.columnConfig.keyPathArr[index];
+            let keyPath=this.columnConfig.values[index];
             let fatherProperty=keyPath.slice(0,keyPath.indexOf(this.separator))
             let childProperty=keyPath.slice(keyPath.indexOf(this.separator)+1)
             if(fatherProperty=='softwareInfoCol'){
@@ -421,12 +426,19 @@ export default {
     this.getList()
     this.getEmployeePrincal()
     this.getModel()
+    this.columnSelect2Config();
+
+  },
+  watch:{
+    columnSelect:function(newVa,oldVa){
+      this.columnSelect2Config();
+    }
   },
   methods: {
     //   valueComputed(row,index){
     //     var ret=null;
     //     var father=null;
-    //     let keyPath=this.columnConfig.keyPathArr[index];
+    //     let keyPath=this.columnConfig.values[index];
     //     let fatherProperty=keyPath.slice(0,keyPath.indexOf(this.separator))
     //     let childProperty=keyPath.slice(keyPath.indexOf(this.separator)+1)
     //     if(fatherProperty=='softwareInfoCol'){
@@ -441,9 +453,20 @@ export default {
     //     }
     // },
 
-
+    columnSelect2Config(){
+      let trim_values=this.columnSelect.values.filter(x=>x.includes(this.separator))
+      let trim_items =this.columnSelect.items.filter(x=>(x.key!='programBasic')
+                                        &&(x.key!='contact')
+                                        &&(x.key!='softwareInfoCol')
+                                        &&(x.key!='workflow')
+                                        &&(x.key!='programTeamRole'))
+      this.columnConfig={values:trim_values,items:trim_items}
+    },
     OnRangeChange(args){
-        this.columnConfig=args;
+       this.columnSelect=args;
+    },
+    onFavorChange(args){
+       this.columnSelect=args;
     },
     getModel(){
       var listQuery={
@@ -502,9 +525,9 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        var tHeader = this.columnConfig.objArr.map(x=>x.name);
+        var tHeader = this.columnConfig.items.map(x=>x.name);
         tHeader.unshift('序号');
-        const data = this.formatJson(this.columnConfig.keyPathArr, this.list)
+        const data = this.formatJson(this.columnConfig.values, this.list)
         var today = new Date();
         var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -517,10 +540,10 @@ export default {
         this.downloadLoading = false
       })
     },
-    formatJson(keyPathArr, list) {
+    formatJson(values, list) {
       var id=1;
       return list.map(row => {
-          var ret=keyPathArr.map(keyPath => {
+          var ret=values.map(keyPath => {
             var ret=null;
             var father=null;
             let fatherProperty=keyPath.slice(0,keyPath.indexOf(this.separator))

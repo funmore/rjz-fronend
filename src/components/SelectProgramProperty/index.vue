@@ -1,8 +1,10 @@
 <template>
+<div>
                 <ele-multi-cascader
                     :options="propList"
                     placeholder="请选择范围"
                     @change="ispChange"
+                    v-model="value"
                     ref="cascader"
                     show-all-levels
                     output-level-value
@@ -14,6 +16,8 @@
                     :panelWidth="'auto'"
                   >
                 </ele-multi-cascader>
+
+</div>
 </template>
 
 <script>
@@ -23,21 +27,22 @@ export default {
   name: 'select-program-property',
   props:{
     propList:Array,
-    propSeparator:String
+    propSeparator:String,
+    propValue:Array,
   },
-
-
+  data() {
+    return {
+      value:this.propValue
+    }
+  },
+  watch:{
+    propValue:function(newVa,oldVa){
+      this.value=newVa;
+    }
+  },
    methods: {
     ispChange(values, items) {
-      let trim_values=values.filter(x=>x.includes(this.propSeparator))
-      let trim_items =items.filter(x=>(x.key!='programBasic')
-                                        &&(x.key!='contact')
-                                        &&(x.key!='softwareInfoCol')
-                                        &&(x.key!='workflow')
-                                        &&(x.key!='programTeamRole'))
-      let treeData={keyPathArr:trim_values,objArr:trim_items}
-      // var key_list=values.filter(x=>x.includes('/')).map(x=>x.slice(x.indexOf('/')+1));
-      // let kv_list=key_list.map(x=>{var ret=this.getNodeBykey(this.propList,x); return ret});
+      let treeData={values:values,items:items}
       this.$emit('rangeChange',treeData);
     },
     // getNodeBykey(tree,key){
