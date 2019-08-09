@@ -622,7 +622,7 @@ export default {
     },
     onProgramStart(row){
         this.onProgramStarting=true;
-        row.state="首轮测试执行中";
+        row.state="正式项目";
         let data=row;
         updateProgram(data).then(response => {
         if(response.data.isOkay==true){

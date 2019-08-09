@@ -35,8 +35,10 @@
 
 
     <el-table :key='list.id' :data="list" v-loading="listLoading" border fit highlight-current-row
-      style="width: 100%;min-height:1000px;">
-      <el-table-column  width="50px" align="center" label="序号"  type="index">
+      style="width: 100%;min-height:1000px;" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" align="center"></el-table-column>
+
+      <el-table-column  width="50px" align="center" label="序号"  type="index" :index="indexMethod">
       </el-table-column>
 
       <el-table-column 
@@ -352,12 +354,12 @@ export default {
           children:[
             {
               key:'workflow_state',
-              name:'当前节点',
+              name:'流程状态',
               children:null
             },
             {
               key:'workflow_issue',
-              name:'当前节点问题',
+              name:'流程节点问题',
               children:null
             }
           ]
@@ -378,7 +380,8 @@ export default {
             }
           ]
         }
-        ]
+        ],
+        multipleSelection: [],
 
     }
   },
@@ -452,7 +455,12 @@ export default {
     //       return father[childProperty]
     //     }
     // },
-
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    indexMethod(index){
+      return index+(this.listQuery.page-1)*this.listQuery.limit+1;
+    },
     columnSelect2Config(){
       let trim_values=this.columnSelect.values.filter(x=>x.includes(this.separator))
       let trim_items =this.columnSelect.items.filter(x=>(x.key!='programBasic')
@@ -527,7 +535,7 @@ export default {
       import('@/vendor/Export2Excel').then(excel => {
         var tHeader = this.columnConfig.items.map(x=>x.name);
         tHeader.unshift('序号');
-        const data = this.formatJson(this.columnConfig.values, this.list)
+        const data = this.formatJson(this.columnConfig.values, this.multipleSelection)
         var today = new Date();
         var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
