@@ -85,8 +85,8 @@ import SelectEmployee from '@/components/SelectEmployee/index.vue'
 import { indexFavor, showFavor, storeFavor, updateFavor,
          destroyFavor } from '@/api/favor'
 
-import { indexManagementProgram,indexCustomProgram, showManagementProgram, storeManagementProgram, updateManagementProgram,
-         destroyManagementProgram } from '@/api/management-program'
+import { indexProgramEdit,indexCustomProgram, showProgramEdit, storeProgramEdit, updateProgramEdit,
+         destroyProgramEdit } from '@/api/programedit'
 import SelectProgramProperty from '@/components/SelectProgramProperty/index.vue'
 import WorkflowItem from '@/components/Workflow'
 import SoftwareInfo from '@/components/SoftwareInfo'

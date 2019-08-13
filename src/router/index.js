@@ -200,6 +200,15 @@ export const asyncRouterMap = [
             icon: 'form' }
         },
         {
+          path: 'intentprograms',
+          name: 'intentprograms',
+          component: () => import('@/views/management/preprograms/intentProgramsTable'),
+          meta: { 
+            title: '意向项目', 
+            roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员'],
+            icon: 'form' }
+        },
+        {
           path: 'batchimport',
           name: 'batchimport',
           component: () => import('@/views/management/batchimport/importTable'),
@@ -213,7 +222,7 @@ export const asyncRouterMap = [
           name: 'import',
           component: () => import('@/views/management/import/importProgram'),
           meta: { 
-            title: '项目通知单导入', 
+            title: '项目任务单导入', 
             roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','配置管理人员','市场人员'],
             icon: 'email' }
         },

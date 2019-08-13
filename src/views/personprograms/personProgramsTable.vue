@@ -169,8 +169,8 @@
   import { indexModel} from '@/api/model'
 import { indexEmployee } from '@/api/employee'
 
-import { indexManagementProgram, showManagementProgram, storeManagementProgram, updateManagementProgram,
-         destroyManagementProgram } from '@/api/management-program'
+import { indexProgramEdit, showProgramEdit, storeProgramEdit, updateProgramEdit,
+         destroyProgramEdit } from '@/api/programedit'
 import WorkflowItem from '@/components/Workflow'
 import SoftwareInfo from '@/components/SoftwareInfo'
 import Contact from '@/components/Contact'
@@ -245,7 +245,8 @@ export default {
         manager:undefined,
         classification:undefined,
         title: undefined,
-        type:'leader'
+        type:'leader',
+        state:'正式项目'
       },
 
 
@@ -362,7 +363,7 @@ export default {
     getList() {
 
       this.listLoading = true;
-      indexManagementProgram(this.listQuery).then(response => {
+      indexProgramEdit(this.listQuery).then(response => {
         var data=response.data
         this.list = Object.values(data.items)
         this.total = data.total

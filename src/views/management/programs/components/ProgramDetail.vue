@@ -131,8 +131,8 @@
 
 <script>
 
-import { indexManagementProgram, showManagementProgram, storeManagementProgram, updateManagementProgram,
-         destroyManagementProgram } from '@/api/management-program'
+import { indexProgramEdit, showProgramEdit, storeProgramEdit, updateProgramEdit,
+         destroyProgramEdit } from '@/api/programedit'
 import { indexModel} from '@/api/model'
 import { indexEmployee } from '@/api/employee'
 
@@ -318,7 +318,7 @@ export default {
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)'
         });
-      showManagementProgram(id).then(response => {
+      showProgramEdit(id).then(response => {
 
         var data=response.data
         this.items = data.items

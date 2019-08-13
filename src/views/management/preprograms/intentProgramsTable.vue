@@ -27,7 +27,7 @@
       </el-select>
 
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索</el-button>
-      <el-button class="filter-item new" style="margin-left: 10px;" @click="handleProgramCreate" type="primary" icon="el-icon-edit">新增预备项目</el-button>
+      <el-button class="filter-item new" style="margin-left: 10px;" @click="handleProgramCreate" type="primary" icon="el-icon-edit">新增意向项目</el-button>
 
     </div>
 
@@ -108,13 +108,12 @@
          <el-row> <el-button :type="scope.row.is_exist.ProgramBasic?'success':'warning'" size="mini"  :icon="scope.row.is_exist.ProgramBasic?'el-icon-edit':'el-icon-circle-plus-outline'"  @click="handleConfigure(scope.row,'ProgramBasic')">{{scope.row.is_exist.ProgramBasic|State}}基本信息</el-button></el-row>
          <el-row> <el-button :type="scope.row.is_exist.Contact?'success':'warning'" size="mini"  :icon="scope.row.is_exist.Contact?'el-icon-edit':'el-icon-circle-plus-outline'"  @click="handleConfigure(scope.row,'Contact')">{{scope.row.is_exist.Contact|State}}联系人员</el-button></el-row>
          <el-row> <el-button :type="scope.row.is_exist.SoftwareInfo?'success':'warning'" size="mini"  :icon="scope.row.is_exist.SoftwareInfo?'el-icon-edit':'el-icon-circle-plus-outline'"  @click="handleConfigure(scope.row,'SoftwareInfo')">{{scope.row.is_exist.SoftwareInfo|State}}软件信息</el-button></el-row>
-         <el-row> <el-button :type="scope.row.is_exist.Workflow?'success':'warning'" size="mini"  :icon="scope.row.is_exist.Workflow?'el-icon-edit':'el-icon-circle-plus-outline'"  @click="handleConfigure(scope.row,'Workflow')">{{scope.row.is_exist.Workflow|State}}流程信息</el-button></el-row>
-         <el-row> <el-button :type="scope.row.is_exist.ProgramTeamRole?'success':'warning'" size="mini"  :icon="scope.row.is_exist.ProgramTeamRole?'el-icon-edit':'el-icon-circle-plus-outline'"  @click="handleConfigure(scope.row,'ProgramTeamRole')">{{scope.row.is_exist.ProgramTeamRole|State}}人员信息</el-button></el-row>
+        
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="330px" class-name="small-padding fixed-width operation">
         <template slot-scope="scope">
-          <el-button type="primary" size="small"  :loading="onProgramStarting" @click="onProgramStart(scope.row)">转正式项目</el-button>
+          <el-button type="primary" size="small"  :loading="onProgramStarting" @click="onProgramStart(scope.row)">转预备项目</el-button>
           <el-button type="danger" size="small" icon="el-icon-edit" :loading="onDeleting" @click="handleDelete(scope.row)">删除</el-button>
 
           <span>{{scope.row.is_exist}}</span>
@@ -133,13 +132,11 @@
   <aaa :propProgramBasicId="programBasicId" :propIsExist="is_exist" :propSelection="selection"  :propVisible="visibleCol.ProgramBasic" @close="handleClose"></aaa>
   <bbb :propProgramBasicId="programBasicId" :propIsExist="is_exist"                             :propVisible="visibleCol.Contact" @close="handleClose"></bbb>
   <ccc :propProgramBasicId="programBasicId" :propIsExist="is_exist" :propSelection="selection"  :propVisible="visibleCol.SoftwareInfo" @close="handleClose"></ccc>
-  <ddd :propProgramBasicId="programBasicId" :propIsExist="is_exist"                             :propVisible="visibleCol.Workflow" @close="handleClose"></ddd>
-  <eee :propProgramBasicId="programBasicId" :propIsExist="is_exist"                             :propVisible="visibleCol.ProgramTeamRole" @close="handleClose"></eee>
 
 
 
-  <pre-program  :propVisible="previsible" @pre-completed="onPreCompleted"></pre-program>
-  <pre-program-edit propState="预备项目" :propStep="program_step" :propDialogStatus="dialogStatus" :propProgram="temp" :propVisible="visible" :propSelection="selection" @close-dia="onCloseDia" @update-list="onUpdateList"></pre-program-edit>
+
+  <pre-program-edit propState="意向项目" :propStep="program_step" :propDialogStatus="dialogStatus" :propProgram="temp" :propVisible="visible" :propSelection="selection" @close-dia="onCloseDia" @update-list="onUpdateList"></pre-program-edit>
   
   <el-dialog :title="'项目备注'" :visible.sync="dialogNoteVisible">
             <el-form  :model="choosenRow" label123456781-position="left" label-width="200px" style='width: 600px; margin-left:50px;'>
@@ -246,7 +243,7 @@ export default {
         classification:undefined,
         title: undefined,
         first:true,
-        state:'预备项目'
+        state:'意向项目'
       },
 
 
@@ -505,7 +502,9 @@ export default {
         step:0,
       }
     },
-
+    handleProgramCreate() {
+      this.previsible=true;
+    },
     
     handleDelete(row){
         this.$confirm('此操作将永久删除此项目, 是否继续?', '提示', {
@@ -604,17 +603,17 @@ export default {
     handleProgramCreate() {
       this.resetTemp()
       this.visible=true
-      this.program_step=[true,true,false,false,false];
+      this.program_step=[true,true,true,false,false];
     },
     onPreCompleted(args){
       this.resetTemp()
       this.previsible=false;
       this.visible=true
+      this.dialogStatus = 'create'
       this.program_step=args
     },
     onUpdateList(args){
-
-            if(this.list==undefined) this.list=[];
+        if(this.list==undefined) this.list=[];
             var data=args;
             this.list.unshift(data);
             this.$notify({
@@ -628,17 +627,16 @@ export default {
 
     onProgramStart(row){
         if(row.is_exist.ProgramTeamRole!=true){
-            this.$confirm('转正式项目的前置条件是具备项目人员', '提示', {
+            this.$confirm('此操作将转为预备项目', '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               type: 'warning'
             }).then(() => {
               return
             }).catch(()=>{})
-            return
         }
         this.onProgramStarting=true;
-        row.state="正式项目";
+        row.state="预备项目";
         let data=row;
         updateProgram(data).then(response => {
         if(response.data.isOkay==true){
@@ -650,7 +648,7 @@ export default {
                   }
                 }
                 this.$notify({
-                  title: '项目已启动',
+                  title: '已转预备项目',
                   message: '请在项目中查看此项目',
                   type: 'success',
                   duration: 2000

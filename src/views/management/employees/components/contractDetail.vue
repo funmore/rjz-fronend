@@ -398,7 +398,7 @@ export default {
     },
       getList() {
       this.listLoading = true
-      fetchManagementProgramsList(this.listQuery).then(response => {
+      fetchProgramEditsList(this.listQuery).then(response => {
         this.list = response.items
         this.total = response.total
 
