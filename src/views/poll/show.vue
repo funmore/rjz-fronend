@@ -16,7 +16,8 @@
           :key="index" v-for="(item,index) in structure.pollColumn"
           width="150px" align="center"  :label="item.name"  >
         <template slot-scope="scope">
-          <span>{{Object.values(scope.row).find(value=>value.poll_column_id==item.id).value}}</span>
+          <!-- <span>{{Object.values(scope.row).find(value=>value.poll_column_id==item.id).value}}</span> -->
+          <span>{{scope.row|output(item)}}</span>
         </template>
       </el-table-column>
 
@@ -63,6 +64,11 @@ export default {
   components: {  },
   directives: {
     waves
+  },
+  filters:{
+    output:function(row,item){
+      return Object.values(row).find(value=>value.poll_column_id==item.id).value
+    }
   },
   data() {
     return {
