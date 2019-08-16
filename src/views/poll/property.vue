@@ -147,7 +147,7 @@ export default {
         poll:{        
           name:'',
           due_day:'',
-          range:[1,2]
+          range:[]
         },
         poll_column:[]
       },
@@ -156,7 +156,17 @@ export default {
           { required: true, message: '请输入表单名称', trigger: 'blur' }
           ],
         due_day:[
-          {  required: true, message: '请选择日期', trigger: 'change' }
+          {  required: true, 
+             trigger: 'change', 
+             validator(rule, val, cb) {
+               if(val==""){
+                cb(new Error("请选择截止日期"));
+               }else if (new Date(val)<new Date()) {
+                cb(new Error("截止日期必须大于当前时间"));
+              } else {
+                cb();
+              }
+            }}
         ],
         range: [
           {
@@ -164,7 +174,7 @@ export default {
             trigger: "change",
             validator(rule, val, cb) {
               if (val.length === 0) {
-                cb(new Error("请选择范围"));
+                cb(new Error("请选择表单使用范围"));
               } else {
                 cb();
               }

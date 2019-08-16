@@ -9,7 +9,43 @@
           </el-col>
         </div>
     </el-row>
-
+<el-row class="tac">
+<el-col :span="4" id="rolemenu">
+  
+    <h5>项目担任角色</h5>
+    <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
+      <el-radio-button :label="false">展开</el-radio-button>
+      <el-radio-button :label="true">收起</el-radio-button>
+    </el-radio-group>
+    <el-menu
+      default-active="canPoll"
+      class="el-menu-vertical-demo"
+      @select="handleMenuSelect"
+      :collapse="isCollapse"
+      >
+    <el-submenu index="others">
+       <template slot="title">
+          <i class="el-icon-s-custom"></i>
+          <span>我为别人填写的投票</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="canPoll" >可填投票</el-menu-item>
+          <el-menu-item index="isPolled">已填投票</el-menu-item>
+        </el-menu-item-group>
+    </el-submenu>
+      <el-submenu index="mine">
+        <template slot="title">
+          <i class="el-icon-s-custom"></i>
+          <span>我创建的投票</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="processing">进行中投票</el-menu-item>
+          <el-menu-item index="expired">过期投票</el-menu-item>
+        </el-menu-item-group>
+      </el-submenu>
+    </el-menu>
+  </el-col>
+ <el-col :span="20" >
     <el-row :gutter="20" style="margin-top:20px;" id="elRow">
 
       <el-col :span="6" :key="index" v-for="(value,index) in list">
@@ -17,7 +53,7 @@
           <div slot="header" class="clearfix">
             <span>{{value.name}}</span>
           </div>
-          <div style="height:90px;">
+          <div style="height:40px;">
             <el-form :model="value" label-width="70px">
               <el-form-item label="发起人">
                 <span>{{value.employee_name}}</span>
@@ -29,14 +65,19 @@
                 <span>{{value.poll_fill_count}}</span>
               </el-form-item>
               <el-form-item label="操作">
-                <el-button  v-waves type="primary" size="small" disabled v-if="value.is_me_polled">已填写</el-button>
-                <router-link :to="'/dashboard/poll/fill/'+value.id" v-else> 
-                  <el-button type="primary" size="small"  v-waves icon="el-icon-edit" >填写</el-button>
-                </router-link>
-                <router-link :to="'/dashboard/poll/show/'+value.id" > 
-                  <el-button type="primary" size="small"  v-waves icon="el-icon-view" @click="OnPollCreate">查看</el-button>
-                </router-link>
-                <el-button type="primary" size="small"  v-waves :loading="onDeleting" icon="el-icon-view" @click="OnPollDelete(value.id)">删除</el-button>
+                <span v-if="keyPath[0]=='others'">
+                  <el-button  v-waves type="primary" size="mini" disabled v-if="value.is_me_polled">已填写</el-button>
+                  <router-link :to="'/dashboard/poll/fill/'+value.id" v-else> 
+                    <el-button type="primary" size="mini"  v-waves icon="el-icon-edit" >填写</el-button>
+                  </router-link>
+                </span>
+                
+                  <router-link :to="'/dashboard/poll/show/'+value.id" > 
+                    <el-button type="primary" size="mini"  v-waves icon="el-icon-view" @click="OnPollCreate">查看</el-button>
+                  </router-link>
+                <span v-if="keyPath[0]=='mine'">
+                  <el-button type="primary" size="mini"  v-waves :loading="onDeleting" icon="el-icon-view" @click="OnPollDelete(value.id)">删除</el-button>
+                </span>
               </el-form-item>
             </el-form>
           </div>
@@ -44,6 +85,9 @@
       </el-col>
 
 
+    </el-row>
+
+      </el-col>
     </el-row>
 
       <el-dialog title="选择创建表单类型" :visible.sync="visible"  >
@@ -79,10 +123,16 @@ export default {
   },
   data() {
     return {
+      listQuery:{
+        type:'canPoll'
+      },
+      keyPath:['others','canPoll'],
+      isCollapse:false,
       visible:false,
       list:[],
       listLoading:true,
       onDeleting:false,
+
 
     }
   },
@@ -90,13 +140,16 @@ export default {
     this.getList();
   },
   methods:{
+    handleMenuSelect(key, keyPath) {
+      this.listQuery.type=key
+      this.keyPath=keyPath
+      this.listQuery.page = 1
+      this.list=[]
+      this.getList()
+      },
     getList(){
-      var listQuery={
-        isAll:true,
-        isMeCreated:true,
-        isMeRelated:true
-      }
-      indexPoll(listQuery).then(response => {
+      
+      indexPoll(this.listQuery).then(response => {
         var data=response.data
         if(data.total!=0){
           this.list = Object.values(data.items)
