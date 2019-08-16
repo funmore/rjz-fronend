@@ -125,13 +125,6 @@
       </el-table-column>
 
 
-<!--       <el-table-column align="center" label="打开" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-            <router-link :to="'/management/contracts/edit/'+scope.row.id"> 
-            <el-button type="primary" size="small" icon="el-icon-edit">打开</el-button>
-          </router-link>
-        </template>
-      </el-table-column> -->
 
     </el-table>
 
@@ -375,6 +368,8 @@
 <script>
 import { indexEmployee, showEmployee, storeEmployee, updateEmployee,
          destroyEmployee } from '@/api/employee'
+import { indexTeam, showTeam, storeTeam, updateTeam,
+         destroyTeam } from '@/api/Team'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils/index.js'
 
@@ -461,14 +456,21 @@ export default {
       }
       return statusMap[status]
     }
-    // typeFilter(type) {
-    //   return calendarTypeKeyValue[type]
-    // }
   },
   created() {
     this.getList()
+    this.getTeam()
   },
   methods: {
+    getTeam(){
+      let listQuery={type:'all'}
+      indexTeam(listQuery).then(response => {
+        let data=response.data;
+        if(data.isOkay==true){
+          this.selection.team=Object.values(data.items);
+        }
+      })
+    },
     getList() {
       this.listLoading = true
       indexEmployee(this.listQuery).then(response => {
