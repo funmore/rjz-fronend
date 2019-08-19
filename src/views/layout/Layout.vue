@@ -12,6 +12,8 @@
 
           <el-table :key='tableKey' :data="noticeData" v-loading="listLoading"  border fit highlight-current-row
                 style="width: 100%;">
+                <el-table-column  width="50px" align="center" label="序号"  type="index">
+                </el-table-column>
               <el-table-column width="85px" align="center" label="项目编号">
                   <template slot-scope="scope">
                     <span>{{scope.row.id}}</span>
