@@ -10,6 +10,13 @@
            <el-form-item label="表单名称" prop="name">
             <el-input v-model="request_data.poll.name"></el-input>
           </el-form-item>
+          <el-form-item label="是否允许多次填写" prop="is_multiple">
+            <el-switch
+              v-model="request_data.poll.is_multiple"
+              active-color="#13ce66"
+              inactive-color="#ff4949">
+            </el-switch>
+          </el-form-item>
           <el-form-item label="填写截止日期" prop="due_day">
             <el-date-picker v-model="request_data.poll.due_day" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="Please pick a date"></el-date-picker>
           </el-form-item>
@@ -147,6 +154,7 @@ export default {
         poll:{        
           name:'',
           due_day:'',
+          is_multiple:false,
           range:[]
         },
         poll_column:[]

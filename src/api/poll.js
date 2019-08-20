@@ -15,6 +15,12 @@ export function showPoll(id) {
     method: 'get'
   })
 }
+export function showUnPollPeople(id) {
+  return request({
+    url: 'showUnPollPeople/'+ id,
+    method: 'get'
+  })
+}
 
 export function storePoll(data) {
   return request({

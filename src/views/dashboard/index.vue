@@ -1,11 +1,8 @@
 <template>
   <div class="dashboard-editor-container">
 
-<el-row>
-    <span>Welcome!</span>
-</el-row>
 
-<!-- <el-row>
+<el-row>
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>项目信息</span>
@@ -15,7 +12,7 @@
         </div>
       </el-card>
 </el-row>
-    <panel-group @handleSetLineChartData="handleSetLineChartData"></panel-group> -->
+    <panel-group @handleSetLineChartData="handleSetLineChartData"></panel-group> 
 
     <!-- <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <line-chart :chart-data="lineChartData"></line-chart>

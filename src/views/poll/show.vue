@@ -3,6 +3,7 @@
 
     <div class="filter-container">
       <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">导出EXCEL</el-button>
+      <el-button class="filter-item" type="primary"  v-waves icon="el-icon-download" @click="showUnPollPeople">查看未投票人</el-button>
     </div>
 
     <el-table :key='list.id' :data="list" v-loading="listLoading" border fit highlight-current-row
@@ -31,16 +32,40 @@
 
 
 
-
-
-
       <el-table-column align="center" label="操作" width="130px" class-name="small-padding fixed-width">
         <template slot-scope="scope">
             <el-button type="primary" size="small" icon="el-icon-edit" :loading="onDeleting" @click="onDestory(scope.row.poll_fill_id)">删除</el-button>
         </template>
       </el-table-column>
-
     </el-table>
+
+
+
+
+
+      <el-dialog title="表单填报信息" :visible.sync="visible">
+        <el-table :key='unPolledList.id' :data="unPolledList" v-loading="unPolledListLoading" border fit highlight-current-row style="width: 100%;min-height:1000px;">
+        
+          <el-table-column  width="50px" align="center" label="序号"  type="index">
+          </el-table-column>
+
+          <el-table-column width="80px" align="center" label="姓名">
+            <template slot-scope="scope">
+              <span>{{scope.row.employee_name}}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column width="80px" align="center" label="填写次数">
+            <template slot-scope="scope">
+              <el-tag
+              :type="scope.row.count ==0 ? 'primary' : 'success'"
+              disable-transitions>{{scope.row.count|pollState}}</el-tag>
+            </template>
+          </el-table-column>
+          
+      </el-table>
+    </el-dialog>
+
 
 
 
@@ -53,7 +78,7 @@
 
 <script>
 import waves from '@/directive/waves/index.js' // 水波纹指令
-import { showPoll } from '@/api/poll'
+import { showPoll,showUnPollPeople } from '@/api/poll'
 import { indexPollFill, showPollFill, storePollFill, updatePollFill,
 destroyPollFill } from '@/api/pollfill'
 
@@ -68,17 +93,23 @@ export default {
   filters:{
     output:function(row,item){
       return Object.values(row).find(value=>value.poll_column_id==item.id).value
+    },
+    pollState:function(count){
+      return count ==0? '未填写':'已填写'
     }
   },
   data() {
     return {
-      
+      id:null,
       listLoading:true,
       onDeleting:false,
       list: [],
       structure:[],
       total: new Number(),
-      downloadLoading:false
+      downloadLoading:false,
+      visible:false,
+      unPolledListLoading:true,
+      unPolledList:[]
 
     }
   },
@@ -181,6 +212,16 @@ export default {
       return value
       });
     },
+
+    showUnPollPeople(){
+      this.visible=true;
+      this.unPolledListLoading = true;
+      showUnPollPeople(this.id).then(response => {
+        var data=response.data
+        this.unPolledList = Object.values(data.items)
+        this.unPolledListLoading=false;
+      })
+    }
 
   }
 }

@@ -31,6 +31,7 @@
         <el-menu-item-group>
           <el-menu-item index="canPoll" >可填投票</el-menu-item>
           <el-menu-item index="isPolled">已填投票</el-menu-item>
+          <el-menu-item index="isExpired">过期投票</el-menu-item>
         </el-menu-item-group>
     </el-submenu>
       <el-submenu index="mine">
@@ -45,7 +46,7 @@
       </el-submenu>
     </el-menu>
   </el-col>
- <el-col :span="20" >
+ <el-col :span="20" v-loading="listLoading">
     <el-row :gutter="20" style="margin-top:20px;" id="elRow">
 
       <el-col :span="6" :key="index" v-for="(value,index) in list">
@@ -58,16 +59,19 @@
               <el-form-item label="发起人">
                 <span>{{value.employee_name}}</span>
               </el-form-item>
+              <el-form-item label="投票类型">
+                <span>{{value.is_multiple|checkPollType}}</span>
+              </el-form-item>
               <el-form-item label="截止日期">
                 <span>{{value.due_day}}</span>
               </el-form-item>
-              <el-form-item label="填报人数">
+              <el-form-item label="填报次数">
                 <span>{{value.poll_fill_count}}</span>
               </el-form-item>
               <el-form-item label="操作">
                 <span v-if="keyPath[0]=='others'">
-                  <el-button  v-waves type="primary" size="mini" disabled v-if="value.is_me_polled">已填写</el-button>
-                  <router-link :to="'/dashboard/poll/fill/'+value.id" v-else> 
+                  <el-button  v-waves type="primary" size="mini" disabled v-if="keyPath[1]=='isPolled'&&value.is_multiple==0">已填写</el-button>
+                  <router-link :to="'/dashboard/poll/fill/'+value.id" v-else-if="keyPath[1]=='canPoll'||(keyPath[1]=='isPolled'&&value.is_multiple==1)"> 
                     <el-button type="primary" size="mini"  v-waves icon="el-icon-edit" >填写</el-button>
                   </router-link>
                 </span>
@@ -136,6 +140,15 @@ export default {
 
     }
   },
+  filters:{
+    checkPollType:function(value){
+      if(value==1){
+        return '多次投票'
+      }else{
+        return '单次投票'
+      }
+    }
+  },
   mounted(){
     this.getList();
   },
@@ -148,7 +161,7 @@ export default {
       this.getList()
       },
     getList(){
-      
+      this.listLoading=true;
       indexPoll(this.listQuery).then(response => {
         var data=response.data
         if(data.total!=0){
