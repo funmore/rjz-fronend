@@ -38,22 +38,24 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item label="编译器">
-          <el-select v-model="softwareInfo.complier" filterable placeholder="请选择">
+                <el-form-item label="编译器">
+          <!-- <el-select v-model="softwareInfo.complier" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in complier"
+              v-for="(item,index) in propSelection.complier"
               :key="index"
               :label="item"
               :value="item">
             </el-option>
-          </el-select>
+          </el-select> -->
+          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="softwareInfo.complier" >
+          </el-input>
         </el-form-item>
 
 
         <el-form-item label="编程语言">
           <el-select v-model="softwareInfo.code_langu" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in codeLangu"
+              v-for="(item,index) in propSelection.codeLangu"
               :key="index"
               :label="item"
               :value="item">
@@ -63,26 +65,30 @@
 
 
         <el-form-item label="运行环境">
-          <el-select v-model="softwareInfo.runtime" filterable placeholder="请选择">
+          <!-- <el-select v-model="softwareInfo.runtime" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in runtime"
+              v-for="(item,index) in propSelection.runtime"
               :key="index"
               :label="item"
               :value="item">
             </el-option>
-          </el-select>
+          </el-select> -->
+          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="softwareInfo.runtime" >
+          </el-input>
         </el-form-item>
 
 
         <el-form-item label="CPU类型">
-          <el-select v-model="softwareInfo.cpu_type" filterable placeholder="请选择">
+          <!-- <el-select v-model="softwareInfo.cpu_type" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in cpuType"
+              v-for="(item,index) in propSelection.cpuType"
               :key="index"
               :label="item"
               :value="item">
             </el-option>
-          </el-select>
+          </el-select> -->
+          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="softwareInfo.cpu_type" >
+          </el-input>
         </el-form-item>
 
 

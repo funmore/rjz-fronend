@@ -3,6 +3,10 @@
     <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" style="width: 180px;" class="filter-item" placeholder="项目名称(支持模糊查询)" v-model="listQuery.title">
       </el-input>
+      <el-select clearable style="width: 130px" class="filter-item" v-model="listQuery.state" placeholder="按生命周期">
+        <el-option v-for="(item, index) in ['意向项目','预备项目','正式项目','全部项目']" :key="index" :label="item" :value="item">
+        </el-option>
+      </el-select>
       <el-select clearable style="width: 90px" class="filter-item" v-model="listQuery.model_id" placeholder="按型号" @keyup.enter.native="handleFilter">
         <el-option v-for="(item, index) in selection.model" :key="index" :label="item.model_name" :value="item.id">
         </el-option>
@@ -157,6 +161,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
+        state:'正式项目',
         model_id:undefined,   //型号
         program_type:undefined,
         manager:undefined,

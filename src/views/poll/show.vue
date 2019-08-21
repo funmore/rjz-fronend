@@ -21,6 +21,7 @@
           <span>{{scope.row|output(item)}}</span>
         </template>
       </el-table-column>
+      
 
 
 

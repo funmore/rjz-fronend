@@ -56,19 +56,19 @@
           </div>
           <div style="height:40px;">
             <el-form :model="value" label-width="70px">
-              <el-form-item label="发起人">
+              <el-form-item class="item" label="发起人">
                 <span>{{value.employee_name}}</span>
               </el-form-item>
-              <el-form-item label="投票类型">
+              <el-form-item class="item" label="投票类型">
                 <span>{{value.is_multiple|checkPollType}}</span>
               </el-form-item>
-              <el-form-item label="截止日期">
+              <el-form-item class="item" label="截止日期">
                 <span>{{value.due_day}}</span>
               </el-form-item>
-              <el-form-item label="填报次数">
+              <el-form-item class="item" label="填报次数">
                 <span>{{value.poll_fill_count}}</span>
               </el-form-item>
-              <el-form-item label="操作">
+              <el-form-item class="item" label="操作">
                 <span v-if="keyPath[0]=='others'">
                   <el-button  v-waves type="primary" size="mini" disabled v-if="keyPath[1]=='isPolled'&&value.is_multiple==0">已填写</el-button>
                   <router-link :to="'/dashboard/poll/fill/'+value.id" v-else-if="keyPath[1]=='canPoll'||(keyPath[1]=='isPolled'&&value.is_multiple==1)"> 
@@ -229,6 +229,9 @@ export default {
 .component-item{
   min-height: 100px;
 }
+.box-card{
+  margin-bottom: 10px;
+}
 
 .button{
   height: 200px;
@@ -240,6 +243,10 @@ export default {
 }
 #right{
   float:left;
+}
+
+.item{
+  height: 20px;
 }
 
 

@@ -105,7 +105,6 @@ export default {
         if(this.programItem.programBasic!=undefined){
           this.programItem.programBasic.state=this.propState;
         }
-        alert(this.programItem.programBasic.state)
 
       },
       createProgram() {

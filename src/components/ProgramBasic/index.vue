@@ -110,6 +110,17 @@
           </el-date-picker>
         </el-form-item>
 
+        <el-form-item label="实际开始时间" prop="actualStartTime">
+          <el-date-picker v-model="programBasic.actual_start_time" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="Please pick a date">
+          </el-date-picker>
+        </el-form-item>
+
+
+        <el-form-item label="实际结束时间" prop="actualEndTime">
+          <el-date-picker v-model="programBasic.actual_end_time" type="datetime" value-format="yyyy-MM-dd HH:mm:ss"  placeholder="Please pick a date">
+          </el-date-picker>
+        </el-form-item>
+
 
 
 
@@ -171,6 +182,8 @@ export default {
           dev_type:'',
           plan_start_time:new Date(),  
           plan_end_time :new Date(),
+          actual_start_time:new Date(),  
+          actual_end_time :new Date(),
           manager:Object.assign({}, this.propSelection.managers[0])
         }
     }else{

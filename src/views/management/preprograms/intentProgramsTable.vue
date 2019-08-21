@@ -99,7 +99,7 @@
 
       <el-table-column width="140px" align="center" label="计划结束时间">
         <template slot-scope="scope">
-          <span>{{scope.row.plan_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+          <span>{{scope.row.plan_end_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
         </template>
       </el-table-column>
 
@@ -116,7 +116,7 @@
           <el-button type="primary" size="small"  :loading="onProgramStarting" @click="onProgramStart(scope.row)">转预备项目</el-button>
           <el-button type="danger" size="small" icon="el-icon-edit" :loading="onDeleting" @click="handleDelete(scope.row)">删除</el-button>
 
-          <span>{{scope.row.is_exist}}</span>
+          <!-- <span>{{scope.row.is_exist}}</span> -->
         </template>
       </el-table-column>
 

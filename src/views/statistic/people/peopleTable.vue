@@ -96,6 +96,8 @@
 
 import { indexStatisticPeople, showStatisticPeople, storeStatisticPeople, updateStatisticPeople,
          destroyStatisticPeople } from '@/api/statisticpeople'
+import { indexTeam, showTeam, storeTeam, updateTeam,
+         destroyTeam } from '@/api/Team'
 import waves from '@/directive/waves' // 水波纹指令
 import Task from './components/Task'
 
@@ -147,8 +149,19 @@ export default {
 
   created() {
     this.getList()
+    this.getTeam()
+
   },
   methods: {
+     getTeam(){
+      let listQuery={type:'all'}
+      indexTeam(listQuery).then(response => {
+        let data=response.data;
+        if(data.isOkay==true){
+          this.selection.team=Object.values(data.items);
+        }
+      })
+    },
     getList() {
 
       this.listLoading = true;

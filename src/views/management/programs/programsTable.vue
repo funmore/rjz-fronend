@@ -103,18 +103,29 @@
       </el-table-column>
 
 
-      <el-table-column  width="140px" align="center" label="计划开始时间">
+      <el-table-column  width="140px" align="center" label="计划开始时间" sortable>
         <template slot-scope="{row}">
           <span>{{row.plan_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column  width="140px" align="center" label="计划结束时间">
+      <el-table-column  width="140px" align="center" label="计划结束时间" sortable>
         <template slot-scope="{row}">
-          <span>{{row.plan_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+          <span>{{row.plan_end_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
         </template>
       </el-table-column>
 
+      <el-table-column  width="140px" align="center" label="实际开始时间" sortable>
+        <template slot-scope="{row}">
+          <span>{{row.actual_start_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column  width="140px" align="center" label="实际结束时间" sortable>
+        <template slot-scope="{row}">
+          <span>{{row.actual_end_time | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+        </template>
+      </el-table-column>
 
 
 

@@ -1,5 +1,15 @@
 <template>
   <div class="createPost-container">
+    <!-- <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+      <el-menu-item index="workflow">测试工作流</el-menu-item>
+      <el-menu-item index="programBasic" >项目基本信息</el-menu-item>
+      <el-menu-item index="programTeamRole" >项目组信息</el-menu-item>
+      <el-menu-item index="softwareInfo" >被测件信息</el-menu-item>
+      <el-menu-item index="inputFile" >项目输入信息</el-menu-item>
+      <el-menu-item index="outputFile">项目工作产品</el-menu-item>
+      <el-menu-item index="review">在线评审</el-menu-item>
+      <el-menu-item index="contact">合同信息</el-menu-item>
+    </el-menu> -->
     <el-row id="workflow">
       <el-card class="box-card" v-if="items.workflow!=null">
         <div slot="header" class="clearfix">
