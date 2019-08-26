@@ -115,8 +115,6 @@
         <template slot-scope="scope">
           <el-button type="primary" size="small"  :loading="onProgramStarting" @click="onProgramStart(scope.row)">转预备项目</el-button>
           <el-button type="danger" size="small" icon="el-icon-edit" :loading="onDeleting" @click="handleDelete(scope.row)">删除</el-button>
-
-          <!-- <span>{{scope.row.is_exist}}</span> -->
         </template>
       </el-table-column>
 
