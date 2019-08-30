@@ -1,5 +1,7 @@
  <template>
-
+ <div>
+  <div v-if="programTeamRole!=null">
+        <el-button @click="handleConfigure(true)">调整</el-button>
             <el-tabs v-model="activeName" @tab-click="handleClick">
               <el-tab-pane
                 :key="item.name"
@@ -38,32 +40,46 @@
                   </el-form>
 
                   <keep-alive>
-                  <team-member-task ref="teamMemberNote" :propTeamMemberId="item.id" :propWorkflowArray="propWorkflowArray"  :propPtrNote="ptr_note"  :propRole="propRole"></team-member-task>
+                  <team-member-task ref="teamMemberNote" :propTeamMemberId="item.id"  :propWorkflow="workflow" :propPtrNote="ptr_note"  :propRole="propRole"></team-member-task>
                   </keep-alive>
               </el-tab-pane>
             </el-tabs>
+  </div>
+  <div v-else>
+     <el-button @click="handleConfigure(false)">尚未配置</el-button>
+   </div>
+       <eee :propProgramBasicId="propProgramBasicId" :propIsExist="is_exist"                             :propVisible="generalVisible" @close="handleClose"></eee>
+ </div>
 
 
 </template>
 <script>
   import TeamMemberTask from './TeamMemberTask'
+  import eee from '@/components/PreProgramCom/ProgramTeamRole.vue'
 
+  import { indexWorkflow, showWorkflow, storeWorkflow, updateWorkflow,
+         destroyWorkflow } from '@/api/workflow'  
   import { indexProgramTeamRole, showProgramTeamRole, storeProgramTeamRole, updateProgramTeamRole,
          destroyProgramTeamRole } from '@/api/programteamrole'
 
   export default {
-      components: {TeamMemberTask },
+      components: {TeamMemberTask,eee },
     data() {
       return {
-        programTeamRole:this.propProgramTeamRole,
-        activeName:this.propActiveName,
-        ptr_note:[]
+        generalVisible:false,
+        is_exist:true,
+
+        programTeamRole:null,
+        activeName:'0',
+        ptr_note:[],
+        workflow:{
+          active:undefined,
+          workflowArray:undefined
+        }
       };
     },
     props:{
-        propActiveName:String,
-        propProgramTeamRole:Array,
-        propWorkflowArray:Array,
+        propProgramBasicId:Number,
         propRole:Array
     },
     computed:{
@@ -75,15 +91,43 @@
       }
     },
     created(){
-          this.addIsEdit();
+      this.showWorkflow()
+      this.getData()
     },
     mounted(){
-      this.$refs.teamMemberNote[parseInt(this.activeName)].getNote(this.programTeamRole.find((item,index)=>index==parseInt(this.activeName)).id);
     },
     methods: {
-      addIsEdit(){
-        this.programTeamRole=this.programTeamRole.map(x=>{x.isEdit=false; return x});
+      showWorkflow(){
+        showWorkflow(this.propProgramBasicId).then(response => {
+          var data=response.data
+          if(data.isOkay==true){
+            this.workflow = data.item
+          }
+        })},
+      handleConfigure(is_exist){
+        this.is_exist=is_exist;
+        this.generalVisible=true;
+      },  
+      handleClose(args){
+        this.generalVisible=false
+        this.getData()
       },
+      getData(){
+        const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+          });
+        showProgramTeamRole(this.propProgramBasicId).then(response => {
+          var data=response.data
+          if(data.isOkay==true){
+            this.programTeamRole = data.item
+          }
+          loading.close();
+        })
+		  },
+
 
       edit(item){
         item.isEdit=true;
@@ -102,25 +146,11 @@
           })
 
       },
-      handleCreate(){
 
-      },
-      handleFilter(){
 
-      },
       handleClick(tab, event) {
-        this.$refs.teamMemberNote[parseInt(this.activeName)].getNote(this.programTeamRole.find((item,index)=>index==parseInt(this.activeName)).id);
+        // this.$refs.teamMemberNote[parseInt(this.activeName)].getNote(this.programTeamRole.find((item,index)=>index==parseInt(this.activeName)).id);
       },
-      fetchData(id){
-        fetchArticle(id).then(response => {
-        this.postForm = response.data
-        // Just for test
-        this.postForm.title += `   Article Id:${this.postForm.id}`
-        this.postForm.content_short += `   Article Id:${this.postForm.id}`
-      }).catch(err => {
-        console.log(err)
-      })
-      }
     }
   };
 </script>

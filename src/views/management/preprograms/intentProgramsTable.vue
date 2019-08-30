@@ -22,9 +22,10 @@
       </el-select>
 
       <el-select clearable style="width: 130px" class="filter-item" v-model="listQuery.program_type" placeholder="按测试类型">
-        <el-option v-for="(item, index) in selection.programType" :key="index" :label="item" :value="item">
+        <el-option v-for="(item, index) in selection.role" :key="index" :label="item" :value="item">
         </el-option>
       </el-select>
+
 
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索</el-button>
       <el-button class="filter-item new" style="margin-left: 10px;" @click="handleProgramCreate" type="primary" icon="el-icon-edit">新增意向项目</el-button>
@@ -591,8 +592,8 @@ export default {
     },
     handleClose(args){
       this.visibleCol[args.type]=false
-      if("isUpdate" in args&&args.isUpdate==true){
-        var item=this.list.find(x=>x.id==args.programId)
+      if("state" in args&&args.state=='update'){
+        var item=this.list.find(x=>x.programBasic.id==args.programId)
         if(item!=null){
           item.is_exist[args.type]=true
         }

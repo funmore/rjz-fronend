@@ -4,7 +4,7 @@
           <el-form-item label="所属型号" prop="model">
           <el-select v-model="programBasic.model_id" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.model"
+              v-for="(item,index) in selection.model"
               :key="index"
               :label="item.model_name"
               :value="item.id">
@@ -29,7 +29,7 @@
         <el-form-item label="类型" prop="type">
           <el-select v-model="programBasic.type" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.type"
+              v-for="(item,index) in selection.type"
               :key="index"
               :label="item"
               :value="item">
@@ -45,7 +45,7 @@
         <el-form-item label="项目来源" prop="program_source">
           <el-select v-model="programBasic.program_source" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.programSource"
+              v-for="(item,index) in selection.programSource"
               :key="index"
               :label="item"
               :value="item">
@@ -56,7 +56,7 @@
         <el-form-item label="测试类型" prop="program_type">
           <el-select v-model="programBasic.program_type" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.programType"
+              v-for="(item,index) in selection.programType"
               :key="index"
               :label="item"
               :value="item">
@@ -67,7 +67,7 @@
         <el-form-item label="密级">
           <el-select v-model="programBasic.classification" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.classification"
+              v-for="(item,index) in selection.classification"
               :key="index"
               :label="item"
               :value="item">
@@ -78,7 +78,7 @@
         <el-form-item label="研制类型">
           <el-select v-model="programBasic.dev_type" allow-create filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.devType"
+              v-for="(item,index) in selection.devType"
               :key="index"
               :label="item"
               :value="item">
@@ -89,7 +89,7 @@
         <el-form-item label="项目阶段">
           <el-select v-model="programBasic.program_stage" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.programStage"
+              v-for="(item,index) in selection.programStage"
               :key="index"
               :label="item"
               :value="item">
@@ -97,21 +97,33 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="计划开始时间" prop="actualStartTime">
+        <el-form-item label="计划开始时间" prop="planStartTime">
           <el-date-picker v-model="programBasic.plan_start_time" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="Please pick a date">
           </el-date-picker>
         </el-form-item>
 
 
-        <el-form-item label="计划结束时间" prop="actualEndTime">
+        <el-form-item label="计划结束时间" prop="planEndTime">
           <el-date-picker v-model="programBasic.plan_end_time" type="datetime" value-format="yyyy-MM-dd HH:mm:ss"  placeholder="Please pick a date">
           </el-date-picker>
         </el-form-item>
+
+        <el-form-item label="实际开始时间" prop="actualStartTime">
+          <el-date-picker v-model="programBasic.actual_start_time" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="Please pick a date">
+          </el-date-picker>
+        </el-form-item>
+
+
+        <el-form-item label="实际结束时间" prop="actualEndTime">
+          <el-date-picker v-model="programBasic.actual_end_time" type="datetime" value-format="yyyy-MM-dd HH:mm:ss"  placeholder="Please pick a date">
+          </el-date-picker>
+        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
               <el-button @click="cancel()">取消</el-button>
-              <el-button type="primary"  @click="confirmCreate" v-if="dialogStatus=='create'">确认</el-button>
-              <el-button type="primary"  @click="confirmUpdate" v-else>确认</el-button>
+              <el-button type="primary"  @click="confirmCreate" :loading="onConfirming" v-if="dialogStatus=='create'">确认</el-button>
+              <el-button type="primary"  @click="confirmUpdate" :loading="onConfirming" v-else>确认</el-button>
       </div>
     </el-dialog>
 
@@ -122,17 +134,16 @@ import { indexEmployee } from '@/api/employee'
 import { indexProgram, showProgram, storeProgram, updateProgram,
          destroyProgram } from '@/api/program'
 import mixin from './mixin'
+import selection_minx from '../PublicMixin/selection'
 
 export default {
   name: 'ProgramBasic',
 
   props:{
     propProgramBasicId: Number,
-    propSelection:Object,
-    propVisible:Boolean,
-    propIsExist:Boolean
+    propVisible:Boolean
   },
-  mixins: [mixin],
+  mixins: [mixin,selection_minx],
   data() {
     return {
 
@@ -161,26 +172,23 @@ export default {
         textMap: {
           update: '更新',
           create: '创建'
-        }
+        },
+      onConfirming:false
     }
   },
+
   computed:{
     manager_name:function(){
-      if(this.propSelection.model.find(x=>x.id==this.programBasic.model_id)==null){
+      if(this.selection.model.find(x=>x.id==this.programBasic.model_id)==null){
         return null;
       }
-      return this.propSelection.model.find(x=>x.id==this.programBasic.model_id).manager_name;
+      return this.selection.model.find(x=>x.id==this.programBasic.model_id).manager_name;
     }
   },
 watch:{
   //propVisible start
   propVisible:function(newVa,oldVa){
     if(newVa==true){
-      if(this.propIsExist==false){
-          this.dialogStatus='create'
-      }else{
-        this.dialogStatus='update'
-      }
       this.getData()
     }
   }
@@ -195,16 +203,22 @@ watch:{
         var data=response.data
         if(data.isOkay==true){
           this.programBasic = data.item
+          this.dialogStatus='update'
+        }else{
+          this.dialogStatus='create'
         }
         this.listLoading = false
       })
     },
     confirmUpdate(){
+      this.onConfirming=true
       updateProgram(this.programBasic).then(response => {
         if(response.data.isOkay==true){
                 var args={
                   type:this.$options.name,
-                  value:false
+                  state:this.dialogStatus,
+                  programId:this.propProgramBasicId,
+                  value:response.data.item
                 }
                 this.$emit('close',args)
                 this.$notify({
@@ -214,25 +228,37 @@ watch:{
                   duration: 2000
                 })
         }
+        this.onConfirming=false
       })
     },
     confirmCreate(){
+      this.onConfirming=true
+      let storeData={
+        data:this.programBasic
+      }
+      storeProgram(storeData).then(response => {
+        if(response.data.isOkay==true){
+                  this.dialogStatus='update'
+                  var args={
+                    type:this.$options.name,
+                    state:this.dialogStatus,
+                    programId:response.data.item.id,
+                    value:response.data.item,
+                    created:true
+                  }
+                  this.$emit('close',args)
+                  this.$notify({
+                    title: '信息已更新',
+                    message: '请在项目中查看此项目',
+                    type: 'success',
+                    duration: 2000
+                  })
+              }
+              this.onConfirming=false
+            })
+    }
 
-    },
-    // handleClose(){
-    //   var args={
-    //     type:this.$options.name,
-    //     value:false
-    //   }
-    //   this.$emit('close',args)
-    // },
-    // cancel(){
-    //   var args={
-    //     type:this.$options.name,
-    //     value:false
-    //   }
-    //   this.$emit('close',args)
-    // }
+   
   }
 }
 

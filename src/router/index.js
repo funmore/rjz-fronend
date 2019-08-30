@@ -145,6 +145,7 @@ export const asyncRouterMap = [
             roles: ['管理员','主任','副主任','测试人员','主任设计师','副主任设计师','项目组长','型号负责人'],
             icon: 'guide' }
         },
+
         {
           path: 'people',
           name: 'people',
@@ -160,13 +161,22 @@ export const asyncRouterMap = [
     {
       path: '/management',
       component: Layout,
-      redirect: '/management/programs',
+      redirect: '/management/functionTable',
       name: 'management',
       meta:{
         title:'管理',
         roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员','测试人员'],
         icon:'nested'},
       children:[
+        {
+          path: 'functionTable',
+          name: 'functionTable',
+          component: () => import('@/views/customPrograms/functionTable.vue'),
+          meta: { 
+            title: '项目管理', 
+            roles: ['管理员','主任','副主任','测试人员','主任设计师','副主任设计师','项目组长','型号负责人'],
+            icon: 'guide' }
+        },
         //list
         {
           path: 'programs',

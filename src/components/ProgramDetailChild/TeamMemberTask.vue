@@ -2,7 +2,7 @@
       <el-card class="box-card" >
         <div class="filter-container">
           <el-select @change='handleFilter' style="width: 140px" class="filter-item" v-model="listQuery.workflowArray" >
-            <el-option v-for="item in workflowArray" :key="item.id" :label="'截止'+item.name" :value="item.id">
+            <el-option v-for="item in propWorkflow.workflowArray" :key="item.id" :label="'截止'+item.name" :value="item.id">
             </el-option>
           </el-select>
           <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit" v-if="isEditable">新增任务</el-button>
@@ -109,7 +109,7 @@
              <el-form-item label="工作流节点">
                 <el-select v-model="temp.before_node_id" filterable placeholder="请选择">
                   <el-option
-                    v-for="item in workflowArray"
+                    v-for="item in propWorkflow.workflowArray"
                     :key="item.array_index"
                     :label="'截止'+item.name"
                     :value="item.id">
@@ -183,7 +183,6 @@
         listQuery:{
           workflowArray:''
         },
-        workflowArray:this.propWorkflowArray,
         state:['0','20','40','60','80','100'],
 
         // ptr_note:[],
@@ -213,7 +212,7 @@
     },
     props:{
         propTeamMemberId:Number,
-        propWorkflowArray:Array,
+        propWorkflow:Object,
         propRole:Array
     },
 
@@ -221,6 +220,7 @@
 
     },
     mounted(){
+      this.getNote()
       this.isEditable=this.checkPermission(this.propRole);
     },
 
@@ -250,7 +250,7 @@
                 due_day:'',
                 overdue_reason:'',
                 note:'',
-                before_node_id:this.workflowArray[0].id,
+                before_node_id:this.propWorkflow.workflowArray[this.propWorkflow.active].id,
                 state:10,
                 ratio:10,
                 score:5

@@ -8,7 +8,7 @@
         </el-form-item>
         <el-form-item label="编辑流程模板" >
           <el-steps :active="workflow.active" finish-status="success">
-            <el-step v-for="index in workflow.workflowArray.length" :title="'S'+index" :description="workflow.workflowArray[index-1].name" :icon="icon[0]"></el-step>
+            <el-step v-for="index in workflow.workflowArray.length" :title="'S'+index" :key="workflow.workflowArray[index-1].name" :description="workflow.workflowArray[index-1].name" :icon="icon[0]"></el-step>
           </el-steps> 
             <el-button-group>
               <el-button type="primary" icon="el-icon-arrow-left" @click="previous">上一个节点</el-button>
@@ -39,8 +39,8 @@
       </el-form>
               <div slot="footer" class="dialog-footer">
               <el-button @click="cancel()">取消</el-button>
-              <el-button type="primary"  @click="confirmCreate" v-if="dialogStatus=='create'">确认</el-button>
-              <el-button type="primary"  @click="confirmUpdate" v-else>确认</el-button>
+              <el-button type="primary" :loading="onConfirming" @click="confirmCreate" v-if="dialogStatus=='create'">确认</el-button>
+              <el-button type="primary" :loading="onConfirming" @click="confirmUpdate" v-else>确认</el-button>
       </div>
 </el-dialog>
 </template>
@@ -63,8 +63,7 @@ export default {
   mixins: [mixin],
   props:{
     propVisible:Boolean,
-    propProgramBasicId: Number,
-    propIsExist:Boolean
+    propProgramBasicId: Number
   },
   data() {
       var validatePass = (rule, value, callback) => {
@@ -112,7 +111,8 @@ export default {
         textMap: {
           update: '更新',
           create: '创建'
-        }
+        },
+        onConfirming:false
     }
   },
 
@@ -120,11 +120,6 @@ export default {
       //propVisible start
       propVisible:function(newVa,oldVa){
         if(newVa==true){
-          if(this.propIsExist==false){
-              this.dialogStatus='create'
-          }else{
-            this.dialogStatus='update'
-          }
           this.getData()
         }
       },
@@ -136,35 +131,16 @@ export default {
         showWorkflow(this.propProgramBasicId).then(response => {
           var data=response.data
           if(data.isOkay==true){
+            this.dialogStatus='update'
             this.workflow = data.item
           }else{
-            this.workflow = {
-                workflow_name:'测试工作流',
-                active:2,
-                workflowArray:[
-                  {name:'建项',plan_day:'',type:'建项'},
-                  {name:'被测软件接受',plan_day:'',type:'测试执行'},
-                  {name:'静态问题提交',plan_day:'',type:'报告'},
-                  {name:'测试环境就绪情况',plan_day:'',type:'建项'},
-                  {name:'测试工作产品编写',plan_day:'',type:'建项'},
-                  {name:'入库归档状态',plan_day:'',type:'建项'},
-                  {name:'测试工作产品内部评审',plan_day:'',type:'建项'},
-                  {name:'评审问题闭合',plan_day:'',type:'建项'},
-                  {name:'需求(大纲)正式评审',plan_day:'',type:'建项'},
-                  {name:'评审问题闭合',plan_day:'',type:'建项'},
-                  {name:'入库归档状态',plan_day:'',type:'建项'},
-                  {name:'首轮测试',plan_day:'',type:'建项'},
-                  {name:'软件问题单闭合',plan_day:'',type:'建项'},
-                  {name:'报告评审',plan_day:'',type:'建项'},
-                  {name:'入库归档状态',plan_day:'',type:'建项'}
-                ],
-                isError:false
-              }
+            this.dialogStatus='create'
           }
           this.listLoading = false
         })
     },
     confirmUpdate(){
+      this.onConfirming=true
       let storeData={
         programId:this.propProgramBasicId,
         data:this.workflow
@@ -173,7 +149,9 @@ export default {
         if(response.data.isOkay==true){
                 var args={
                   type:this.$options.name,
-                  value:false
+                  state:this.dialogStatus,
+                  programId:this.propProgramBasicId,
+                  value:response.data.item
                 }
                 this.$emit('close',args)
                 this.$notify({
@@ -183,19 +161,23 @@ export default {
                   duration: 2000
                 })
         }
+        this.onConfirming=false
       })
     },
     confirmCreate(){
+      this.onConfirming=true
       let storeData={
         programId:this.propProgramBasicId,
         data:this.workflow
       }
       storeWorkflow(storeData).then(response => {
         if(response.data.isOkay==true){
+                  this.dialogStatus='update'
                   var args={
                     type:this.$options.name,
-                    isUpdate:true,
-                    programId:this.propProgramBasicId
+                    state:this.dialogStatus,
+                    programId:this.propProgramBasicId,
+                    value:response.data.item
                   }
                   this.$emit('close',args)
                   this.$notify({
@@ -205,6 +187,7 @@ export default {
                     duration: 2000
                   })
               }
+              this.onConfirming=false
             })
     },
     next() {

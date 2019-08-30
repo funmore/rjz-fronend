@@ -52,8 +52,8 @@
     </el-table>
               <div slot="footer" class="dialog-footer">
               <el-button @click="cancel()">取消</el-button>
-              <el-button type="primary"  @click="confirmCreate" v-if="dialogStatus=='create'">确认</el-button>
-              <el-button type="primary"  @click="confirmUpdate" v-else>确认</el-button>
+              <el-button type="primary" :loading="onConfirming" @click="confirmCreate" v-if="dialogStatus=='create'">确认</el-button>
+              <el-button type="primary" :loading="onConfirming" @click="confirmUpdate" v-else>确认</el-button>
       </div>
 </el-dialog>
 
@@ -74,8 +74,7 @@ export default {
   name: 'ProgramTeamRole',
   props:{
     propVisible:Boolean,
-    propProgramBasicId: Number,
-    propIsExist:Boolean
+    propProgramBasicId: Number
   },
   mixins: [mixin],
 
@@ -94,18 +93,14 @@ export default {
         textMap: {
           update: '更新',
           create: '创建'
-        }
+        },
+        onConfirming:false
     }
   },
   watch:{
       //propVisible start
       propVisible:function(newVa,oldVa){
         if(newVa==true){
-          if(this.propIsExist==false){
-              this.dialogStatus='create'
-          }else{
-            this.dialogStatus='update'
-          }
           this.getData()
         }
       }
@@ -124,20 +119,19 @@ export default {
         showProgramTeamRole(this.propProgramBasicId).then(response => {
           var data=response.data
           if(data.isOkay==true){
+            this.dialogStatus='update'
             this.programTeamRole = data.item
           }else{
-            this.programTeamRole = [
-          {role:'项目组长',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'项目组员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'监督人员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'配置管理员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'质量保证员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false}
-        ]
+            this.dialogStatus='create'
+              for(let i=0;i<this.programTeamRole.length;i++){
+                this.programTeamRole[i].employee_id=this.employees[i].id
+              }
           }
           this.listLoading = false
         })
     },
     confirmUpdate(){
+      this.onConfirming=true
       let storeData={
         programId:this.propProgramBasicId,
         data:this.programTeamRole
@@ -146,7 +140,9 @@ export default {
         if(response.data.isOkay==true){
                 var args={
                   type:this.$options.name,
-                  value:false
+                  state:this.dialogStatus,
+                  programId:this.propProgramBasicId,
+                  value:response.data.item
                 }
                 this.$emit('close',args)
                 this.$notify({
@@ -155,20 +151,26 @@ export default {
                   type: 'success',
                   duration: 2000
                 })
+        }else{
+
         }
+        this.onConfirming=false
       })
     },
     confirmCreate(){
+      this.onConfirming=true
       let storeData={
         programId:this.propProgramBasicId,
         data:this.programTeamRole
       }
       storeProgramTeamRole(storeData).then(response => {
         if(response.data.isOkay==true){
+                  this.dialogStatus='update'
                   var args={
                     type:this.$options.name,
-                    isUpdate:true,
-                    programId:this.propProgramBasicId
+                    state:this.dialogStatus,
+                    programId:this.propProgramBasicId,
+                    value:response.data.item
                   }
                   this.$emit('close',args)
                   this.$notify({
@@ -178,6 +180,7 @@ export default {
                     duration: 2000
                   })
               }
+              this.onConfirming=false
             })
     },
     getList() {

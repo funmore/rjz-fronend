@@ -15,6 +15,12 @@ export function showProgram(id) {
     method: 'get'
   })
 }
+export function roleProgram(id) {
+  return request({
+    url:'program/role/'+ id,
+    method: 'get'
+  })
+}
 
 export function storeProgram(data) {
   return request({

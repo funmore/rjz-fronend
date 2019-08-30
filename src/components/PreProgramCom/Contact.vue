@@ -41,10 +41,6 @@
 
         <el-table-column width="100px" label="联系方式">
           <template slot-scope="scope" >
-            <!-- <template v-if="scope.row.isEdit">
-              <el-input class="edit-input" size="small" v-model="scope.row.tele"  @keyup.enter.native="scope.row.isEdit=!scope.row.isEdit"></el-input>
-            </template>
-            <span v-else>{{ scope.row.tele }}</span> -->
             <el-input class="edit-input" size="small" v-model="scope.row.tele"  ></el-input>
           </template>
         </el-table-column>
@@ -52,8 +48,8 @@
     </el-table>
     <div slot="footer" class="dialog-footer">
               <el-button @click="cancel()">取消</el-button>
-              <el-button type="primary"  @click="confirmCreate" v-if="dialogStatus=='create'">确认</el-button>
-              <el-button type="primary"  @click="confirmUpdate" v-else>确认</el-button>
+              <el-button type="primary" :loading="onConfirming" @click="confirmCreate" v-if="dialogStatus=='create'">确认</el-button>
+              <el-button type="primary" :loading="onConfirming" @click="confirmUpdate" v-else>确认</el-button>
       </div>
 </el-dialog>
 
@@ -73,8 +69,7 @@ export default {
 
   props:{
     propVisible:Boolean,
-    propProgramBasicId: Number,
-    propIsExist:Boolean
+    propProgramBasicId: Number
   },
   mixins: [mixin],
 
@@ -97,7 +92,8 @@ export default {
         textMap: {
           update: '更新',
           create: '创建'
-        }
+        },
+        onConfirming:false
 
     }
   },
@@ -106,11 +102,6 @@ export default {
     //propVisible start
     propVisible:function(newVa,oldVa){
       if(newVa==true){
-        if(this.propIsExist==false){
-            this.dialogStatus='create'
-        }else{
-          this.dialogStatus='update'
-        }
         this.getData()
       }
     },
@@ -133,26 +124,20 @@ export default {
       showContact(this.propProgramBasicId).then(response => {
         var data=response.data
         if(data.isOkay==true){
+          this.dialogStatus='update'
           this.contact = data.item
           this.contactBasic={
             is_12s:this.contact[0].is_12s,
             organ:this.contact[0].organ
           }
         }else{
-          this.contact = [
-          {is_12s:'是',organ:'12所',type:'计划',name:'',tele:'',isEdit:true},
-          {is_12s:'是',organ:'12所',type:'质量',name:'',tele:'',isEdit:true},
-          {is_12s:'是',organ:'12所',type:'设计',name:'',tele:'',isEdit:true}
-        ],
-          this.contactBasic={
-            is_12s:this.contact[0].is_12s,
-            organ:this.contact[0].organ
-          }
+          this.dialogStatus='create'
         }
         this.listLoading = false
       })
     },
     confirmUpdate(){
+      this.onConfirming=true
       let storeData={
         programId:this.propProgramBasicId,
         data:this.contact
@@ -161,7 +146,9 @@ export default {
         if(response.data.isOkay==true){
                 var args={
                   type:this.$options.name,
-                  value:false
+                  state:this.dialogStatus,
+                  programId:this.propProgramBasicId,
+                  value:response.data.item
                 }
                 this.$emit('close',args)
                 this.$notify({
@@ -171,19 +158,23 @@ export default {
                   duration: 2000
                 })
         }
+        this.onConfirming=false
       })
     },
     confirmCreate(){
+      this.onConfirming=true
       let storeData={
         programId:this.propProgramBasicId,
         data:this.contact
       }
       storeContact(storeData).then(response => {
         if(response.data.isOkay==true){
+                  this.dialogStatus='update'
                   var args={
                     type:this.$options.name,
-                    isUpdate:true,
-                    programId:this.propProgramBasicId
+                    state:this.dialogStatus,
+                    programId:this.propProgramBasicId,
+                    value:response.data.item
                   }
                   this.$emit('close',args)
                   this.$notify({
@@ -193,6 +184,7 @@ export default {
                     duration: 2000
                   })
               }
+              this.onConfirming=false
             })
     }
 

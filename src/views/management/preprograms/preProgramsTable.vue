@@ -590,10 +590,10 @@ export default {
     onCloseDia(){
       this.visible=false;
     },
-    handleClose(args){
+     handleClose(args){
       this.visibleCol[args.type]=false
-      if("isUpdate" in args&&args.isUpdate==true){
-        var item=this.list.find(x=>x.id==args.programId)
+      if("state" in args&&args.state=='update'){
+        var item=this.list.find(x=>x.programBasic.id==args.programId)
         if(item!=null){
           item.is_exist[args.type]=true
         }

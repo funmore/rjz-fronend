@@ -1,96 +1,111 @@
  <template>
 <div>
-      <el-steps :active="workflow.active"  >
-       <el-step v-for="index in workflow.workflowArray.length" :key="index" :title="workflow.workflowArray[index-1].name" :description="workflow.workflowArray[index-1].plan_day"  :status="workflow.workflowArray[index-1]|statusComputed(workflow)"   @click.native="updateChildData(index)">
-             <el-badge :value="workflow.workflowArray[index-1].undo_task_count" class="item" slot="icon">
-                <i v-if="workflow.workflowArray[index-1].undo_task_count==0" class="el-icon-plus"></i>
-                <i v-else class="el-icon-close"></i>
-              </el-badge>
-        </el-step>
-      </el-steps>
-      <el-button-group>
-          <el-button type="primary" icon="el-icon-arrow-left" @click="previous">项目回滚</el-button>
-          <el-button type="primary" @click="next">项目推进<i class="el-icon-arrow-right el-icon--right"></i></el-button>
-      </el-button-group>
+    
+      <div v-if="workflow!=null">
+        <el-button @click="handleConfigure(true)">调整流程</el-button>
+        <el-steps :active="workflow.active"  >
+        <el-step v-for="index in workflow.workflowArray.length" :key="index" :title="workflow.workflowArray[index-1].name" :description="workflow.workflowArray[index-1].plan_day"  :status="workflow.workflowArray[index-1]|statusComputed(workflow)"   @click.native="updateChildData(index)">
+              <el-badge :value="workflow.workflowArray[index-1].undo_task_count" class="item" slot="icon">
+                  <i v-if="workflow.workflowArray[index-1].undo_task_count==0" class="el-icon-plus"></i>
+                  <i v-else class="el-icon-close"></i>
+                </el-badge>
+          </el-step>
+        </el-steps>
+        <el-button-group>
+            <el-button type="primary" icon="el-icon-arrow-left" @click="previous">项目回滚</el-button>
+            <el-button type="primary" @click="next">项目推进<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+        </el-button-group>
 
-      <el-tabs v-model="active" >
+        <el-tabs v-model="active" >
 
-            <el-tab-pane label="当前节点任务" name="task">
-                <node-task ref="NodeTask"  :propNodeId="workflow.workflowArray[workflow.active].id" :propRole="propRole"></node-task>
-            </el-tab-pane>
-            <el-tab-pane label="当前节点问题汇总" name="note">
-                <node-note ref="NodeNote"  :propNodeId="workflow.workflowArray[workflow.active].id" :propRole="propRole"></node-note>
-            </el-tab-pane>
+              <el-tab-pane label="当前节点任务" name="task">
+                  <node-task ref="NodeTask"  :propNodeId="workflow.workflowArray[workflow.active].id" :propRole="propRole"></node-task>
+              </el-tab-pane>
+              <el-tab-pane label="当前节点问题汇总" name="note">
+                  <node-note ref="NodeNote"  :propNodeId="workflow.workflowArray[workflow.active].id" :propRole="propRole"></node-note>
+              </el-tab-pane>
 
-            <el-tab-pane label="工作流操作记录" name="log">
-                 <div class="block" v-loading="listLoading">
-                  <div class="radio">
-                    排序：
-                    <el-radio-group v-model="reverse">
-                      <el-radio :label="false">正序</el-radio>
-                      <el-radio :label="true">倒序</el-radio>
-                    </el-radio-group>
+              <el-tab-pane label="工作流操作记录" name="log">
+                  <div class="block" v-loading="listLoading">
+                    <div class="radio">
+                      排序：
+                      <el-radio-group v-model="reverse">
+                        <el-radio :label="false">正序</el-radio>
+                        <el-radio :label="true">倒序</el-radio>
+                      </el-radio-group>
+                    </div>
+                    <el-timeline :reverse="reverse">
+                      <el-timeline-item
+                        v-for="(item, index) in workflow_note"
+                        :key="index"
+                        :timestamp="item.created_at">
+                        「{{item.employee_name}}」执行了从「{{item.from_node_name}}」到「{{item.to_node_name}}」的「{{item.note_type}}」操作
+                      </el-timeline-item>
+                    </el-timeline>
                   </div>
-                  <el-timeline :reverse="reverse">
-                    <el-timeline-item
-                      v-for="(item, index) in workflow_note"
-                      :key="index"
-                      :timestamp="item.created_at">
-                      「{{item.employee_name}}」执行了从「{{item.from_node_name}}」到「{{item.to_node_name}}」的「{{item.note_type}}」操作
-                    </el-timeline-item>
-                  </el-timeline>
-                </div>
-            </el-tab-pane>
-      </el-tabs>
-     
+              </el-tab-pane>
+        </el-tabs>
+      
 
-    <el-dialog title="配置工作流更新信息" :visible.sync="visible">
-      <el-form :rules="rules" ref="workflow" :model="temp" label123456781-position="left" label-width="200px" style='width: 500px; margin-left:50px;'>
+      <el-dialog title="配置工作流更新信息" :visible.sync="visible">
+        <el-form :rules="rules" ref="workflow" :model="temp" label123456781-position="left" label-width="200px" style='width: 500px; margin-left:50px;'>
 
-        <el-form-item label="更新类型">
-          {{temp.note_type}}
-        </el-form-item>
+          <el-form-item label="更新类型">
+            {{temp.note_type}}
+          </el-form-item>
 
-        <el-form-item label="更新起始节点">
-          {{workflow.workflowArray[workflow.active].name}}
-        </el-form-item>
+          <el-form-item label="更新起始节点">
+            {{workflow.workflowArray[workflow.active].name}}
+          </el-form-item>
 
-        <el-form-item label="更新目标节点">
-          {{to_node_name(workflow,temp)}}
-        </el-form-item>
+          <el-form-item label="更新目标节点">
+            {{to_node_name(workflow,temp)}}
+          </el-form-item>
 
-        <el-form-item label="更新日志">
-        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.note">
-          </el-input>
-        </el-form-item>
+          <el-form-item label="更新日志">
+          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.note">
+            </el-input>
+          </el-form-item>
 
-     </el-form>
+      </el-form>
 
-        <div slot="footer" class="dialog-footer">
-              <el-button @click="cancel()">取消</el-button>
-              <el-button type="primary" @click="confirmCreate(temp)">确认</el-button>
-        </div>
-   </el-dialog>
+          <div slot="footer" class="dialog-footer">
+                <el-button @click="cancel()">取消</el-button>
+                <el-button type="primary" @click="confirmCreate(temp)">确认</el-button>
+          </div>
+    </el-dialog>
+   </div>
+   <div v-else>
+     <el-button @click="handleConfigure(false)">尚未配置</el-button>
+   </div>
+
+    <ddd :propProgramBasicId="propProgramBasicId" :propIsExist="is_exist" :propVisible="generalVisible" @close="handleClose"></ddd>
 
 
 </div>
    
 </template>
 <script>
-
+  import { indexWorkflow, showWorkflow, storeWorkflow, updateWorkflow,
+         destroyWorkflow } from '@/api/workflow'   
   import { indexWorkflowNote, showWorkflowNote, storeWorkflowNote, updateWorkflowNote,
          destroyWorkflowNote } from '@/api/Workflownote'
   import NodeNote from './NodeNote'
   import NodeTask from './NodeTask'
 
+  import ddd from '@/components/PreProgramCom/Workflow.vue'
+
+
   export default {
-    components: { NodeNote,NodeTask },
+    components: { NodeNote,NodeTask,ddd },
     data() {
       return {
+        generalVisible:false,
+        is_exist:true,
         reverse:false,
         listLoading:true,
 
-        workflow:'',
+        workflow:null,
         node_id:null,
 
         visible:false,
@@ -101,11 +116,11 @@
           phaseCollection:''
         },
         active:'task'
-
+        
       };
     },
     props:{
-        propWorkflow:Object,
+        propProgramBasicId:Number,
         propRole:Array
     },
     filters: {
@@ -124,9 +139,10 @@
      }
     },
     created(){
-          this.workflow=this.propWorkflow;
-          this.temp.to_node_id=this.workflow.workflowArray[this.workflow.active].id;
-          this.getNote(this.workflow.id);
+          this.getData();
+          // this.workflow=this.propWorkflow;
+          // this.temp.to_node_id=this.workflow.workflowArray[this.workflow.active].id;
+          // this.getNote(this.workflow.id);
     },
     computed: {
     to_node_name() {
@@ -136,6 +152,31 @@
    },
 
     methods: {
+      handleConfigure(is_exist){
+        this.is_exist=is_exist;
+        this.generalVisible=true;
+      },  
+      handleClose(args){
+        this.generalVisible=false
+        this.getData()
+      },
+      getData(){
+        const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        showWorkflow(this.propProgramBasicId).then(response => {
+          var data=response.data
+          if(data.isOkay==true){
+            this.workflow = null
+            this.workflow = data.item
+            this.temp.to_node_id=this.workflow.workflowArray[this.workflow.active].id;
+            this.getNote(this.workflow.id);
+          }
+          loading.close()
+        })},
       updateChildData(index){
         this.$refs.NodeNote.getNodeNote(this.workflow.workflowArray[index-1].id);
         this.$refs.NodeTask.getNodeTask(this.workflow.workflowArray[index-1].id);
@@ -215,10 +256,12 @@
               this.workflow_note.unshift(data.item);
               var toAdd=1;
               if(item.note_type=='推进'){
-                this.$emit('doChangeWorkflow',toAdd)
+                this.workflow.active=this.workflow.active+toAdd;
+                // this.$emit('doChangeWorkflow',toAdd)
               }else{
                 toAdd=-1;
-                this.$emit('doChangeWorkflow',toAdd);
+                this.workflow.active=this.workflow.active+toAdd;
+                // this.$emit('doChangeWorkflow',toAdd);
               }
               this.$notify({
                 title: '成功',

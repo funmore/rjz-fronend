@@ -17,7 +17,7 @@
         <el-form-item label="代码量">
           <el-select v-model="softwareInfo.size" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.size"
+              v-for="(item,index) in selection.size"
               :key="index"
               :label="item"
               :value="item">
@@ -40,7 +40,7 @@
         <el-form-item label="编译器">
           <!-- <el-select v-model="softwareInfo.complier" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.complier"
+              v-for="(item,index) in selection.complier"
               :key="index"
               :label="item"
               :value="item">
@@ -54,7 +54,7 @@
         <el-form-item label="编程语言">
           <el-select v-model="softwareInfo.code_langu" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.codeLangu"
+              v-for="(item,index) in selection.codeLangu"
               :key="index"
               :label="item"
               :value="item">
@@ -66,7 +66,7 @@
         <el-form-item label="运行环境">
           <!-- <el-select v-model="softwareInfo.runtime" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.runtime"
+              v-for="(item,index) in selection.runtime"
               :key="index"
               :label="item"
               :value="item">
@@ -80,7 +80,7 @@
         <el-form-item label="CPU类型">
           <!-- <el-select v-model="softwareInfo.cpu_type" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.cpuType"
+              v-for="(item,index) in selection.cpuType"
               :key="index"
               :label="item"
               :value="item">
@@ -94,7 +94,7 @@
         <el-form-item label="软件级别">
           <el-select v-model="softwareInfo.software_type" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.classification"
+              v-for="(item,index) in selection.classification"
               :key="index"
               :label="item"
               :value="item">
@@ -106,7 +106,7 @@
         <el-form-item label="软件类型">
           <el-select v-model="softwareInfo.software_usage" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.softwareUsage"
+              v-for="(item,index) in selection.softwareUsage"
               :key="index"
               :label="item"
               :value="item">
@@ -117,7 +117,7 @@
         <el-form-item label="被测软件类型">
           <el-select v-model="softwareInfo.software_cate" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.softwareCate"
+              v-for="(item,index) in selection.softwareCate"
               :key="index"
               :label="item"
               :value="item">
@@ -128,7 +128,7 @@
         <el-form-item label="被测软件子类">
           <el-select v-model="softwareInfo.software_sub_cate" filterable placeholder="请选择">
             <el-option
-              v-for="(item,index) in propSelection.softwareSubCate"
+              v-for="(item,index) in selection.softwareSubCate"
               :key="index"
               :label="item"
               :value="item">
@@ -138,14 +138,16 @@
       </el-form>
         <div slot="footer" class="dialog-footer">
               <el-button @click="cancel()">取消</el-button>
-              <el-button type="primary"  @click="confirmCreate" v-if="dialogStatus=='create'">确认</el-button>
-              <el-button type="primary"  @click="confirmUpdate" v-else>确认</el-button>
+              <el-button type="primary" :loading="onConfirming" @click="confirmCreate" v-if="dialogStatus=='create'">确认</el-button>
+              <el-button type="primary" :loading="onConfirming" @click="confirmUpdate" v-else>确认</el-button>
       </div>
 </el-dialog>
 </template>
 
 <script>
 import mixin from './mixin'
+import selection_minx from '../PublicMixin/selection'
+
 import { indexSoftwareInfo, showSoftwareInfo, storeSoftwareInfo, updateSoftwareInfo,
          destroySoftwareInfo } from '@/api/softwareinfo'
 
@@ -154,54 +156,16 @@ export default {
   name: 'SoftwareInfo',
 
   props:{
-    propSelection:Object,
     propVisible:Boolean,
-    propProgramBasicId: Number,
-    propIsExist:Boolean
+    propProgramBasicId: Number
   },
-  mixins: [mixin],
+  mixins: [mixin,selection_minx],
   data() {
     return {
       
 
 
-      softwareInfo:new Object,
-
-      rules: {
-           name:[ { required: true, message: '请输入名称', trigger: 'blur' } ],
-
-      },
-      listLoading:false,
-      dialogStatus: '',
-        textMap: {
-          update: '更新',
-          create: '创建'
-        }
-    }
-  },
-  watch:{
-      //propVisible start
-      propVisible:function(newVa,oldVa){
-        if(newVa==true){
-          if(this.propIsExist==false){
-              this.dialogStatus='create'
-          }else{
-            this.dialogStatus='update'
-          }
-          this.getData()
-        }
-      },
-      //propVisible end
-  },
-   methods: {
-      getData(){
-        this.listLoading=true;
-        showSoftwareInfo(this.propProgramBasicId).then(response => {
-          var data=response.data
-          if(data.isOkay==true){
-            this.softwareInfo = data.item
-          }else{
-            this.softwareInfo = {
+      softwareInfo:{
                 name:'',
                 version_id:new Number(),
                 size:'',
@@ -215,12 +179,46 @@ export default {
                 cpu_type:'',
                 software_cate:'',
                 software_sub_cate:''
-              }
+              },
+
+      rules: {
+           name:[ { required: true, message: '请输入名称', trigger: 'blur' } ],
+
+      },
+      listLoading:false,
+      dialogStatus: '',
+        textMap: {
+          update: '更新',
+          create: '创建'
+        },
+        onConfirming:false
+    }
+  },
+  watch:{
+      //propVisible start
+      propVisible:function(newVa,oldVa){
+        if(newVa==true){
+          this.getData()
+        }
+      },
+      //propVisible end
+  },
+   methods: {
+      getData(){
+        this.listLoading=true;
+        showSoftwareInfo(this.propProgramBasicId).then(response => {
+          var data=response.data
+          if(data.isOkay==true){
+            this.dialogStatus='update'
+            this.softwareInfo = data.item
+          }else{
+            this.dialogStatus='create'
           }
           this.listLoading = false
         })
     },
     confirmUpdate(){
+      this.onConfirming=true
       let storeData={
         programId:this.propProgramBasicId,
         data:this.softwareInfo
@@ -229,7 +227,9 @@ export default {
         if(response.data.isOkay==true){
                 var args={
                   type:this.$options.name,
-                  value:false
+                  state:this.dialogStatus,
+                  programId:this.propProgramBasicId,
+                  value:response.data.item
                 }
                 this.$emit('close',args)
                 this.$notify({
@@ -239,19 +239,23 @@ export default {
                   duration: 2000
                 })
         }
+        this.onConfirming=false
       })
     },
     confirmCreate(){
+      this.onConfirming=true
       let storeData={
         programId:this.propProgramBasicId,
         data:this.softwareInfo
       }
       storeSoftwareInfo(storeData).then(response => {
         if(response.data.isOkay==true){
+                  this.dialogStatus='update'
                   var args={
                     type:this.$options.name,
-                    isUpdate:true,
-                    programId:this.propProgramBasicId
+                    state:this.dialogStatus,
+                    programId:this.propProgramBasicId,
+                    value:response.data.item
                   }
                   this.$emit('close',args)
                   this.$notify({
@@ -261,6 +265,7 @@ export default {
                     duration: 2000
                   })
               }
+              this.onConfirming=false
             })
     }
   }
