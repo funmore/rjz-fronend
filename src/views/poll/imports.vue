@@ -32,6 +32,7 @@ export default {
   components: { UploadExcelComponent,SelectEmployee,Property },
   data() {
     return {
+      column_value:[],
       ExcelData: [],
       tableHeader: [],
       propertyData:[],
@@ -68,9 +69,15 @@ export default {
     },
     handleSuccess({ results, header }) {
       this.ExcelData = results
+      
       this.tableHeader = header
       this.uploadVisible=false
       this.setRowVisible=true
+      // if(this.ExcelData.length!=0){
+      //   this.ExcelData.forEach(x=>{
+      //     this.
+      //   })
+      // }
     },
     handleRowChange(value){
 
@@ -78,10 +85,31 @@ export default {
     OnNextClicked(){
       if(this.setRowVisible==true){
         for (let header of this.tableHeader) {
+            let type="数字"
+            let valid_value=[]
+            this.ExcelData.forEach(value=>{
+                if(value[header]!=null){
+                  if(valid_value.indexOf(value[header])==-1){
+                    valid_value.push(value[header])
+                  }
+                }
+              });
+            if(valid_value.length<3){
+              if(valid_value.length!=0){
+                for(let i=0;i<valid_value.length;i++){
+                  if(isNaN(parseInt(valid_value[i]))){
+                      type="单项选择"
+                      break
+                  }
+                }
+              }
+            }else{
+              type="单项选择"
+            }
             let oneRow={
               name:header,
-              type:'数字',
-              valid_value:[]
+              type:type,
+              valid_value:valid_value
             }
             this.propertyData.push(oneRow)
           }
