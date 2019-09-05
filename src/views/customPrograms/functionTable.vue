@@ -74,16 +74,16 @@
 
      <el-table-column align="center" label="信息维护" width="330px"  >
         <template slot-scope="scope">
-         <el-row> <el-button :type="scope.row.is_exist.ProgramBasic?'success':'warning'" size="mini"  :icon="scope.row.is_exist.ProgramBasic?'el-icon-edit':'el-icon-circle-plus-outline'"  @click="handleConfigure(scope.row,'ProgramBasic')">{{scope.row.is_exist.ProgramBasic|State}}基本信息</el-button></el-row>
-         <el-row> <el-button :type="scope.row.is_exist.Contact?'success':'warning'" size="mini"  :icon="scope.row.is_exist.Contact?'el-icon-edit':'el-icon-circle-plus-outline'"  @click="handleConfigure(scope.row,'Contact')">{{scope.row.is_exist.Contact|State}}联系人员</el-button></el-row>
-         <el-row> <el-button :type="scope.row.is_exist.SoftwareInfo?'success':'warning'" size="mini"  :icon="scope.row.is_exist.SoftwareInfo?'el-icon-edit':'el-icon-circle-plus-outline'"  @click="handleConfigure(scope.row,'SoftwareInfo')">{{scope.row.is_exist.SoftwareInfo|State}}软件信息</el-button></el-row>
-         <el-row> <el-button :type="scope.row.is_exist.Workflow?'success':'warning'" size="mini"  :icon="scope.row.is_exist.Workflow?'el-icon-edit':'el-icon-circle-plus-outline'"  @click="handleConfigure(scope.row,'Workflow')">{{scope.row.is_exist.Workflow|State}}流程信息</el-button></el-row>
-         <el-row> <el-button :type="scope.row.is_exist.ProgramTeamRole?'success':'warning'" size="mini"  :icon="scope.row.is_exist.ProgramTeamRole?'el-icon-edit':'el-icon-circle-plus-outline'"  @click="handleConfigure(scope.row,'ProgramTeamRole')">{{scope.row.is_exist.ProgramTeamRole|State}}人员信息</el-button></el-row>
+         <el-row> <el-button :type="scope.row.is_exist.ProgramBasic?'success':'warning'" size="mini"  :icon="scope.row.is_exist.ProgramBasic?'el-icon-edit':'el-icon-circle-plus-outline'"  @click="handleConfigure(scope.row,'ProgramBasic')">{{scope.row.is_exist.ProgramBasic|isExistState}}基本信息</el-button></el-row>
+         <el-row> <el-button :type="scope.row.is_exist.Contact?'success':'warning'" size="mini"  :icon="scope.row.is_exist.Contact?'el-icon-edit':'el-icon-circle-plus-outline'"  @click="handleConfigure(scope.row,'Contact')">{{scope.row.is_exist.Contact|isExistState}}联系人员</el-button></el-row>
+         <el-row> <el-button :type="scope.row.is_exist.SoftwareInfo?'success':'warning'" size="mini"  :icon="scope.row.is_exist.SoftwareInfo?'el-icon-edit':'el-icon-circle-plus-outline'"  @click="handleConfigure(scope.row,'SoftwareInfo')">{{scope.row.is_exist.SoftwareInfo|isExistState}}软件信息</el-button></el-row>
+         <el-row> <el-button :type="scope.row.is_exist.Workflow?'success':'warning'" size="mini"  :icon="scope.row.is_exist.Workflow?'el-icon-edit':'el-icon-circle-plus-outline'"  @click="handleConfigure(scope.row,'Workflow')">{{scope.row.is_exist.Workflow|isExistState}}流程信息</el-button></el-row>
+         <el-row> <el-button :type="scope.row.is_exist.ProgramTeamRole?'success':'warning'" size="mini"  :icon="scope.row.is_exist.ProgramTeamRole?'el-icon-edit':'el-icon-circle-plus-outline'"  @click="handleConfigure(scope.row,'ProgramTeamRole')">{{scope.row.is_exist.ProgramTeamRole|isExistState}}人员信息</el-button></el-row>
         </template>
       </el-table-column>
        <el-table-column align="center" label="操作" width="330px">
         <template slot-scope="scope">
-           <span >切换项目状态为</span>
+           <!-- <span >切换项目状态为</span>
             <el-select v-model="scope.row.programBasic.state" placeholder="项目状态">
                   <el-option
                     v-for="(item,index) in ['意向项目','预备项目','正式项目','完结项目']"
@@ -92,8 +92,9 @@
                     :value="item"
                      >
                   </el-option>
-            </el-select>
-            <span><el-button type="primary"  @click="onProgramStateChange(scope.row)">确认</el-button></span>
+            </el-select> -->
+            <span v-if="scope.row.programBasic.state=='完结项目'"><el-button type="primary" size="small" disabled>已完结</el-button></span>
+            <span v-else><el-button type="primary" size="small"  @click="onProgramStateChange(scope.row)">切换为{{scope.row.programBasic.state|toState(stateArr)}}</el-button></span>
             
           <el-button type="danger" size="small" icon="el-icon-edit" :loading="onDeleting" @click="handleDelete(scope.row)">删除</el-button>
         </template>
@@ -181,6 +182,7 @@ export default {
   mixins: [selection_minx],
   data() {
     return {
+      stateArr:['意向项目','预备项目','正式项目','完结项目'],
       onDeleting:false,
       visibleCol:{
         ProgramBasic:false,
@@ -446,11 +448,22 @@ export default {
     }
   },
   filters: {
-    State(is_exist){
+    isExistState(is_exist){
       if(is_exist){
         return '更新'
       }else{
         return '创建'
+      }
+    },
+    toState(state,stateArr){
+      if(state=='完结项目'){
+        return null
+      }
+      var index= stateArr.indexOf(state);
+      if(index==-1){
+        return '预备项目'
+      }else{
+        return stateArr[index+1]
       }
     }
 
@@ -490,7 +503,16 @@ export default {
   },
   methods: {
      onProgramStateChange(row){
-        if(row.programBasic.state=='正式项目'||row.programBasic.state=='完结项目'&&row.is_exist.ProgramTeamRole!=true){
+          var toState=row.programBasic.state
+          var index= this.stateArr.indexOf(row.programBasic.state);
+          if(index==-1){
+            return 
+          }else{
+            toState=this.stateArr[index+1]
+          }
+
+
+        if((toState=='正式项目'||toState=='完结项目')&&row.is_exist.ProgramTeamRole!=true){
             this.$confirm('转正式项目/完结项目的前置条件是具备项目人员', '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
@@ -500,6 +522,7 @@ export default {
             }).catch(()=>{})
             return
         }
+        row.programBasic.state=toState
         this.onProgramStarting=true;
         let data=row.programBasic;
         updateProgram(data).then(response => {
