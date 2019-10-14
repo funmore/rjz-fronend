@@ -322,6 +322,16 @@ export default {
           name:'联系人',
           children:[
             {
+              key:'organ',
+              name:'研制单位',
+              children:null
+            },
+            {
+              key:'is_12s',
+              name:'是否所内',
+              children:null
+            },
+            {
               key:'plan',
               name:'计划',
               children:null
@@ -477,7 +487,7 @@ export default {
             let fatherProperty=keyPath.slice(0,keyPath.indexOf(this.separator))
             let childProperty=keyPath.slice(keyPath.indexOf(this.separator)+1)
             if(fatherProperty=='softwareInfoCol'){
-                father=row[fatherProperty][0]
+                father=row[fatherProperty]==null?null:row[fatherProperty][0]
             }else{
                 father=row[fatherProperty]
             }
@@ -754,7 +764,7 @@ export default {
             let fatherProperty=keyPath.slice(0,keyPath.indexOf(this.separator))
             let childProperty=keyPath.slice(keyPath.indexOf(this.separator)+1)
             if(fatherProperty=='softwareInfoCol'){
-                father=row[fatherProperty][0]
+                father=row[fatherProperty]==null?null:row[fatherProperty][0]
             }else{
                 father=row[fatherProperty]
             }

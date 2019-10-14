@@ -25,6 +25,15 @@
       </el-tab-pane>
       <el-tab-pane label="合同信息">合同信息</el-tab-pane>
     </el-tabs>
+    <el-button @click="drawerVisible = true" type="primary" style="margin-left: 16px;">
+  点我打开
+</el-button>
+
+<el-drawer
+  title="项目日志"
+  :visible.sync="drawerVisible"
+  :direction="'rtl'">
+</el-drawer>
   </div>
 </template>
 
@@ -54,6 +63,7 @@ export default {
   components: { TeamMemberDetail,SoftwareInfoDetail,ProgramBasic, WorkflowEdit,FileProgramDetail,FileReviewDetail },
   data() {
     return {
+      drawerVisible:false,
       activeIndex:"workflow",
       updatedKey:{
         softwareInfo:1,

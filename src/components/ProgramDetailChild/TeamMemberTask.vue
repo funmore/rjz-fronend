@@ -235,8 +235,8 @@
       indexProgramTeamRoleTask(this.listQuery).then(response => {
         var data=response.data
         if(data.total!=0){
-          this.ptr_note = data.items
-        }
+          this.ptr_note = Object.values(data.items)        
+          }
       this.listLoading=false;
       })
       },

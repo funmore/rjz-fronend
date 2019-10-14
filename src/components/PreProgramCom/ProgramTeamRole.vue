@@ -155,6 +155,8 @@ export default {
 
         }
         this.onConfirming=false
+      }).catch(error => {
+        this.onConfirming=false
       })
     },
     confirmCreate(){
@@ -181,7 +183,9 @@ export default {
                   })
               }
               this.onConfirming=false
-            })
+            }).catch(error => {
+        this.onConfirming=false
+      })
     },
     getList() {
       this.listLoading = true;

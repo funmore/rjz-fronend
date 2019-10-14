@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <span >
     
       <el-select clearable style="width: 130px" class="filter-item" v-model="select" placeholder="我的收藏" @change="onChange">
         <el-option-group
@@ -60,7 +60,7 @@
 
 
 
-  </div>
+  </span>
 </template>
 
 <script>

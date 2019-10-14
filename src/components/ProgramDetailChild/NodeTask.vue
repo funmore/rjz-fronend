@@ -124,7 +124,7 @@ import { indexProgramTeamRoleTask, showProgramTeamRoleTask, storeProgramTeamRole
       indexProgramTeamRoleTask(listQuery).then(response => {
         var data=response.data
         if(data.total!=0){
-          this.node_task = data.items
+          this.node_task = Object.values(data.items)
         }
       this.listLoading=false;
       })

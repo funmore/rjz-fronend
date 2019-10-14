@@ -25,7 +25,9 @@ service.interceptors.request.use(
     config.headers.Sha=s;
     config.headers.funmore='ftest';
 
-
+    // if(config.method=='post'||config.method=='put'){
+    //   config.data._token="{{ csrf_token() }}"
+    // }
     if (store.getters.token) {
         // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
         config.headers.AdminToken = getToken();

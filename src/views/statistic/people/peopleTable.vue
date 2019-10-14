@@ -73,7 +73,7 @@
 
               <el-table-column width="400px" align="center" label="角色">
                 <template slot-scope="scope">
-                  <span>{{scope.row.roles.map(x=>x.role).join('/')}}</span>
+                  <span>{{scope.row.roles|Roles}}</span>
                 </template>
               </el-table-column>
 
@@ -110,6 +110,11 @@ export default {
   components: { Task },
   directives: {
     waves
+  },
+  filters:{
+      Roles(roles){
+        return roles.map(x=>x.role).join('/')
+      }
   },
   data() {
     return {

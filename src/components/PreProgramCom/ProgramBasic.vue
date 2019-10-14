@@ -135,6 +135,7 @@ import { indexProgram, showProgram, storeProgram, updateProgram,
          destroyProgram } from '@/api/program'
 import mixin from './mixin'
 import selection_minx from '../PublicMixin/selection'
+import { parseTime } from '@/utils/index.js'
 
 export default {
   name: 'ProgramBasic',
@@ -162,9 +163,13 @@ export default {
           classification:'',
           program_stage:'',
           dev_type:'',
-          plan_start_time:new Date(),  
-          plan_end_time :new Date(),
-          manager_id:null
+          plan_start_time:parseTime(new Date(),'{y}-{m}-{d} {h}:{i}:{s}'),  
+          plan_end_time :parseTime(new Date(),'{y}-{m}-{d} {h}:{i}:{s}'),  
+          actual_start_time:parseTime(new Date(),'{y}-{m}-{d} {h}:{i}:{s}'),    
+          actual_end_time :parseTime(new Date(),'{y}-{m}-{d} {h}:{i}:{s}'),  
+          manager_id:null,
+          overdue_reason:'',
+          test_time:parseTime(new Date(),'{y}-{m}-{d}')
         },
       rules: {},
       listLoading:false,
@@ -229,6 +234,8 @@ watch:{
                 })
         }
         this.onConfirming=false
+      }).catch(error => {
+        this.onConfirming=false
       })
     },
     confirmCreate(){
@@ -254,6 +261,8 @@ watch:{
                     duration: 2000
                   })
               }
+              this.onConfirming=false
+            }).catch(response => {
               this.onConfirming=false
             })
     }
