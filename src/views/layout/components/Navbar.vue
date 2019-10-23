@@ -54,11 +54,23 @@ export default {
   data() {
     return {
       driver: null
+      // mock_notice:0,
+      // interval_id:0
     }
   },
   mounted() {
     this.driver = new Driver()
+
   },
+  // created(){
+  //   this.interval_id=setInterval(()=>{
+  //     this.mock_notice=Math.floor(Math.random() * Math.floor(10))
+  //     },2000)
+  // },
+  // beforeDestroy(){
+  //   clearInterval(this.interval_id)
+  // },
+  
   methods: {
     guide() {
       this.driver.defineSteps(this.$store.getters.steps)
