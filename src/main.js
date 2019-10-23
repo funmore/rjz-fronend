@@ -44,3 +44,16 @@ new Vue({
   store,
   render: h => h(App)
 })
+//Though method above is universial useful
+//However, if use below , there is a vue warning 
+//vue.runtime.esm.js:587 [Vue warn]: You are using the runtime-only build of Vue where the template 
+//compiler is not available. 
+//Either pre-compile the templates into render functions, or use the compiler-included build.
+
+// var global1 = new Vue({
+//   components: { App },
+//   router,
+//   store,
+//   template: '<App/>'
+// })
+// global1.$mount('#app')
