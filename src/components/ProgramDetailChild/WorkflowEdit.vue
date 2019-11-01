@@ -1,5 +1,5 @@
  <template>
-<div>
+<div :visible.sync="propVisible">
     
       <div v-if="workflow!=null">
         <el-button @click="handleConfigure(true)">调整流程</el-button>
@@ -19,30 +19,14 @@
         <el-tabs v-model="active" >
 
               <el-tab-pane label="当前节点任务" name="task">
-                  <node-task ref="NodeTask"  :propNodeId="workflow.workflowArray[workflow.active].id" :propRole="propRole"></node-task>
+                  <node-task :propVisible="active=='task'" ref="NodeTask"  :propNodeId="workflow.workflowArray[workflow.active].id" :propRole="propRole"></node-task>
               </el-tab-pane>
               <el-tab-pane label="当前节点问题汇总" name="note">
-                  <node-note ref="NodeNote"  :propNodeId="workflow.workflowArray[workflow.active].id" :propRole="propRole"></node-note>
+                  <node-note :propVisible="active=='note'" ref="NodeNote"  :propNodeId="workflow.workflowArray[workflow.active].id" :propRole="propRole"></node-note>
               </el-tab-pane>
 
               <el-tab-pane label="工作流操作记录" name="log">
-                  <div class="block" v-loading="listLoading">
-                    <div class="radio">
-                      排序：
-                      <el-radio-group v-model="reverse">
-                        <el-radio :label="false">正序</el-radio>
-                        <el-radio :label="true">倒序</el-radio>
-                      </el-radio-group>
-                    </div>
-                    <el-timeline :reverse="reverse">
-                      <el-timeline-item
-                        v-for="(item, index) in workflow_note"
-                        :key="index"
-                        :timestamp="item.created_at">
-                        「{{item.employee_name}}」执行了从「{{item.from_node_name}}」到「{{item.to_node_name}}」的「{{item.note_type}}」操作
-                      </el-timeline-item>
-                    </el-timeline>
-                  </div>
+                <node-flow-log :propVisible="active=='log'"  :propWorkflowId="workflow.id" :propRole="propRole"></node-flow-log>
               </el-tab-pane>
         </el-tabs>
       
@@ -90,19 +74,19 @@
          destroyWorkflow } from '@/api/workflow'   
   import { indexWorkflowNote, showWorkflowNote, storeWorkflowNote, updateWorkflowNote,
          destroyWorkflowNote } from '@/api/Workflownote'
-  import NodeNote from './NodeNote'
-  import NodeTask from './NodeTask'
+  import NodeNote from './workflowedit/NodeNote'
+  import NodeTask from './workflowedit/NodeTask'
+  import NodeFlowLog from './workflowedit/NodeFlowLog'
 
   import ddd from '@/components/PreProgramCom/Workflow.vue'
 
 
   export default {
-    components: { NodeNote,NodeTask,ddd },
+    components: { NodeNote,NodeTask,ddd,NodeFlowLog },
     data() {
       return {
         generalVisible:false,
         is_exist:true,
-        reverse:false,
         listLoading:true,
 
         workflow:null,
@@ -111,7 +95,6 @@
         visible:false,
         rules:{},
         temp:{},
-        workflow_note:[],
         listQuery:{
           phaseCollection:''
         },
@@ -120,6 +103,7 @@
       };
     },
     props:{
+        propVisible:Boolean,
         propProgramBasicId:Number,
         propRole:Array
     },
@@ -138,11 +122,17 @@
               }
      }
     },
+    watch:{
+      //propVisible start
+      propVisible:function(newVa,oldVa){
+        if(newVa==true){
+          this.getData();
+        }
+      },
+      //propVisible end
+  },
     created(){
           this.getData();
-          // this.workflow=this.propWorkflow;
-          // this.temp.to_node_id=this.workflow.workflowArray[this.workflow.active].id;
-          // this.getNote(this.workflow.id);
     },
     computed: {
     to_node_name() {
@@ -167,13 +157,13 @@
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)'
         });
+        var that=this;
         showWorkflow(this.propProgramBasicId).then(response => {
           var data=response.data
           if(data.isOkay==true){
-            this.workflow = null
-            this.workflow = data.item
-            this.temp.to_node_id=this.workflow.workflowArray[this.workflow.active].id;
-            this.getNote(this.workflow.id);
+            that.workflow = null
+            that.workflow = data.item
+            that.temp.to_node_id=that.workflow.workflowArray[that.workflow.active].id;
           }
           loading.close()
         })},
@@ -212,20 +202,24 @@
             this.temp.note='';
             this.visible=true;       
     },
-      getNote(id){
-      this.listLoading = true;
-      this.listQuery.id=id;
-      indexWorkflowNote(this.listQuery).then(response => {
-        var data=response.data
-        if(data.total!=0){
-          this.workflow_note = data.items
-        }
-        this.listLoading = false
-      })
-    },
     handleFilter(){
 
     },
+    handleCreate(){
+          this.dialogStatus='create';
+          this.temp={
+                task:'',
+                due_day:'',
+                overdue_reason:'',
+                note:'',
+                before_node_id:this.propWorkflow.workflowArray[this.propWorkflow.active].id,
+                state:10,
+                ratio:10,
+                score:5
+            },
+          this.visible=true;
+
+      },
     handleCreate(){
           this.temp={
               task:'',
@@ -253,15 +247,12 @@
 
             storeWorkflowNote(item).then(response => {
               var data=response.data;
-              this.workflow_note.unshift(data.item);
               var toAdd=1;
               if(item.note_type=='推进'){
                 this.workflow.active=this.workflow.active+toAdd;
-                // this.$emit('doChangeWorkflow',toAdd)
               }else{
                 toAdd=-1;
                 this.workflow.active=this.workflow.active+toAdd;
-                // this.$emit('doChangeWorkflow',toAdd);
               }
               this.$notify({
                 title: '成功',

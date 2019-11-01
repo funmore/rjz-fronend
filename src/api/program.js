@@ -21,6 +21,12 @@ export function roleProgram(id) {
     method: 'get'
   })
 }
+export function teamProgram(id){
+  return request({
+    url:'program/team/'+id,
+    method: 'get'
+  })
+}
 
 export function storeProgram(data) {
   return request({

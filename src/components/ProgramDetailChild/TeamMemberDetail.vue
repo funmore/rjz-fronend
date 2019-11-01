@@ -1,5 +1,5 @@
  <template>
- <div>
+ <div :visible.sync="propVisible">
   <div v-if="programTeamRole!=null">
         <el-button @click="handleConfigure(true)">调整</el-button>
             <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -54,7 +54,7 @@
 
 </template>
 <script>
-  import TeamMemberTask from './TeamMemberTask'
+  import TeamMemberTask from './teammemberdetail/TeamMemberTask.vue'
   import eee from '@/components/PreProgramCom/ProgramTeamRole.vue'
 
   import { indexWorkflow, showWorkflow, storeWorkflow, updateWorkflow,
@@ -79,6 +79,7 @@
       };
     },
     props:{
+        propVisible:Boolean,
         propProgramBasicId:Number,
         propRole:Array
     },
@@ -90,9 +91,19 @@
         }
       }
     },
+        watch:{
+      //propVisible start
+    propVisible:function(newVa,oldVa){
+        if(newVa==true){
+          this.showWorkflow()
+          this.getData()
+        }
+      },
+      //propVisible end
+  },
     created(){
-      this.showWorkflow()
-      this.getData()
+      // this.showWorkflow()
+      // this.getData()
     },
     mounted(){
     },

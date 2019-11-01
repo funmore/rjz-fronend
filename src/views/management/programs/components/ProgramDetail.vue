@@ -1,29 +1,29 @@
 <template>
   <div class="createPost-container">
-    <el-tabs type="border-card">
+    <el-tabs type="border-card" v-model="active">
 
-      <el-tab-pane label="流程信息">
-          <workflow-edit ref="WorkflowEdit" :propProgramBasicId="programBasicId"  :propRole="program_role" ></workflow-edit>
+      <el-tab-pane label="流程信息" name="流程信息">
+          <workflow-edit ref="WorkflowEdit" :propVisible="active=='流程信息'"  :propProgramBasicId="programBasicId"  :propRole="program_role" ></workflow-edit>
       </el-tab-pane>
-      <el-tab-pane label="项目基本信息">
-          <program-basic :propProgramBasicId="programBasicId" :key="updatedKey.programBasic" ></program-basic>
+      <el-tab-pane label="项目基本信息" name="项目基本信息">
+          <program-basic :propVisible="active=='项目基本信息'"  :propProgramBasicId="programBasicId" :key="updatedKey.programBasic" ></program-basic>
       </el-tab-pane>
-      <el-tab-pane label="项目组信息">
-        <team-member-detail :propProgramBasicId="programBasicId"      :propRole="program_role"></team-member-detail>
+      <el-tab-pane label="项目组信息" name="项目组信息">
+        <team-member-detail :propVisible="active=='项目组信息'"  :propProgramBasicId="programBasicId"      :propRole="program_role"></team-member-detail>
       </el-tab-pane>
-      <el-tab-pane label="被测件信息">
-        <software-info-detail :propProgramBasicId="programBasicId"   :key="updatedKey.softwareInfo" ></software-info-detail>
+      <el-tab-pane label="被测件信息" name="被测件信息">
+        <software-info-detail :propVisible="active=='被测件信息'"  :propProgramBasicId="programBasicId"   :key="updatedKey.softwareInfo" ></software-info-detail>
       </el-tab-pane>
-      <el-tab-pane label="项目输入信息">
-        <file-program-detail :propProgramId="programBasicId" :propFileCategory="'input'" :propActive="'任务书'"></file-program-detail>
+      <el-tab-pane label="项目输入信息" name="项目输入信息">
+        <file-program-detail :propVisible="active=='项目输入信息'"  :propProgramId="programBasicId" :propFileCategory="'input'" :propActive="'任务书'"></file-program-detail>
       </el-tab-pane>
-      <el-tab-pane label="项目工作产品">
-        <file-program-detail :propProgramId="programBasicId" :propFileCategory="'output'" :propActive="'测试计划'"></file-program-detail>
+      <el-tab-pane label="项目工作产品" name="项目工作产品">
+        <file-program-detail :propVisible="active=='项目工作产品'"  :propProgramId="programBasicId" :propFileCategory="'output'" :propActive="'测试计划'"></file-program-detail>
       </el-tab-pane>
-      <el-tab-pane label="在线评审">
-        <file-review-detail :propProgramId="programBasicId" ></file-review-detail>
+      <el-tab-pane label="在线评审" name="在线评审">
+        <file-review-detail :propVisible="active=='在线评审'"  :propProgramId="programBasicId" ></file-review-detail>
       </el-tab-pane>
-      <el-tab-pane label="合同信息">合同信息</el-tab-pane>
+
     </el-tabs>
     <el-button @click="drawerVisible = true" type="primary" style="margin-left: 16px;">
   点我打开
@@ -64,7 +64,7 @@ export default {
   data() {
     return {
       drawerVisible:false,
-      activeIndex:"workflow",
+      active:"流程信息",
       updatedKey:{
         softwareInfo:1,
         programBasic:1,
@@ -77,7 +77,6 @@ export default {
 
     }
   },
-
   created() {
      store.dispatch('GetInfo').then(res => { // 拉取用户信息
     }).catch((err) => {
@@ -85,6 +84,11 @@ export default {
         Message.error(err || 'Verification failed, please login again')
       })
     })
+    this.$store.dispatch('TEAM',this.programBasicId).then(res=>{
+      this.s_team=this.$store.state.program.s_team
+    }).catch((err)=>{
+    });
+    this.$store.commit('SET_PROGRAM_BASIC_ID',this.programBasicId)
 
 
     this.roleProgram()

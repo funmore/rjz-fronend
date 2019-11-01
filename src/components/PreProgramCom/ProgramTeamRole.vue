@@ -84,10 +84,10 @@ export default {
         listLoading:true,
         programTeamRole:[
           {role:'项目组长',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'项目组员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'监督人员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'配置管理员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'质量保证员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false}
+          {role:'项目组员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false}
+          // {role:'监督人员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
+          // {role:'配置管理员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
+          // {role:'质量保证员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false}
         ],
         dialogStatus: '',
         textMap: {

@@ -11,6 +11,11 @@ const getters = {
   permission_routers: state => state.permission.routers,
   addRouters: state => state.permission.addRouters,
   notice: state =>state.user.notice,
-  steps:state =>state.guide.steps
+  steps:state =>state.guide.steps,
+  s_team:state => state.program.s_team,
+  g_team:state => state.program.g_team,
+  w_team:state => state.program.w_team,
+  d_team:state => state.program.d_team,
+  programBasicId: state => state.program.programBasicId
 }
 export default getters

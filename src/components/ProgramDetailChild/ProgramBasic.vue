@@ -1,6 +1,6 @@
 
  <template>
-<div>
+<div :visible.sync="propVisible">
 	
 		 <el-table :key='tableKey' :data="ProgramBasic" v-loading="listLoading" border fit highlight-current-row>
 
@@ -134,15 +134,25 @@ import { indexProgram, showProgram, storeProgram, updateProgram,
       };
     },
     props:{
+		propVisible:Boolean,
 		propProgramBasicId:Number,
         propProgramBasic:Object
     },
     filters: {
     parseTime
-    },
+	},
+	watch:{
+      //propVisible start
+    propVisible:function(newVa,oldVa){
+        if(newVa==true){
+		  this.getData();
+        }
+      },
+      //propVisible end
+  },
     created(){
-		this.getModel()
-		this.getData();
+		// this.getModel()
+		// this.getData();
      	// this.ProgramBasic.push(this.propProgramBasic)
     },
     methods: {

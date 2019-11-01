@@ -1,5 +1,5 @@
  <template>
-  <div>
+  <div :visible.sync="propVisible">
 
             <el-tabs v-model="active" @tab-click="handleClick">
               <el-tab-pane
@@ -113,10 +113,12 @@ import { indexFileProgram, showFileProgram, storeFileProgram, updateFileProgram,
       };
     },
     props:{
+        propVisible:Boolean,
         propProgramId:Number,
         propFileCategory:String,
         propActive:String
     },
+
     watch: {
       toReviewFileId:function(newVa,oldVa){
         let id=parseInt(newVa);
@@ -129,16 +131,15 @@ import { indexFileProgram, showFileProgram, storeFileProgram, updateFileProgram,
                   console.log(err)
                 })
           }
-      }
+      },
+      propVisible:function(newVa,oldVa){
+        if(newVa==true){
+		      this.getFileProgramInfo(this.propProgramId);
+        }
+      },
      },
-    created(){
-
-    },
-    beforeMount(){
-      let c=1;
-    },
     mounted(){
-      this.getFileProgramInfo(this.propProgramId);
+      // this.getFileProgramInfo(this.propProgramId);
     },
     methods: {
       getFileProgramInfo(id){

@@ -1,5 +1,5 @@
  <template>
- <div>
+ <div :visible.sync="propVisible">
    <div v-if="softwareInfo!=null">
         <el-table :key='tableKey' :data="softwareInfo"   border fit highlight-current-row
                 style="width: 100%;">
@@ -125,10 +125,20 @@ import ccc from '@/components/PreProgramCom/SoftwareInfo.vue'
       };
     },
     props:{
+      propVisible:Boolean,
       propProgramBasicId:Number
         },
+    watch:{
+      //propVisible start
+    propVisible:function(newVa,oldVa){
+        if(newVa==true){
+          this.getData()
+        }
+      },
+      //propVisible end
+  },
     created(){
-      this.getData()
+      //this.getData()
     },
     
     methods: {

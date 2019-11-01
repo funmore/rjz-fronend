@@ -1,5 +1,5 @@
  <template>
-  <div>
+  <div :visible.sync="propVisible">
     <el-row class="tac">
   <el-col :span="4">
     <h5>评审对象</h5>
@@ -146,10 +146,20 @@ import { indexFileReview, showFileReview, storeFileReview, updateFileReview,
       };
     },
     props:{
+        propVisible:Boolean,
         propProgramId:Number
     },
+    watch:{
+      //propVisible start
+    propVisible:function(newVa,oldVa){
+        if(newVa==true){
+		      this.getFileReviewInfo();
+        }
+      },
+      //propVisible end
+  },
     mounted(){
-      this.getFileReviewInfo();
+      // this.getFileReviewInfo();
     },
     methods: {
       getFileReviewInfo(){

@@ -59,7 +59,17 @@ const constNodeType = [
                       {name:"评审"},
                       {name:"报告"}
                       ]
-
+const init_workflow={
+                workflow_name:'测试工作流',
+                active:2,
+                workflowArray:[
+                  {id:1,name:'项目准备阶段',plan_day:'',type:'建项'},
+                  {id:2,name:'项目环境搭建阶段',plan_day:'',type:'测试执行'},
+                  {id:3,name:'项目执行阶段',plan_day:'',type:'报告'},
+                  {id:4,name:'项目评审阶段',plan_day:'',type:'建项'}
+                ],
+                isError:false
+              }
 export default {
   name: 'Workflow',
   mixins: [mixin],
@@ -89,21 +99,10 @@ export default {
                 workflow_name:'测试工作流',
                 active:2,
                 workflowArray:[
-                  {id:1,name:'建项',plan_day:'',type:'建项'},
-                  {id:2,name:'被测软件接受',plan_day:'',type:'测试执行'},
-                  {id:3,name:'静态问题提交',plan_day:'',type:'报告'},
-                  {id:4,name:'测试环境就绪情况',plan_day:'',type:'建项'},
-                  {id:5,name:'测试工作产品编写',plan_day:'',type:'建项'},
-                  {id:6,name:'入库归档状态',plan_day:'',type:'建项'},
-                  {id:7,name:'测试工作产品内部评审',plan_day:'',type:'建项'},
-                  {id:8,name:'评审问题闭合',plan_day:'',type:'建项'},
-                  {id:9,name:'需求(大纲)正式评审',plan_day:'',type:'建项'},
-                  {id:10,name:'评审问题闭合',plan_day:'',type:'建项'},
-                  {id:11,name:'入库归档状态',plan_day:'',type:'建项'},
-                  {id:12,name:'首轮测试',plan_day:'',type:'建项'},
-                  {id:13,name:'软件问题单闭合',plan_day:'',type:'建项'},
-                  {id:14,name:'报告评审',plan_day:'',type:'建项'},
-                  {id:15,name:'入库归档状态',plan_day:'',type:'建项'}
+                  {id:1,name:'项目准备阶段',plan_day:'',type:'建项'},
+                  {id:2,name:'项目环境搭建阶段',plan_day:'',type:'测试执行'},
+                  {id:3,name:'项目执行阶段',plan_day:'',type:'报告'},
+                  {id:4,name:'项目评审阶段',plan_day:'',type:'建项'}
                 ],
                 isError:false
               },
@@ -206,6 +205,14 @@ export default {
     },
     deleteNode(){
          var workflow = this.workflow;
+         if(this.workflow.workflowArray.length==1){
+           this.$confirm('至少保留一个阶段', '提示', {
+                  confirmButtonText: '确定',
+                  showCancelButton: false,
+                  type: 'warning'
+                })
+                return;
+         }
          this.$confirm('此操作将删除该节点, 是否继续?', '提示', {
                   confirmButtonText: '确定',
                   cancelButtonText: '取消',
