@@ -26,13 +26,14 @@
 
     </el-tabs>
     <el-button @click="drawerVisible = true" type="primary" style="margin-left: 16px;">
-  点我打开
-</el-button>
+      项目日志
+    </el-button>
 
 <el-drawer
   title="项目日志"
   :visible.sync="drawerVisible"
   :direction="'rtl'">
+  <program-log :propVisible="drawerVisible"></program-log>
 </el-drawer>
   </div>
 </template>
@@ -54,13 +55,14 @@ import ProgramBasic from '@/components/ProgramDetailChild/ProgramBasic.vue'
 import WorkflowEdit from '@/components/ProgramDetailChild/WorkflowEdit.vue'
 import FileProgramDetail from '@/components/ProgramDetailChild/FileProgramDetail.vue'
 import FileReviewDetail from '@/components/ProgramDetailChild/FileReviewDetail.vue'
+import ProgramLog from '@/components/ProgramDetailChild/drawer/ProgramLog.vue'
 
 
 
 
 export default {
   name: 'ProgramDetail',
-  components: { TeamMemberDetail,SoftwareInfoDetail,ProgramBasic, WorkflowEdit,FileProgramDetail,FileReviewDetail },
+  components: { TeamMemberDetail,SoftwareInfoDetail,ProgramBasic, WorkflowEdit,FileProgramDetail,FileReviewDetail,ProgramLog },
   data() {
     return {
       drawerVisible:false,
@@ -74,7 +76,6 @@ export default {
       },
       program_role:[],
       programBasicId:Number(this.$route.params && this.$route.params.id)
-
     }
   },
   created() {
@@ -85,7 +86,6 @@ export default {
       })
     })
     this.$store.dispatch('TEAM',this.programBasicId).then(res=>{
-      this.s_team=this.$store.state.program.s_team
     }).catch((err)=>{
     });
     this.$store.commit('SET_PROGRAM_BASIC_ID',this.programBasicId)

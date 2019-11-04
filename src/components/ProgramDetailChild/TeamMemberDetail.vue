@@ -39,9 +39,9 @@
                     </el-form-item>
                   </el-form>
 
-                  <keep-alive>
+                  <!-- <keep-alive>
                   <team-member-task ref="teamMemberNote" :propTeamMemberId="item.id"  :propWorkflow="workflow" :propPtrNote="ptr_note"  :propRole="propRole"></team-member-task>
-                  </keep-alive>
+                  </keep-alive> -->
               </el-tab-pane>
             </el-tabs>
   </div>

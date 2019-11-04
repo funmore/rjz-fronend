@@ -60,14 +60,6 @@ export const constantRouterMap = [
           icon: 'dashboard' }
       },
       {
-        path: 'setting',
-        name: 'setting',
-        component: () => import('@/views/editor/index'),
-        meta: { 
-          title: '个人设置', 
-          icon: 'theme' }
-      },
-      {
         path: 'notestwork',
         name: 'notestwork',
         component: () => import('@/views/notestwork/notestwork'),
@@ -177,16 +169,16 @@ export const asyncRouterMap = [
             roles: ['管理员','主任','副主任','测试人员','主任设计师','副主任设计师','项目组长','型号负责人'],
             icon: 'guide' }
         },
-        //list
-        {
-          path: 'programs',
-          name: 'programs',
-          component: () => import('@/views/management/programs/programsTable'),
-          meta: { 
-            title: '正式项目',
-            roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员','测试人员'], 
-            icon: 'form' }
-        },
+        // //list
+        // {
+        //   path: 'programs',
+        //   name: 'programs',
+        //   component: () => import('@/views/management/programs/programsTable'),
+        //   meta: { 
+        //     title: '正式项目',
+        //     roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员','测试人员'], 
+        //     icon: 'form' }
+        // },
         //edit
         {
           path: 'programs/edit/:id(\\d+)',
@@ -200,24 +192,24 @@ export const asyncRouterMap = [
         },
   
   
-        {
-          path: 'preprograms',
-          name: 'preprograms',
-          component: () => import('@/views/management/preprograms/preProgramsTable'),
-          meta: { 
-            title: '预备项目', 
-            roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员'],
-            icon: 'form' }
-        },
-        {
-          path: 'intentprograms',
-          name: 'intentprograms',
-          component: () => import('@/views/management/preprograms/intentProgramsTable'),
-          meta: { 
-            title: '意向项目', 
-            roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员'],
-            icon: 'form' }
-        },
+        // {
+        //   path: 'preprograms',
+        //   name: 'preprograms',
+        //   component: () => import('@/views/management/preprograms/preProgramsTable'),
+        //   meta: { 
+        //     title: '预备项目', 
+        //     roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员'],
+        //     icon: 'form' }
+        // },
+        // {
+        //   path: 'intentprograms',
+        //   name: 'intentprograms',
+        //   component: () => import('@/views/management/preprograms/intentProgramsTable'),
+        //   meta: { 
+        //     title: '意向项目', 
+        //     roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员'],
+        //     icon: 'form' }
+        // },
         {
           path: 'batchimport',
           name: 'batchimport',

@@ -11,28 +11,28 @@
             <el-step v-for="index in workflow.workflowArray.length" :title="'S'+index" :key="workflow.workflowArray[index-1].id" :description="workflow.workflowArray[index-1].name" :icon="icon[0]"></el-step>
           </el-steps> 
             <el-button-group>
-              <el-button type="primary" icon="el-icon-arrow-left" @click="previous" :loading="buttonLoading" >上一个节点</el-button>
-              <el-button type="primary" @click="next" :loading="buttonLoading" >下一个节点<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+              <el-button type="primary" icon="el-icon-arrow-left" @click="previous" :loading="buttonLoading" >上一个阶段</el-button>
+              <el-button type="primary" @click="next" :loading="buttonLoading" >下一个阶段<i class="el-icon-arrow-right el-icon--right"></i></el-button>
             </el-button-group>
             <el-button-group>
-              <el-button type="primary" icon="el-icon-delete" @click="deleteNode" :loading="buttonLoading" >删除当前节点</el-button>
-              <el-button type="primary" icon="el-icon-plus" @click="createNode" :loading="buttonLoading" >在当前节点后新增节点</el-button> 
+              <el-button type="primary" icon="el-icon-delete" @click="deleteNode" :loading="buttonLoading" >删除当前阶段</el-button>
+              <el-button type="primary" icon="el-icon-plus" @click="createNode" :loading="buttonLoading" >在当前阶段后新增阶段</el-button> 
             </el-button-group>
         </el-form-item>
-        <el-form-item label="当前节点名称" prop='name'>
+        <el-form-item label="当前阶段名称" prop='name'>
           <el-input v-model="workflow.workflowArray[workflow.active].name"></el-input>
         </el-form-item>
         <el-form-item label="预期完成时间" prop='plan_day'>
               <el-date-picker v-model="workflow.workflowArray[workflow.active].plan_day" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="Please pick a date">
               </el-date-picker>        
         </el-form-item>
-        <el-form-item label="当前节点类型">
+        <el-form-item label="当前阶段类型">
           <el-select v-model="workflow.workflowArray[workflow.active].type" placeholder="请选择" >
             <el-option
-              v-for="(item,index) in nodeType"
+              v-for="(item,index) in nodeType.map(x=>x.name)"
               :key="index"
-              :label="item.name"
-              :value="item.name">
+              :label="item"
+              :value="item">
             </el-option>
           </el-select>      
         </el-form-item>
@@ -52,21 +52,29 @@ import { indexWorkflow, showWorkflow, storeWorkflow, updateWorkflow,
 import { indexNode, showNode, storeNode, updateNode,
          destroyNode } from '@/api/Node'   
 const constNodeType = [
-                      {name:"建项"},
-                      {name:"需求接受"},
-                      {name:"环境准备"},
-                      {name:"测试执行"},
-                      {name:"评审"},
-                      {name:"报告"}
+                      {
+                        name:"软件测试条件准入审查阶段",
+                        content:[
+                        { task:'环境需求沟通',is_must_complete:'否',is_must_choose:'否'},
+                        { task:'接受正式版文档',is_must_complete:'否',is_must_choose:'否'},
+                        { task:'接受正式版程序',is_must_complete:'否',is_must_choose:'否'},
+                        { task:'任务书/需求评审/代码走查问题闭合确认',is_must_complete:'否',is_must_choose:'否'},
+                        { task:'完成静态测试',is_must_complete:'否',is_must_choose:'否'},
+                        { task:'需求文档齐套性/标准符合性/完整性(详细程度)',is_must_complete:'否',is_must_choose:'否'},
+                        ]
+                      },
+                      {name:"测试设计阶段"},
+                      {name:"测试执行阶段"},
+                      {name:"测试总结阶段"}
                       ]
 const init_workflow={
                 workflow_name:'测试工作流',
                 active:2,
                 workflowArray:[
-                  {id:1,name:'项目准备阶段',plan_day:'',type:'建项'},
-                  {id:2,name:'项目环境搭建阶段',plan_day:'',type:'测试执行'},
-                  {id:3,name:'项目执行阶段',plan_day:'',type:'报告'},
-                  {id:4,name:'项目评审阶段',plan_day:'',type:'建项'}
+                  {id:1,name:'软件测试条件准入审查阶段',plan_day:'',type:'软件测试条件准入审查阶段',content:null},
+                  {id:2,name:'测试设计阶段',plan_day:'',type:'测试设计阶段',content:null},
+                  {id:3,name:'测试执行阶段',plan_day:'',type:'测试执行阶段',content:null},
+                  {id:4,name:'测试总结阶段',plan_day:'',type:'测试总结阶段',content:null}
                 ],
                 isError:false
               }
@@ -82,7 +90,7 @@ export default {
       if(this.workflow.workflowArray[this.workflow.active].name!=''){
           callback();
         }else{
-          callback(new Error('请输出流程节点名'));
+          callback(new Error('请输出流程阶段名'));
         }
       };
     return {
@@ -91,21 +99,10 @@ export default {
         workflow_name:[ { required: true, message: '请输入流程名称', trigger: 'blur' } ],
         name:{ validator: validatePass, trigger: 'blur' }
       },
-
       nodeType:constNodeType,
       icon:['el-icon-plus'],
       worklfowTemplate:[],
-      workflow:{
-                workflow_name:'测试工作流',
-                active:2,
-                workflowArray:[
-                  {id:1,name:'项目准备阶段',plan_day:'',type:'建项'},
-                  {id:2,name:'项目环境搭建阶段',plan_day:'',type:'测试执行'},
-                  {id:3,name:'项目执行阶段',plan_day:'',type:'报告'},
-                  {id:4,name:'项目评审阶段',plan_day:'',type:'建项'}
-                ],
-                isError:false
-              },
+      workflow:init_workflow,
 
       listLoading:false,
       dialogStatus: '',
@@ -213,7 +210,7 @@ export default {
                 })
                 return;
          }
-         this.$confirm('此操作将删除该节点, 是否继续?', '提示', {
+         this.$confirm('此操作将删除该阶段, 是否继续?', '提示', {
                   confirmButtonText: '确定',
                   cancelButtonText: '取消',
                   type: 'warning'
@@ -239,7 +236,7 @@ export default {
     },
     createNode(){
          var workflow = this.workflow;
-         this.$confirm('此操作将新增节点, 是否继续?', '提示', {
+         this.$confirm('此操作将新增阶段, 是否继续?', '提示', {
                   confirmButtonText: '确定',
                   cancelButtonText: '取消',
                   type: 'warning'

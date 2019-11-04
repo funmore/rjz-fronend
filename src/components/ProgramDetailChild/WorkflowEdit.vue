@@ -18,10 +18,10 @@
 
         <el-tabs v-model="active" >
 
-              <el-tab-pane label="当前节点任务" name="task">
+              <el-tab-pane label="当前阶段任务" name="task">
                   <node-task :propVisible="active=='task'" ref="NodeTask"  :propNodeId="workflow.workflowArray[workflow.active].id" :propRole="propRole"></node-task>
               </el-tab-pane>
-              <el-tab-pane label="当前节点问题汇总" name="note">
+              <el-tab-pane label="当前阶段问题汇总" name="note">
                   <node-note :propVisible="active=='note'" ref="NodeNote"  :propNodeId="workflow.workflowArray[workflow.active].id" :propRole="propRole"></node-note>
               </el-tab-pane>
 
@@ -38,11 +38,11 @@
             {{temp.note_type}}
           </el-form-item>
 
-          <el-form-item label="更新起始节点">
+          <el-form-item label="更新起始阶段">
             {{workflow.workflowArray[workflow.active].name}}
           </el-form-item>
 
-          <el-form-item label="更新目标节点">
+          <el-form-item label="更新目标阶段">
             {{to_node_name(workflow,temp)}}
           </el-form-item>
 
@@ -74,6 +74,7 @@
          destroyWorkflow } from '@/api/workflow'   
   import { indexWorkflowNote, showWorkflowNote, storeWorkflowNote, updateWorkflowNote,
          destroyWorkflowNote } from '@/api/Workflownote'
+  import { indexProgramTeamRoleTask} from '@/api/programteamroletask'
   import NodeNote from './workflowedit/NodeNote'
   import NodeTask from './workflowedit/NodeTask'
   import NodeFlowLog from './workflowedit/NodeFlowLog'
@@ -173,7 +174,30 @@
       },
 
       next() {
-        if(this.workflow.active==this.workflow.workflowArray.length-1){
+        // this.listLoading = true;
+        var listQuery={
+          node_id:this.workflow.workflowArray[this.workflow.active].id,
+          type:"NodeTask"
+        }
+        indexProgramTeamRoleTask(listQuery).then(response => {
+          var data=response.data
+          if(data.total!=0){
+            var node_task = Object.values(data.items)
+          }
+          var node_task_must_complete=node_task.filter(item => {
+            return item.is_must_complete=='是'
+          })
+          if(node_task_must_complete.length!=0){
+            this.$confirm('当前阶段尚未有必要任务未完成', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              return
+            }).catch(()=>{})
+            return
+          }
+          if(this.workflow.active==this.workflow.workflowArray.length-1){
                       const h = this.$createElement;
                       this.$notify({
                         title: '流程已完结',
@@ -181,11 +205,14 @@
                       });
                       return;
             }
-            this.temp.note_type='推进';
-            this.temp.from_node_id=this.workflow.workflowArray[this.workflow.active].id;
-            this.temp.to_node_id=this.workflow.workflowArray[this.workflow.active+1].id;
-            this.temp.note='';
-            this.visible=true;
+          this.temp.note_type='推进';
+          this.temp.from_node_id=this.workflow.workflowArray[this.workflow.active].id;
+          this.temp.to_node_id=this.workflow.workflowArray[this.workflow.active+1].id;
+          this.temp.note='';
+          this.visible=true;
+          // this.listLoading=false;
+         })
+        
         },
     previous() {
             if(this.workflow.active==0){
