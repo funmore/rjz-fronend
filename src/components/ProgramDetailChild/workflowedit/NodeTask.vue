@@ -175,6 +175,7 @@ import { indexProgramTeamRoleTask, showProgramTeamRoleTask, storeProgramTeamRole
         listLoading:true,
 
         temp:{
+          id:null,
           employee:{
             arr_index:0,
             employee_id:null,
@@ -249,8 +250,14 @@ import { indexProgramTeamRoleTask, showProgramTeamRoleTask, storeProgramTeamRole
       },
       handleEdit(row){
           this.dialogStatus='update';
-          this.temp=row;
+          for(var k in row){
+              this.temp[k]=row[k]
+          }
           this.visible=true;
+          this.temp.employee=this.$store.state.program.w_team.find(x=>{
+            return x.employee_id==this.temp.employee_id&&x.role==this.temp.role;
+          } )
+
       },
       handleDelete(row){
         if(row.is_must_choose=='是'){
