@@ -54,6 +54,11 @@ service.interceptors.response.use(
     /**
      * success为非20000是抛错 可结合自己业务进行修改
      */
+    //证明在统一的返回值处理函数模拟server添加response header属性是否有用  事实证明是没用
+    // response.headers['Access-Control-Allow-Credentials']=true
+    // response.headers['Access-Control-Allow-Headers']='Content-Type, X-Auth-Token, Origin,x-token,AdminToken,Time,Sha,Cookie,funmore'
+    // response.headers['Access-Control-Allow-Methods']='POST, GET, OPTIONS, PUT, DELETE'
+    // response.headers['Access-Control-Allow-Origin']='*'
      if(!response.headers['content-type'].toString().includes('text/html')){
       return response
      }
