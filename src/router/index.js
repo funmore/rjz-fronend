@@ -35,45 +35,45 @@ export const constantRouterMap = [
       component: () => import('@/views/dashboard/index')
     }]
   },
-   //个人
-   {
+  // 个人
+  {
     path: '/dashboard',
     component: Layout,
     redirect: '/dashboard/personprogram',
     name: 'dashboard',
-    meta:{title:'控制台',icon:'dashboard'},
-    children:[
+    meta: { title: '控制台', icon: 'dashboard' },
+    children: [
       {
         path: 'personprogram',
         name: 'personprogram',
         component: () => import('@/views/personprograms/personProgramsTable'),
-        meta: { 
-          title: '个人项目', 
+        meta: {
+          title: '个人项目',
           icon: 'theme' }
       },
       {
         path: 'info',
         name: 'info',
         component: () => import('@/views/dashboard/index'),
-        meta: { 
-          title: '个人信息', 
+        meta: {
+          title: '个人信息',
           icon: 'dashboard' }
       },
       {
         path: 'notestwork',
         name: 'notestwork',
         component: () => import('@/views/notestwork/notestwork'),
-        meta: { 
-          title: '非测试工作统计', 
+        meta: {
+          title: '非测试工作统计',
           icon: 'documentation' }
       },
-      //poll start
+      // poll start
       {
         path: 'poll',
         name: 'poll',
         component: () => import('@/views/poll/poll'),
-        meta: { 
-          title: '投票', 
+        meta: {
+          title: '投票',
           icon: 'international' }
       },
       {
@@ -81,30 +81,30 @@ export const constantRouterMap = [
         name: 'imports',
         component: () => import('@/views/poll/imports'),
         meta: { title: 'EXCEL创建', icon: 'table' },
-        hidden:true
+        hidden: true
       },
       {
         path: 'poll/property',
         name: 'property',
         component: () => import('@/views/poll/property'),
         meta: { title: 'EXCEL创建', icon: 'table' },
-        hidden:true
+        hidden: true
       },
       {
         path: 'poll/fill/:id(\\d+)',
         name: 'fill',
         component: () => import('@/views/poll/fill'),
         meta: { title: '填写', icon: 'table' },
-        hidden:true
+        hidden: true
       },
       {
         path: 'poll/show/:id(\\d+)',
         name: 'show',
         component: () => import('@/views/poll/show'),
         meta: { title: '查看', icon: 'table' },
-        hidden:true
+        hidden: true
       }
-      //poll end
+      // poll end
     ]
   }
 ]
@@ -115,187 +115,183 @@ export default new Router({
   routes: constantRouterMap
 })
 
-
 export const asyncRouterMap = [
-    //统计
-    {
-      path: '/statistic',
-      component: Layout,
-      redirect: '/statistic/programs',
-      name: 'statistic',
-      meta:{
-        title:'统计',
-        roles: ['管理员','主任','副主任','测试人员','主任设计师','副主任设计师','项目组长','型号负责人'],
-        icon:'example'},
-      children:[
-        {
-          path: 'customprogram',
-          name: 'customprogram',
-          component: () => import('@/views/customPrograms/customProgramsTable.vue'),
-          meta: { 
-            title: '订制项目信息', 
-            roles: ['管理员','主任','副主任','测试人员','主任设计师','副主任设计师','项目组长','型号负责人'],
-            icon: 'guide' }
-        },
+  // 统计
+  {
+    path: '/statistic',
+    component: Layout,
+    redirect: '/statistic/programs',
+    name: 'statistic',
+    meta: {
+      title: '统计',
+      roles: ['管理员', '主任', '副主任', '测试人员', '主任设计师', '副主任设计师', '项目组长', '型号负责人'],
+      icon: 'example' },
+    children: [
+      {
+        path: 'customprogram',
+        name: 'customprogram',
+        component: () => import('@/views/customPrograms/customProgramsTable.vue'),
+        meta: {
+          title: '订制项目信息',
+          roles: ['管理员', '主任', '副主任', '测试人员', '主任设计师', '副主任设计师', '项目组长', '型号负责人'],
+          icon: 'guide' }
+      },
 
-        {
-          path: 'people',
-          name: 'people',
-          component: () => import('@/views/statistic/people/peopleTable'),
-          meta: { 
-            title: '人力分析', 
-            roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人'],
-            icon: 'peoples' }
-        }
-      ]
-    },
-      //管理
-    {
-      path: '/management',
-      component: Layout,
-      redirect: '/management/functionTable',
-      name: 'management',
-      meta:{
-        title:'管理',
-        roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员','测试人员'],
-        icon:'nested'},
-      children:[
-        {
-          path: 'functionTable',
-          name: 'functionTable',
-          component: () => import('@/views/customPrograms/functionTable.vue'),
-          meta: { 
-            title: '项目管理', 
-            roles: ['管理员','主任','副主任','测试人员','主任设计师','副主任设计师','项目组长','型号负责人'],
-            icon: 'guide' }
-        },
-        // //list
-        // {
-        //   path: 'programs',
-        //   name: 'programs',
-        //   component: () => import('@/views/management/programs/programsTable'),
-        //   meta: { 
-        //     title: '正式项目',
-        //     roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员','测试人员'], 
-        //     icon: 'form' }
-        // },
-        //edit
-        {
-          path: 'programs/edit/:id(\\d+)',
-          name: 'programDetail',
-          component: () => import('@/views/management/programs/components/ProgramDetail'),
-          meta: { 
-            title: '编辑项目', 
-            roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员','测试人员'],
-            icon: 'table' },
-          hidden:true
-        },
-  
-  
-        // {
-        //   path: 'preprograms',
-        //   name: 'preprograms',
-        //   component: () => import('@/views/management/preprograms/preProgramsTable'),
-        //   meta: { 
-        //     title: '预备项目', 
-        //     roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员'],
-        //     icon: 'form' }
-        // },
-        // {
-        //   path: 'intentprograms',
-        //   name: 'intentprograms',
-        //   component: () => import('@/views/management/preprograms/intentProgramsTable'),
-        //   meta: { 
-        //     title: '意向项目', 
-        //     roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员'],
-        //     icon: 'form' }
-        // },
-        {
-          path: 'batchimport',
-          name: 'batchimport',
-          component: () => import('@/views/management/batchimport/importTable'),
-          meta: { 
-            title: '批量导入', 
-            roles: ['管理员'],
-            icon: 'excel' }
-        },
-        {
-          path: 'import',
-          name: 'import',
-          component: () => import('@/views/management/import/importProgram'),
-          meta: { 
-            title: '项目任务单导入', 
-            roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','配置管理人员','市场人员'],
-            icon: 'email' }
-        },
-        //employees
-        {
-          path: 'employees',
-          name: 'employees',
-          component: () => import('@/views/management/employees/employeesTable'),
-          meta: { 
-            title: '用户管理', 
-            roles: ['管理员','主任','副主任'],
-            icon: 'people' }
-        },
-        {
-          path: 'model',
-          name: 'model',
-          component: () => import('@/views/model/model'),
-          meta: { 
-            title: '型号名称管理', 
-            roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员'],
-            icon: 'tab' }
-        },
-  
-  
-  
-        //contract
-        //list
-        {
-          path: 'contract',
-          name: 'contract',
-          component: () => import('@/views/management/contracts/contractsTable'),
-          meta: { 
-            title: '合同管理', 
-            roles: ['管理员','市场人员'],
-            icon: 'table' }
-        },
-        //edit
-        {
-          path: 'contracts/edit/:id(\\d+)',
-          name: 'editContract',
-          component: () => import('@/views/management/contracts/edit'),
-          meta: { 
-            title: '编辑合同', 
-            roles: ['管理员','市场人员'],
-            icon: 'table' },
-          hidden:true
-        },
-      ]
-    },
-   
-    {
-      path: '/test',
-      component: Layout,
-      redirect: '/test/index',
-      name: 'test',
-      meta:{
-        title:'设置',
-        icon:'example',
-        roles: ['管理员']},
-      children:[
-        {
-          path: 'index',
-          name: 'index',
-          component: () => import('@/views/test/index'),
-          meta: { 
+      {
+        path: 'people',
+        name: 'people',
+        component: () => import('@/views/statistic/people/peopleTable'),
+        meta: {
+          title: '人力分析',
+          roles: ['管理员', '主任', '副主任', '主任设计师', '副主任设计师', '项目组长', '型号负责人'],
+          icon: 'peoples' }
+      }
+    ]
+  },
+  // 管理
+  {
+    path: '/management',
+    component: Layout,
+    redirect: '/management/functionTable',
+    name: 'management',
+    meta: {
+      title: '管理',
+      roles: ['管理员', '主任', '副主任', '主任设计师', '副主任设计师', '项目组长', '型号负责人', '质量保证员', '配置管理人员', '市场人员', '测试人员'],
+      icon: 'nested' },
+    children: [
+      {
+        path: 'functionTable',
+        name: 'functionTable',
+        component: () => import('@/views/customPrograms/functionTable.vue'),
+        meta: {
+          title: '项目管理',
+          roles: ['管理员', '主任', '副主任', '测试人员', '主任设计师', '副主任设计师', '项目组长', '型号负责人'],
+          icon: 'guide' }
+      },
+      // //list
+      // {
+      //   path: 'programs',
+      //   name: 'programs',
+      //   component: () => import('@/views/management/programs/programsTable'),
+      //   meta: {
+      //     title: '正式项目',
+      //     roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员','测试人员'],
+      //     icon: 'form' }
+      // },
+      // edit
+      {
+        path: 'programs/edit/:id(\\d+)',
+        name: 'programDetail',
+        component: () => import('@/views/management/programs/components/ProgramDetail'),
+        meta: {
+          title: '编辑项目',
+          roles: ['管理员', '主任', '副主任', '主任设计师', '副主任设计师', '项目组长', '型号负责人', '质量保证员', '配置管理人员', '市场人员', '测试人员'],
+          icon: 'table' },
+        hidden: true
+      },
+
+      // {
+      //   path: 'preprograms',
+      //   name: 'preprograms',
+      //   component: () => import('@/views/management/preprograms/preProgramsTable'),
+      //   meta: {
+      //     title: '预备项目',
+      //     roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员'],
+      //     icon: 'form' }
+      // },
+      // {
+      //   path: 'intentprograms',
+      //   name: 'intentprograms',
+      //   component: () => import('@/views/management/preprograms/intentProgramsTable'),
+      //   meta: {
+      //     title: '意向项目',
+      //     roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员'],
+      //     icon: 'form' }
+      // },
+      {
+        path: 'batchimport',
+        name: 'batchimport',
+        component: () => import('@/views/management/batchimport/importTable'),
+        meta: {
+          title: '批量导入',
+          roles: ['管理员'],
+          icon: 'excel' }
+      },
+      {
+        path: 'import',
+        name: 'import',
+        component: () => import('@/views/management/import/importProgram'),
+        meta: {
+          title: '项目任务单导入',
+          roles: ['管理员', '主任', '副主任', '主任设计师', '副主任设计师', '项目组长', '型号负责人', '配置管理人员', '市场人员'],
+          icon: 'email' }
+      },
+      // employees
+      {
+        path: 'employees',
+        name: 'employees',
+        component: () => import('@/views/management/employees/employeesTable'),
+        meta: {
+          title: '用户管理',
+          roles: ['管理员', '主任', '副主任'],
+          icon: 'people' }
+      },
+      {
+        path: 'model',
+        name: 'model',
+        component: () => import('@/views/model/model'),
+        meta: {
+          title: '型号名称管理',
+          roles: ['管理员', '主任', '副主任', '主任设计师', '副主任设计师', '项目组长', '型号负责人', '质量保证员', '配置管理人员'],
+          icon: 'tab' }
+      },
+
+      // contract
+      // list
+      {
+        path: 'contract',
+        name: 'contract',
+        component: () => import('@/views/management/contracts/contractsTable'),
+        meta: {
+          title: '合同管理',
+          roles: ['管理员', '市场人员'],
+          icon: 'table' }
+      },
+      // edit
+      {
+        path: 'contracts/edit/:id(\\d+)',
+        name: 'editContract',
+        component: () => import('@/views/management/contracts/edit'),
+        meta: {
+          title: '编辑合同',
+          roles: ['管理员', '市场人员'],
+          icon: 'table' },
+        hidden: true
+      }
+    ]
+  },
+
+  {
+    path: '/test',
+    component: Layout,
+    redirect: '/test/index',
+    name: 'test',
+    meta: {
+      title: '设置',
+      icon: 'example',
+      roles: ['管理员'] },
+    children: [
+      {
+        path: 'index',
+        name: 'index',
+        component: () => import('@/views/test/index'),
+        meta: {
           title: '试验页面',
           icon: 'table',
-          roles: ['管理员']}
-        }
-      ]
-    },  
-    { path: '*', redirect: '/404', hidden: true }
+          roles: ['管理员'] }
+      }
+    ]
+  },
+  { path: '*', redirect: '/404', hidden: true }
 
 ]

@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexStatisticPeople(query) {
   return request({
     url: '/statistic/people',
@@ -11,7 +10,7 @@ export function indexStatisticPeople(query) {
 
 export function showStatisticPeople(id) {
   return request({
-    url: '/statistic/people/'+ id,
+    url: '/statistic/people/' + id,
     method: 'get'
   })
 }
@@ -33,7 +32,7 @@ export function storeStatisticPeople(data) {
 
 export function updateStatisticPeople(data) {
   return request({
-    url: '/statistic/people/'+data.id,
+    url: '/statistic/people/' + data.id,
     method: 'put',
     data
   })
@@ -41,9 +40,8 @@ export function updateStatisticPeople(data) {
 
 export function destroyStatisticPeople(id) {
   return request({
-    url: '/statistic/people/'+id,
+    url: '/statistic/people/' + id,
     method: 'delete'
   })
 }
-
 

@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexNode(query) {
   return request({
     url: 'node',
@@ -11,7 +10,7 @@ export function indexNode(query) {
 
 export function showNode(id) {
   return request({
-    url:'node/'+ id,
+    url: 'node/' + id,
     method: 'get'
   })
 }
@@ -26,7 +25,7 @@ export function storeNode(data) {
 
 export function updateNode(data) {
   return request({
-    url: 'node/'+data.id,
+    url: 'node/' + data.id,
     method: 'put',
     data
   })
@@ -34,7 +33,7 @@ export function updateNode(data) {
 
 export function destroyNode(id) {
   return request({
-    url: 'node/'+id,
+    url: 'node/' + id,
     method: 'delete'
   })
 }

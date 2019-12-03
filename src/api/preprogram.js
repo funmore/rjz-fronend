@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexPreProgram(query) {
   return request({
     url: '/pre/program',
@@ -11,7 +10,7 @@ export function indexPreProgram(query) {
 
 export function showPreProgram(id) {
   return request({
-    url:'/pre/program/'+ id,
+    url: '/pre/program/' + id,
     method: 'get'
   })
 }
@@ -26,7 +25,7 @@ export function storePreProgram(data) {
 
 export function updatePreProgram(data) {
   return request({
-    url: '/pre/program/'+data.id,
+    url: '/pre/program/' + data.id,
     method: 'put',
     data
   })
@@ -34,9 +33,8 @@ export function updatePreProgram(data) {
 
 export function destroyPreProgram(id) {
   return request({
-    url: '/pre/program/'+id,
+    url: '/pre/program/' + id,
     method: 'delete'
   })
 }
-
 

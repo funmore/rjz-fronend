@@ -136,55 +136,55 @@
 <script>
 import SelectEmployee from '@/components/SelectEmployee/index.vue'
 import { indexPoll, showPoll, storePoll, updatePoll,
-         destroyPoll } from '@/api/poll'
+  destroyPoll } from '@/api/poll'
 export default {
   name: 'uploadExcel',
   components: { SelectEmployee },
-  props:{
-    propPropertyData:Array
+  props: {
+    propPropertyData: Array
   },
   data() {
     return {
-      id:0,
-      insertAfterName:'',  //在某一行之后新增
-      insertName:'',
-      typeOptions:['数字','多项选择','单项选择','单行文字'],
-      propertyData:this.propPropertyData==undefined? []:this.propPropertyData,
-      request_data:{
-        poll:{        
-          name:'',
-          due_day:'',
-          is_multiple:false,
-          range:[]
+      id: 0,
+      insertAfterName: '', // 在某一行之后新增
+      insertName: '',
+      typeOptions: ['数字', '多项选择', '单项选择', '单行文字'],
+      propertyData: this.propPropertyData == undefined ? [] : this.propPropertyData,
+      request_data: {
+        poll: {
+          name: '',
+          due_day: '',
+          is_multiple: false,
+          range: []
         },
-        poll_column:[]
+        poll_column: []
       },
       rules: {
-        name:[
+        name: [
           { required: true, message: '请输入表单名称', trigger: 'blur' }
-          ],
-        due_day:[
-          {  required: true, 
-             trigger: 'change', 
-             validator(rule, val, cb) {
-               if(val==""){
-                cb(new Error("请选择截止日期"));
-               }else if (new Date(val)<new Date()) {
-                cb(new Error("截止日期必须大于当前时间"));
+        ],
+        due_day: [
+          { required: true,
+            trigger: 'change',
+            validator(rule, val, cb) {
+              if (val == '') {
+                cb(new Error('请选择截止日期'))
+              } else if (new Date(val) < new Date()) {
+                cb(new Error('截止日期必须大于当前时间'))
               } else {
-                cb();
+                cb()
               }
-            }}
+            } }
         ],
         range: [
           {
             required: true,
-            trigger: "change",
+            trigger: 'change',
             validator(rule, val, cb) {
               if (val.length === 0) {
-                cb(new Error("请选择表单使用范围"));
+                cb(new Error('请选择表单使用范围'))
               } else {
-                cb();
+                cb()
               }
             }
           }
@@ -195,96 +195,95 @@ export default {
   },
   methods: {
     toggleSelection(rows) {
-        if (rows) {
-          rows.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row);
-          });
-        } else {
-          this.$refs.multipleTable.clearSelection();
-        }
-      },
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row)
+        })
+      } else {
+        this.$refs.multipleTable.clearSelection()
+      }
+    },
 
-    //有效值tag  start
-    handleClose(tag,row) {
-        row.valid_value.splice(row.valid_value.indexOf(tag), 1);
-      },
+    // 有效值tag  start
+    handleClose(tag, row) {
+      row.valid_value.splice(row.valid_value.indexOf(tag), 1)
+    },
 
-      showInput(row) {
-        row.inputVisible = true;
-        this.$nextTick(_ => {
-          this.$refs[row.name].$refs.input.focus();
-        });
-      },
+    showInput(row) {
+      row.inputVisible = true
+      this.$nextTick(_ => {
+        this.$refs[row.name].$refs.input.focus()
+      })
+    },
 
-      handleInputConfirm(row) {
-        let inputValue = row.inputValue;
-        if (inputValue) {
-          row.valid_value.push(inputValue);
-        }
-        row.inputVisible = false;
-        row.inputValue = '';
-      },
-    //有效值tag  end
-      OnCreatedClicked(){
-        this.$refs['request_data_form'].validate((valid) => {
-          if (valid) {
-            this.request_data.poll_column=this.propertyData
-            storePoll(this.request_data).then(response => {
-              this.$router.push('/dashboard/poll') 
-              this.$notify({
-                title: '创建成功',
-                message: '请通知同事填写表单',
-                type: 'success',
-                duration: 2000
-              })
+    handleInputConfirm(row) {
+      const inputValue = row.inputValue
+      if (inputValue) {
+        row.valid_value.push(inputValue)
+      }
+      row.inputVisible = false
+      row.inputValue = ''
+    },
+    // 有效值tag  end
+    OnCreatedClicked() {
+      this.$refs['request_data_form'].validate((valid) => {
+        if (valid) {
+          this.request_data.poll_column = this.propertyData
+          storePoll(this.request_data).then(response => {
+            this.$router.push('/dashboard/poll')
+            this.$notify({
+              title: '创建成功',
+              message: '请通知同事填写表单',
+              type: 'success',
+              duration: 2000
+            })
           }).catch(err => {
             console.log(err)
           })
-          } else {
-            return false;
-          }
-        });
-        
-      },
-      OnRangeChange(args){
-        this.request_data.poll.range=args;
-      },
-      OnDelete(row){
-        for (const v of this.propertyData) {
-              if (v == row) {
-                const index = this.propertyData.indexOf(v)
-                this.propertyData.splice(index, 1)
-                break
-              }
-            }
-      },
-      OnInsert(){
-        if(this.propertyData.length==0){
-          let value={
-                      name:this.insertName==''?'新增字段'+(++this.id).toString():this.insertName,
-                      type:'数字',
-                      valid_value:[],
-                      inputValue:'',
-                      inputVisible:false
-                          }
-                this.propertyData.push(value);
-                return;
+        } else {
+          return false
         }
-        for (const v of this.propertyData) {
-              if (v.name === this.insertAfterName) {
-                const index = this.propertyData.indexOf(v)
-                let value={
-                      name:this.insertName==''?'新增字段'+(++this.id).toString():this.insertName,
-                      type:'数字',
-                      valid_value:[],
-                      inputValue:'',
-                      inputVisible:false
-                          }
-                this.propertyData.splice(index+1, 0,value);
-                break
-              }
-            }
+      })
+    },
+    OnRangeChange(args) {
+      this.request_data.poll.range = args
+    },
+    OnDelete(row) {
+      for (const v of this.propertyData) {
+        if (v == row) {
+          const index = this.propertyData.indexOf(v)
+          this.propertyData.splice(index, 1)
+          break
+        }
       }
+    },
+    OnInsert() {
+      if (this.propertyData.length == 0) {
+        const value = {
+          name: this.insertName == '' ? '新增字段' + (++this.id).toString() : this.insertName,
+          type: '数字',
+          valid_value: [],
+          inputValue: '',
+          inputVisible: false
+        }
+        this.propertyData.push(value)
+        return
+      }
+      for (const v of this.propertyData) {
+        if (v.name === this.insertAfterName) {
+          const index = this.propertyData.indexOf(v)
+          const value = {
+            name: this.insertName == '' ? '新增字段' + (++this.id).toString() : this.insertName,
+            type: '数字',
+            valid_value: [],
+            inputValue: '',
+            inputVisible: false
+          }
+          this.propertyData.splice(index + 1, 0, value)
+          break
+        }
+      }
+    }
 
   }
 }

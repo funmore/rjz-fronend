@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 <template>
   <div class="mixin-components-container">
 <!--       <dynamic-form></dynamic-form>
@@ -8,7 +9,7 @@
 
 
 
-        <el-form-item   :key="item.name" v-for="(item,index) in model.pollColumn" :label="item.name" >
+        <el-form-item   :key="item.name" v-for="(item) in model.pollColumn" :label="item.name" >
             <el-input-number 
             v-if="item.type==='数字'"
             v-model="request_data[item.id]"
@@ -90,7 +91,7 @@
 import waves from '@/directive/waves/index.js' // 水波纹指令
 import { showPoll } from '@/api/poll'
 import { indexPollFill, showPollFill, storePollFill, updatePollFill,
-destroyPollFill } from '@/api/pollfill'
+  destroyPollFill } from '@/api/pollfill'
 
 export default {
   name: 'componentMixin-demo',
@@ -101,80 +102,78 @@ export default {
   },
   data() {
     return {
-      visible:false,
-      model:{},
-      listLoading:false,
-      request_data:{},
-      id:null,
-
+      visible: false,
+      model: {},
+      listLoading: false,
+      request_data: {},
+      id: null
 
     }
   },
-  created(){
-      this.id = this.$route.params && this.$route.params.id
-      this.getModel(this.id);
+  created() {
+    this.id = this.$route.params && this.$route.params.id
+    this.getModel(this.id)
   },
-  methods:{
-    getModel(id){
+  methods: {
+    getModel(id) {
       showPoll(id).then(response => {
-        var data=response.data
-        if(data.total!=0){
-          this.model = data.items;
+        var data = response.data
+        if (data.total != 0) {
+          this.model = data.items
         }
-        this.Init();
+        this.Init()
       })
     },
-    Init(){
-      this.model.pollColumn.forEach((value,index)=>{
-        
-        if(value.type=='数字'){
-          value.max=parseInt(value.valid_value.split("|")[1]);
-          value.min=parseInt(value.valid_value.split("|")[0]);
-          this.request_data[value.id]=value.min;
-        }else if(value.type=='单项选择'){
-          value.valid_value=value.valid_value.split('|')
-          this.request_data[value.id]=value.valid_value[0]
-        }else if(value.type=='多项选择'){
-          value.valid_value=value.valid_value.split('|')
-          this.request_data[value.id]=[value.valid_value[0]];
-        }else if(value.type=='单行文字'){
-          this.request_data[value.id]='';
+    Init() {
+      this.model.pollColumn.forEach((value, index) => {
+        if (value.type == '数字') {
+          value.max = parseInt(value.valid_value.split('|')[1])
+          value.min = parseInt(value.valid_value.split('|')[0])
+          this.request_data[value.id] = value.min
+        } else if (value.type == '单项选择') {
+          value.valid_value = value.valid_value.split('|')
+          this.request_data[value.id] = value.valid_value[0]
+        } else if (value.type == '多项选择') {
+          value.valid_value = value.valid_value.split('|')
+          this.request_data[value.id] = [value.valid_value[0]]
+        } else if (value.type == '单行文字') {
+          this.request_data[value.id] = ''
         }
-      });
-     },
+      })
+    },
     handleInputNumber(val, key) {
-      this.request_data[key]=val;
-      this.$forceUpdate(); 
+      this.request_data[key] = val
+      this.$forceUpdate()
     },
-    handleOneChange(val,key){
-      this.request_data[key]=val;
-      this.$forceUpdate(); 
-     },
-    handleMutiChange(val,key){
-      this.$forceUpdate(); 
-     },
-     handleInput(val, key) {
-      this.request_data[key]=val;
-      this.$forceUpdate(); 
+    handleOneChange(val, key) {
+      this.request_data[key] = val
+      this.$forceUpdate()
     },
-     OnPost(){
-      var request_data={
-        poll_id:this.id,
-        poll_value:this.request_data
+    handleMutiChange(val, key) {
+      this.$forceUpdate()
+    },
+    handleInput(val, key) {
+      this.request_data[key] = val
+      this.$forceUpdate()
+    },
+    OnPost() {
+      var request_data = {
+        poll_id: this.id,
+        poll_value: this.request_data
       }
       storePollFill(request_data).then(response => {
-        var data=response.data
-        if(data.is_okay==true){
-          this.$router.push('/dashboard/poll') 
+        var data = response.data
+        if (data.is_okay == true) {
+          this.$router.push('/dashboard/poll')
           this.$notify({
-                title: '填写成功',
-                message: '已成功填写',
-                type: 'success',
-                duration: 2000
-              })
+            title: '填写成功',
+            message: '已成功填写',
+            type: 'success',
+            duration: 2000
+          })
         }
       })
-     }
+    }
   }
 }
 </script>

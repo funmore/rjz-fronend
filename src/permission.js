@@ -28,7 +28,7 @@ router.beforeEach((to, from, next) => {
         })
       } else {
         // store.dispatch('ReSetSteps')
-        store.dispatch('GenerateSteps',to)
+        store.dispatch('GenerateSteps', to)
         next()
       }
     }

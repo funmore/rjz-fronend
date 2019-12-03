@@ -87,7 +87,7 @@
 
 <script>
 import { indexManagementContract, showManagementContract, storeManagementContract, updateManagementContract,
-         destroyManagementContract } from '@/api/management-contract'
+  destroyManagementContract } from '@/api/management-contract'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils/index.js'
 
@@ -120,15 +120,15 @@ export default {
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       temp: {
-        id:undefined,             
-        phase:"fda",          
-        content:"adf",        
-        planStartTime:new Date(),  
-        planEndTime :new Date(),   
-        actualStartTime:new Date(),
-        actualEndTime:new Date(),  
-        workLoad:0,       
-        notes:""          
+        id: undefined,
+        phase: 'fda',
+        content: 'adf',
+        planStartTime: new Date(),
+        planEndTime: new Date(),
+        actualStartTime: new Date(),
+        actualEndTime: new Date(),
+        workLoad: 0,
+        notes: ''
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -195,15 +195,15 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id:undefined,             
-        phase:"fda",          
-        content:"adf",       
-        planStartTime:new Date(),  
-        planEndTime :new Date(),   
-        actualStartTime:new Date(),
-        actualEndTime:new Date(),  
-        workLoad:0,       
-        notes:""  
+        id: undefined,
+        phase: 'fda',
+        content: 'adf',
+        planStartTime: new Date(),
+        planEndTime: new Date(),
+        actualStartTime: new Date(),
+        actualEndTime: new Date(),
+        workLoad: 0,
+        notes: ''
       }
     },
     handleCreate() {
@@ -238,17 +238,16 @@ export default {
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
-
     },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp)   //deep copy this.temp
+          const tempData = Object.assign({}, this.temp) // deep copy this.temp
           updateArticle(tempData).then(() => {
             for (const v of this.list) {
               if (v.id === this.temp.id) {
                 const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.temp)   //将list中的原有的条目找到，并替换为新的条目
+                this.list.splice(index, 1, this.temp) // 将list中的原有的条目找到，并替换为新的条目
                 break
               }
             }

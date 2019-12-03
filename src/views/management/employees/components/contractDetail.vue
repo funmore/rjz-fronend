@@ -178,7 +178,7 @@ export default {
       }
     }
     return {
-      tableKey:0,
+      tableKey: 0,
       postForm: Object.assign({}, defaultForm),
       loading: false,
       userListOptions: [],
@@ -188,27 +188,27 @@ export default {
         content: [{ validator: validateRequire }],
         source_uri: [{ validator: validateSourceUri, trigger: 'blur' }]
       },
-      contractSteps:{
-        active:2,
-        contractStepsArray:['选定乙方','已提交BPM申请','已完成BPM审批','已完成合同评审','已提交合同系统','已完成系统审批','已完成乙方签署盖章','已完成甲方签署盖章','已完成验收','已收到发票','已发起付款流程','已完成付款流程审批','已付款','已报销']
+      contractSteps: {
+        active: 2,
+        contractStepsArray: ['选定乙方', '已提交BPM申请', '已完成BPM审批', '已完成合同评审', '已提交合同系统', '已完成系统审批', '已完成乙方签署盖章', '已完成甲方签署盖章', '已完成验收', '已收到发票', '已发起付款流程', '已完成付款流程审批', '已付款', '已报销']
       },
-      active:2,
-      contractStepsArray:['选定乙方','已提交BPM申请','已完成BPM审批','已完成合同评审','已提交合同系统','已完成系统审批','已完成乙方签署盖章','已完成甲方签署盖章','已完成验收','已收到发票','已发起付款流程','已完成付款流程审批','已付款','已报销'],
-      contractUpdateInfo:[
-        {created_at:'1973-08-06 21:02:50',updated_at:'1973-08-06 21:02:50',content:'0',info_typer:'wangch',state:'待解决'},
-        {created_at:'1973-08-06 21:02:50',updated_at:'1973-08-06 21:02:50',content:'0',info_typer:'wangch',state:'待解决'},
-        {created_at:'1973-08-06 21:02:50',updated_at:'1973-08-06 21:02:50',content:'0',info_typer:'wangch',state:'待解决'}
-          ],
-      contractUpdateInfoState: ["待解决","解决中","已解决"],
+      active: 2,
+      contractStepsArray: ['选定乙方', '已提交BPM申请', '已完成BPM审批', '已完成合同评审', '已提交合同系统', '已完成系统审批', '已完成乙方签署盖章', '已完成甲方签署盖章', '已完成验收', '已收到发票', '已发起付款流程', '已完成付款流程审批', '已付款', '已报销'],
+      contractUpdateInfo: [
+        { created_at: '1973-08-06 21:02:50', updated_at: '1973-08-06 21:02:50', content: '0', info_typer: 'wangch', state: '待解决' },
+        { created_at: '1973-08-06 21:02:50', updated_at: '1973-08-06 21:02:50', content: '0', info_typer: 'wangch', state: '待解决' },
+        { created_at: '1973-08-06 21:02:50', updated_at: '1973-08-06 21:02:50', content: '0', info_typer: 'wangch', state: '待解决' }
+      ],
+      contractUpdateInfoState: ['待解决', '解决中', '已解决'],
       createdSortOptions: [{ label: '创建时间 升序', key: '+id' }, { label: '创建时间 降序', key: '-id' }],
       updatedSortOptions: [{ label: '更新时间 升序', key: '+id' }, { label: '更新时间 降序', key: '-id' }],
       listQuery: {
         page: 1,
         limit: 20,
-        contractUpdateInfoState:'',   //
+        contractUpdateInfoState: '', //
         type: undefined,
         createdSort: '+id',
-        updatedSort: '+id',
+        updatedSort: '+id'
       },
       dialogFormVisible: false,
       ruleSoftwareInfo: {
@@ -216,28 +216,26 @@ export default {
         // timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
         // title: [{ required: true, message: 'title is required', trigger: 'blur' }]
       },
-        fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
+      fileList: [{ name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }, { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }],
 
-
-        options: {
+      options: {
         group: 'mission'
       },
       list1: [
-        { content:'dfad',index: 'Mission', id: 1 },
-        { content:'dfad',index: 'Mission', id: 2 },
-        { content:'dfad',index: 'Mission', id: 3 },
-        { content:'dfad',index: 'Mission', id: 4 }
-      ]
-      ,
+        { content: 'dfad', index: 'Mission', id: 1 },
+        { content: 'dfad', index: 'Mission', id: 2 },
+        { content: 'dfad', index: 'Mission', id: 3 },
+        { content: 'dfad', index: 'Mission', id: 4 }
+      ],
       list2: [
-        { content:'dfad',index: 'Mission', id: 5 },
-        { content:'dfad',index: 'Mission', id: 6 },
-        { content:'dfad',index: 'Mission', id: 7 }
+        { content: 'dfad', index: 'Mission', id: 5 },
+        { content: 'dfad', index: 'Mission', id: 6 },
+        { content: 'dfad', index: 'Mission', id: 7 }
       ],
       list3: [
-        { content:'dfad',index: 'Mission', id: 8 },
-        { content:'dfad',index: 'Mission', id: 9 },
-        { content:'dfad',index: 'Mission', id: 10 }
+        { content: 'dfad', index: 'Mission', id: 8 },
+        { content: 'dfad', index: 'Mission', id: 9 },
+        { content: 'dfad', index: 'Mission', id: 10 }
       ]
 
     }
@@ -308,8 +306,8 @@ export default {
         this.userListOptions = response.data.items.map(v => v.name)
       })
     },
-    
-    //点击被测件信息更新按钮
+
+    // 点击被测件信息更新按钮
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
       this.dialogFormVisible = true
@@ -317,7 +315,7 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
-    //被测件信息form内点击确认  如果是创建新信息
+    // 被测件信息form内点击确认  如果是创建新信息
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
@@ -336,11 +334,11 @@ export default {
         }
       })
     },
-    //被测件信息form内点击确认  如果是更新信息
+    // 被测件信息form内点击确认  如果是更新信息
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp)   //deep copy this.temp
+          const tempData = Object.assign({}, this.temp) // deep copy this.temp
           // updateArticle(tempData).then(() => {
           //   for (const v of this.softwareInfo) {
           //     if (v.id === this.temp.id) {
@@ -358,45 +356,43 @@ export default {
           //   })
           // })
           for (const v of this.softwareInfo) {
-              if (v.id === this.temp.id) {
-                const index = this.softwareInfo.indexOf(v)
-                this.softwareInfo.splice(index, 1, this.temp)   //将list中的原有的条目找到，并替换为新的条目
-                break
-              }
+            if (v.id === this.temp.id) {
+              const index = this.softwareInfo.indexOf(v)
+              this.softwareInfo.splice(index, 1, this.temp) // 将list中的原有的条目找到，并替换为新的条目
+              break
             }
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
-            })
+          }
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
         }
       })
     },
 
+    // 上传控件提醒函数 start
+    handleRemove(file, fileList) {
+      console.log(file, fileList)
+    },
+    handlePreview(file) {
+      console.log(file)
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`)
+    },
+    // 上传控件提醒函数 end
 
-
-      //上传控件提醒函数 start
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePreview(file) {
-        console.log(file);
-      },
-      handleExceed(files, fileList) {
-        this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-      },
-      beforeRemove(file, fileList) {
-        return this.$confirm(`确定移除 ${ file.name }？`);
-      },
-      //上传控件提醒函数 end
-
-      handleFilter() {
+    handleFilter() {
       this.listQuery.page = 1
       this.getList()
     },
-      getList() {
+    getList() {
       this.listLoading = true
       fetchProgramEditsList(this.listQuery).then(response => {
         this.list = response.items
@@ -413,7 +409,7 @@ export default {
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
-    },
+    }
 
   }
 }

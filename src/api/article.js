@@ -40,10 +40,10 @@ export function updateArticle(data) {
   })
 }
 
-export function fetchComplexTableList(query){
+export function fetchComplexTableList(query) {
   return request({
-    url:'article/complextable',
-    method:'get',
-    params:query
+    url: 'article/complextable',
+    method: 'get',
+    params: query
   })
 }

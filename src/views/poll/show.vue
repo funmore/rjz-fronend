@@ -79,38 +79,36 @@
 
 <script>
 import waves from '@/directive/waves/index.js' // 水波纹指令
-import { showPoll,showUnPollPeople } from '@/api/poll'
+import { showPoll, showUnPollPeople } from '@/api/poll'
 import { indexPollFill, showPollFill, storePollFill, updatePollFill,
-destroyPollFill } from '@/api/pollfill'
-
-
+  destroyPollFill } from '@/api/pollfill'
 
 export default {
   name: 'complexTable',
-  components: {  },
+  components: { },
   directives: {
     waves
   },
-  filters:{
-    output:function(row,item){
-      return Object.values(row).find(value=>value.poll_column_id==item.id).value
+  filters: {
+    output: function(row, item) {
+      return Object.values(row).find(value => value.poll_column_id == item.id).value
     },
-    pollState:function(count){
-      return count ==0? '未填写':'已填写'
+    pollState: function(count) {
+      return count == 0 ? '未填写' : '已填写'
     }
   },
   data() {
     return {
-      id:null,
-      listLoading:true,
-      onDeleting:false,
+      id: null,
+      listLoading: true,
+      onDeleting: false,
       list: [],
-      structure:[],
+      structure: [],
       total: new Number(),
-      downloadLoading:false,
-      visible:false,
-      unPolledListLoading:true,
-      unPolledList:[]
+      downloadLoading: false,
+      visible: false,
+      unPolledListLoading: true,
+      unPolledList: []
 
     }
   },
@@ -121,106 +119,104 @@ export default {
   },
   methods: {
     getList(id) {
-
-      this.listLoading = true;
-      var listQuery={id:id};
+      this.listLoading = true
+      var listQuery = { id: id }
       indexPollFill(listQuery).then(response => {
-        var data=response.data
+        var data = response.data
         this.list = Object.values(data.list)
-        this.structure=data.structure
-        this.listLoading=false;
+        this.structure = data.structure
+        this.listLoading = false
       })
     },
-    onDestory(poll_fill_id){
-       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.onDeleting=true;
-          destroyPollFill(poll_fill_id).then(response => {
-            var data=response.data
-            if(data.is_okay==true){
-              for (const v of this.list) {
-                  if (v.poll_fill_id === poll_fill_id) {
-                    const index = this.list.indexOf(v)
-                    this.list.splice(index, 1)
-                    break
-                  }
-                }
-                this.$notify({
-                  title: '成功',
-                  message: '删除成功',
-                  type: 'success',
-                  duration: 2000
-                })
-              }else{
-                this.onDeleting=false;
-                this.$notify({
-                  title: '删除失败',
-                  message: '只有创建人可以删除',
-                  type: 'success',
-                  duration: 2000
-                })
+    onDestory(poll_fill_id) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.onDeleting = true
+        destroyPollFill(poll_fill_id).then(response => {
+          var data = response.data
+          if (data.is_okay == true) {
+            for (const v of this.list) {
+              if (v.poll_fill_id === poll_fill_id) {
+                const index = this.list.indexOf(v)
+                this.list.splice(index, 1)
+                break
               }
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
-      
-    } ,
+            }
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.onDeleting = false
+            this.$notify({
+              title: '删除失败',
+              message: '只有创建人可以删除',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        var tHeader=['序号'];
-        this.structure.pollColumn.forEach(x=>tHeader.push(x.name));
-        var filterVal= [...tHeader]; 
-        tHeader.push('填写人');
-        filterVal.push('employee_name');
+        var tHeader = ['序号']
+        this.structure.pollColumn.forEach(x => tHeader.push(x.name))
+        var filterVal = [...tHeader]
+        tHeader.push('填写人')
+        filterVal.push('employee_name')
 
         var data = this.formatJson(this.structure.pollColumn, this.list)
-        data.forEach((value,index)=>value.unshift(index))
-        data=this.addName(data,this.list);
+        data.forEach((value, index) => value.unshift(index))
+        data = this.addName(data, this.list)
 
-        var today = new Date();
-        var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-        var dateTime = date+' '+time;
+        var today = new Date()
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate()
+        var time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
+        var dateTime = date + ' ' + time
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: '填报信息'+dateTime
+          filename: '填报信息' + dateTime
         })
         this.downloadLoading = false
       })
     },
     // {{Object.values(scope.row).find(value=>value.poll_column_id==item.id).value}}
     formatJson(filterVal, list) {
-      return list.map(v => filterVal.map(j=> {
-            if(v instanceof Object){
-              return Object.values(v).find(k=>k.poll_column_id==j.id).value
-            }else{
-              var b=1;
-            }
+      return list.map(v => filterVal.map(j => {
+        if (v instanceof Object) {
+          return Object.values(v).find(k => k.poll_column_id == j.id).value
+        } else {
+          var b = 1
+        }
       }))
     },
-    addName(data,list){
-      return data.map((value,index)=>{
-        value.push(list[index].employee_name);
-      return value
-      });
+    addName(data, list) {
+      return data.map((value, index) => {
+        value.push(list[index].employee_name)
+        return value
+      })
     },
 
-    showUnPollPeople(){
-      this.visible=true;
-      this.unPolledListLoading = true;
+    showUnPollPeople() {
+      this.visible = true
+      this.unPolledListLoading = true
       showUnPollPeople(this.id).then(response => {
-        var data=response.data
+        var data = response.data
         this.unPolledList = Object.values(data.items)
-        this.unPolledListLoading=false;
+        this.unPolledListLoading = false
       })
     }
 

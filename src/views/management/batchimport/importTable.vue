@@ -12,7 +12,7 @@
 <script>
 import UploadExcelComponent from '@/components/UploadExcel/index.vue'
 import { indexBatchImport, showBatchImport, storeBatchImport, updateBatchImport,
-         destroyBatchImport } from '@/api/BatchImport'
+  destroyBatchImport } from '@/api/BatchImport'
 export default {
   name: 'uploadExcel',
   components: { UploadExcelComponent },
@@ -20,7 +20,7 @@ export default {
     return {
       tableData: [],
       tableHeader: [],
-      onUploading:false,
+      onUploading: false
     }
   },
   methods: {
@@ -41,17 +41,17 @@ export default {
       this.tableData = results
       this.tableHeader = header
     },
-    OnUpload(){
-      this.onUploading=true;
-      storeBatchImport(this.tableData).then(response=>{
-            this.onUploading=false;
+    OnUpload() {
+      this.onUploading = true
+      storeBatchImport(this.tableData).then(response => {
+        this.onUploading = false
             this.$notify({
-              title: '成功',
-              message: '批量导入成功',
-              type: 'success',
-              duration: 2000
-            })
-          });
+          title: '成功',
+          message: '批量导入成功',
+          type: 'success',
+          duration: 2000
+        })
+      })
     }
   }
 }

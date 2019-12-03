@@ -10,7 +10,7 @@ export function indexManagementContract(query) {
 
 export function showManagementContract(id) {
   return request({
-    url:'/management/programs/'+ id,
+    url: '/management/programs/' + id,
     method: 'get'
   })
 }
@@ -25,7 +25,7 @@ export function storeManagementContract(data) {
 
 export function updateManagementContract(data) {
   return request({
-    url: '/management/programs/'+data.id,
+    url: '/management/programs/' + data.id,
     method: 'put',
     data
   })
@@ -33,7 +33,7 @@ export function updateManagementContract(data) {
 
 export function destroyManagementContract(id) {
   return request({
-    url: '/management/programs/'+id,
+    url: '/management/programs/' + id,
     method: 'delete'
   })
 }

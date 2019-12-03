@@ -1,11 +1,10 @@
 import request from '@/utils/request'
 
-
-export function getInfo(token,t,s) {
+export function getInfo(token, t, s) {
   return request({
     url: '/api/employee/getInfo',
     method: 'get',
-    params: { token,t,s }
+    params: { token, t, s }
   })
 }
 
@@ -17,11 +16,10 @@ export function logout() {
   })
 }
 
-export function login(name,password) {
+export function login(name, password) {
   return request({
     url: '/api/login',
     method: 'get',
-    params: { name,password }
+    params: { name, password }
   })
-
 }

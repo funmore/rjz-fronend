@@ -10,7 +10,7 @@ export function indexManagementEmployees(query) {
 
 export function showManagementEmployees(id) {
   return request({
-    url:'/management/programs/'+ id,
+    url: '/management/programs/' + id,
     method: 'get'
   })
 }
@@ -25,7 +25,7 @@ export function storeManagementEmployees(data) {
 
 export function updateManagementEmployees(data) {
   return request({
-    url: '/management/programs/'+data.id,
+    url: '/management/programs/' + data.id,
     method: 'put',
     data
   })
@@ -33,7 +33,7 @@ export function updateManagementEmployees(data) {
 
 export function destroyManagementEmployees(id) {
   return request({
-    url: '/management/programs/'+id,
+    url: '/management/programs/' + id,
     method: 'delete'
   })
 }

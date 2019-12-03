@@ -15,8 +15,8 @@ import store from './store'
 import '@/icons' // icon
 import '@/permission' // permission control
 
-import EleMultiCascader from "ele-multi-cascader"
-import "ele-multi-cascader/dist/cascader.css"
+import EleMultiCascader from 'ele-multi-cascader'
+import 'ele-multi-cascader/dist/cascader.css'
 
 // // Require Froala Editor js file.
 // require('froala-editor/js/froala_editor.pkgd.min')
@@ -29,12 +29,10 @@ import "ele-multi-cascader/dist/cascader.css"
 // import VueFroala from 'vue-froala-wysiwyg'
 // Vue.use(VueFroala)
 
-
 Vue.use(ElementUI, { locale })
 
-
 // Vue.use(EleMultiCascader, {locale})
-Vue.use(EleMultiCascader,{locale})
+Vue.use(EleMultiCascader, { locale })
 
 Vue.config.productionTip = false
 
@@ -44,11 +42,11 @@ new Vue({
   store,
   render: h => h(App)
 })
-//Though method above is universial useful
-//However, if use below , there is a vue warning 
-//vue.runtime.esm.js:587 [Vue warn]: You are using the runtime-only build of Vue where the template 
-//compiler is not available. 
-//Either pre-compile the templates into render functions, or use the compiler-included build.
+// Though method above is universial useful
+// However, if use below , there is a vue warning
+// vue.runtime.esm.js:587 [Vue warn]: You are using the runtime-only build of Vue where the template
+// compiler is not available.
+// Either pre-compile the templates into render functions, or use the compiler-included build.
 
 // var global1 = new Vue({
 //   components: { App },

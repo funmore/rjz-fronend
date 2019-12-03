@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexDelayApply(query) {
   return request({
     url: 'delayapply',
@@ -9,10 +8,9 @@ export function indexDelayApply(query) {
   })
 }
 
-
 export function showDelayApply(id) {
   return request({
-    url:'delayApply/'+ id,
+    url: 'delayApply/' + id,
     method: 'get'
   })
 }
@@ -27,7 +25,7 @@ export function storeDelayApply(data) {
 
 export function updateDelayApply(data) {
   return request({
-    url: 'delayapply/'+data.id,
+    url: 'delayapply/' + data.id,
     method: 'put',
     data
   })
@@ -35,7 +33,7 @@ export function updateDelayApply(data) {
 
 export function destroyDelayApply(id) {
   return request({
-    url: 'delayapply/'+id,
+    url: 'delayapply/' + id,
     method: 'delete'
   })
 }

@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexBatchImport(query) {
   return request({
     url: '/BatchImport',
@@ -11,7 +10,7 @@ export function indexBatchImport(query) {
 
 export function showBatchImport(id) {
   return request({
-    url: '/BatchImport/'+ id,
+    url: '/BatchImport/' + id,
     method: 'get'
   })
 }
@@ -26,7 +25,7 @@ export function storeBatchImport(data) {
 
 export function updateBatchImport(data) {
   return request({
-    url: '/BatchImport/'+data.id,
+    url: '/BatchImport/' + data.id,
     method: 'put',
     data
   })
@@ -34,9 +33,8 @@ export function updateBatchImport(data) {
 
 export function destroyBatchImport(id) {
   return request({
-    url: '/BatchImport/'+id,
+    url: '/BatchImport/' + id,
     method: 'delete'
   })
 }
-
 

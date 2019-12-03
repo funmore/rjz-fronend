@@ -147,21 +147,18 @@
 
 <script>
 
-
 import selection_minx from '@/components/PublicMixin/selection'
 
-
 import { indexFavor, showFavor, storeFavor, updateFavor,
-         destroyFavor } from '@/api/favor'
+  destroyFavor } from '@/api/favor'
 import { indexProgram, showProgram, storeProgram, updateProgram,
-         destroyProgram } from '@/api/program'
-import { indexProgramEdit,indexCustomProgram, showProgramEdit, storeProgramEdit, updateProgramEdit,
-         destroyProgramEdit } from '@/api/programedit'
+  destroyProgram } from '@/api/program'
+import { indexProgramEdit, indexCustomProgram, showProgramEdit, storeProgramEdit, updateProgramEdit,
+  destroyProgramEdit } from '@/api/programedit'
 import SelectProgramProperty from '@/components/SelectProgramProperty/index.vue'
 
 import waves from '@/directive/waves' // 水波纹指令
 import Favor from '@/components/Favor.vue'
-
 
 import aaa from '@/components/PreProgramCom/ProgramBasic.vue'
 import bbb from '@/components/PreProgramCom/Contact.vue'
@@ -169,39 +166,33 @@ import ccc from '@/components/PreProgramCom/SoftwareInfo.vue'
 import ddd from '@/components/PreProgramCom/Workflow.vue'
 import eee from '@/components/PreProgramCom/ProgramTeamRole.vue'
 
-
-
-
-
 export default {
   name: 'complexTable',
-  components: { SelectProgramProperty,Favor,aaa,bbb,ccc,ddd,eee},
+  components: { SelectProgramProperty, Favor, aaa, bbb, ccc, ddd, eee },
   directives: {
     waves
   },
   mixins: [selection_minx],
   data() {
     return {
-      stateArr:['意向项目','预备项目','正式项目','完结项目'],
-      onDeleting:false,
-      visibleCol:{
-        ProgramBasic:false,
-        Contact:false,
-        SoftwareInfo:false,
-        Workflow:false,
-        ProgramTeamRole:false
+      stateArr: ['意向项目', '预备项目', '正式项目', '完结项目'],
+      onDeleting: false,
+      visibleCol: {
+        ProgramBasic: false,
+        Contact: false,
+        SoftwareInfo: false,
+        Workflow: false,
+        ProgramTeamRole: false
       },
-      is_exist:false,
-      programBasicId:new Number(),
+      is_exist: false,
+      programBasicId: new Number(),
 
+      separator: '.',
 
-
-      separator:'.',
-      
       listLoading: true,
-      visible:false,
-      previsible:false,
-      program_type:'',
+      visible: false,
+      previsible: false,
+      program_type: '',
 
       tableKey: 0,
 
@@ -211,417 +202,410 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        role:'型号负责人',
-        state:'正式项目',
-        model_id:undefined,   //型号
-        program_type:undefined,
-        manager:undefined,
-        classification:undefined,
+        role: '型号负责人',
+        state: '正式项目',
+        model_id: undefined, // 型号
+        program_type: undefined,
+        manager: undefined,
+        classification: undefined,
         title: undefined
       },
-      columnSelect:{values:[],items:[]},  //保存多选多选出的原生数据
-      columnConfig:{values:[],items:[]},  //监视columnSelect 把根节点去除后的数据
-  
+      columnSelect: { values: [], items: [] }, // 保存多选多选出的原生数据
+      columnConfig: { values: [], items: [] }, // 监视columnSelect 把根节点去除后的数据
 
       dialogStatus: '',
       textMap: {
         update: '更新',
         create: '创建'
-      },  
+      },
 
       downloadLoading: false,
       selectList: [
         {
-          key:'programBasic',
-          name:'项目基本信息',
-          children:[
+          key: 'programBasic',
+          name: '项目基本信息',
+          children: [
             {
-              key:'program_source',
-              name:'项目来源',
-              children:null
+              key: 'program_source',
+              name: '项目来源',
+              children: null
             },
             {
-              key:'type',
-              name:'类型',
-              children:null
+              key: 'type',
+              name: '类型',
+              children: null
             },
             {
-              key:'ref',
-              name:'参考基线',
-              children:null
+              key: 'ref',
+              name: '参考基线',
+              children: null
             },
             {
-              key:'state',
-              name:'项目状态',
-              children:null
+              key: 'state',
+              name: '项目状态',
+              children: null
             },
             {
-              key:'classification',
-              name:'密级',
-              children:null
+              key: 'classification',
+              name: '密级',
+              children: null
             },
             {
-              key:'name',
-              name:'项目名称',
-              children:null
+              key: 'name',
+              name: '项目名称',
+              children: null
             },
             {
-              key:'model_name',
-              name:'型号名称',
-              children:null
+              key: 'model_name',
+              name: '型号名称',
+              children: null
             },
             {
-              key:'program_type',
-              name:'测试类型',
-              children:null
+              key: 'program_type',
+              name: '测试类型',
+              children: null
             },
             {
-              key:'program_identity',
-              name:'项目标识',
-              children:null
+              key: 'program_identity',
+              name: '项目标识',
+              children: null
             },
             {
-              key:'program_stage',
-              name:'项目阶段',
-              children:null
+              key: 'program_stage',
+              name: '项目阶段',
+              children: null
             },
             {
-              key:'dev_type',
-              name:'研制类型',
-              children:null
+              key: 'dev_type',
+              name: '研制类型',
+              children: null
             },
             {
-              key:'plan_start_time',
-              name:'计划开始时间',
-              children:null
+              key: 'plan_start_time',
+              name: '计划开始时间',
+              children: null
             },
             {
-              key:'plan_end_time',
-              name:'计划结束时间',
-              children:null
+              key: 'plan_end_time',
+              name: '计划结束时间',
+              children: null
             },
             {
-              key:'actual_start_time',
-              name:'实际开始时间',
-              children:null
+              key: 'actual_start_time',
+              name: '实际开始时间',
+              children: null
             },
             {
-              key:'actual_end_time',
-              name:'实际结束时间',
-              children:null
+              key: 'actual_end_time',
+              name: '实际结束时间',
+              children: null
             },
             {
-              key:'manager_name',
-              name:'型号负责人',
-              children:null
+              key: 'manager_name',
+              name: '型号负责人',
+              children: null
             }
           ]
         },
         {
-          key:'contact',
-          name:'联系人',
-          children:[
+          key: 'contact',
+          name: '联系人',
+          children: [
             {
-              key:'organ',
-              name:'研制单位',
-              children:null
+              key: 'organ',
+              name: '研制单位',
+              children: null
             },
             {
-              key:'is_12s',
-              name:'是否所内',
-              children:null
+              key: 'is_12s',
+              name: '是否所内',
+              children: null
             },
             {
-              key:'plan',
-              name:'计划',
-              children:null
+              key: 'plan',
+              name: '计划',
+              children: null
             },
             {
-              key:'quality',
-              name:'质量',
-              children:null
+              key: 'quality',
+              name: '质量',
+              children: null
             },
             {
-              key:'code',
-              name:'设计',
-              children:null
-            }
-            ]
-        },
-         {
-          key:'softwareInfoCol',
-          name:'软件信息',
-          children:[
-            {
-              key:'software_name',
-              name:'软件名称',
-              children:null
-            },
-            {
-              key:'version_id',
-              name:'版本号',
-              children:null
-            },
-            {
-              key:'reduced_code_size',
-              name:'折算后代码',
-              children:null
-            },
-            {
-              key:'reduced_reason',
-              name:'折算原因',
-              children:null
-            },
-            {
-              key:'software_type',
-              name:'软件类型',
-              children:null
-            },
-            {
-              key:'software_usage',
-              name:'软件用途',
-              children:null
-            },
-            {
-              key:'code_langu',
-              name:'编程语言',
-              children:null
-            },
-            {
-              key:'complier',
-              name:'编译器',
-              children:null
-            },
-            {
-              key:'runtime',
-              name:'运行环境',
-              children:null
-            },
-            {
-              key:'cpu_type',
-              name:'CPU类型',
-              children:null
-            },
-             {
-              key:'software_cate',
-              name:'被测软件类型',
-              children:null
-            },
-            {
-              key:'software_sub_cate',
-              name:'被测软件子类',
-              children:null
+              key: 'code',
+              name: '设计',
+              children: null
             }
           ]
         },
         {
-          key:'workflow',
-          name:'流程信息',
-          children:[
+          key: 'softwareInfoCol',
+          name: '软件信息',
+          children: [
             {
-              key:'workflow_state',
-              name:'流程状态',
-              children:null
+              key: 'software_name',
+              name: '软件名称',
+              children: null
             },
             {
-              key:'workflow_issue',
-              name:'流程节点问题',
-              children:null
+              key: 'version_id',
+              name: '版本号',
+              children: null
+            },
+            {
+              key: 'reduced_code_size',
+              name: '折算后代码',
+              children: null
+            },
+            {
+              key: 'reduced_reason',
+              name: '折算原因',
+              children: null
+            },
+            {
+              key: 'software_type',
+              name: '软件类型',
+              children: null
+            },
+            {
+              key: 'software_usage',
+              name: '软件用途',
+              children: null
+            },
+            {
+              key: 'code_langu',
+              name: '编程语言',
+              children: null
+            },
+            {
+              key: 'complier',
+              name: '编译器',
+              children: null
+            },
+            {
+              key: 'runtime',
+              name: '运行环境',
+              children: null
+            },
+            {
+              key: 'cpu_type',
+              name: 'CPU类型',
+              children: null
+            },
+            {
+              key: 'software_cate',
+              name: '被测软件类型',
+              children: null
+            },
+            {
+              key: 'software_sub_cate',
+              name: '被测软件子类',
+              children: null
             }
           ]
         },
         {
-          key:'programTeamRole',
-          name:'项目组信息',
-          children:[
+          key: 'workflow',
+          name: '流程信息',
+          children: [
             {
-              key:'program_leader',
-              name:'项目组长',
-              children:null
+              key: 'workflow_state',
+              name: '流程状态',
+              children: null
             },
             {
-              key:'program_team_strict',
-              name:'项目组员',
-              children:null
+              key: 'workflow_issue',
+              name: '流程节点问题',
+              children: null
+            }
+          ]
+        },
+        {
+          key: 'programTeamRole',
+          name: '项目组信息',
+          children: [
+            {
+              key: 'program_leader',
+              name: '项目组长',
+              children: null
+            },
+            {
+              key: 'program_team_strict',
+              name: '项目组员',
+              children: null
             }
           ]
         }
-        ],
-        multipleSelection: [],
-        onProgramStarting:false,
+      ],
+      multipleSelection: [],
+      onProgramStarting: false,
 
-        dialogNoteVisible:false,
-        choosenRow:{note:null},
-
-
+      dialogNoteVisible: false,
+      choosenRow: { note: null }
 
     }
   },
   filters: {
-    isExistState(is_exist){
-      if(is_exist){
+    isExistState(is_exist) {
+      if (is_exist) {
         return '更新'
-      }else{
+      } else {
         return '创建'
       }
     },
-    toState(state,stateArr){
-      if(state=='完结项目'){
+    toState(state, stateArr) {
+      if (state == '完结项目') {
         return null
       }
-      var index= stateArr.indexOf(state);
-      if(index==-1){
+      var index = stateArr.indexOf(state)
+      if (index == -1) {
         return '预备项目'
-      }else{
-        return stateArr[index+1]
+      } else {
+        return stateArr[index + 1]
       }
     }
 
   },
-  computed:{
-      valueComputed(){
-          return (row,index)=>{
-            var ret=null;
-            var father=null;
-            let keyPath=this.columnConfig.values[index];
-            let fatherProperty=keyPath.slice(0,keyPath.indexOf(this.separator))
-            let childProperty=keyPath.slice(keyPath.indexOf(this.separator)+1)
-            if(fatherProperty=='softwareInfoCol'){
-                father=row[fatherProperty]==null?null:row[fatherProperty][0]
-            }else{
-                father=row[fatherProperty]
-            }
-            if(father==null){
-              return '尚未配置'
-            }else{
-              return father[childProperty]
-            }
+  computed: {
+    valueComputed() {
+      return (row, index) => {
+        var ret = null
+        var father = null
+        const keyPath = this.columnConfig.values[index]
+        const fatherProperty = keyPath.slice(0, keyPath.indexOf(this.separator))
+        const childProperty = keyPath.slice(keyPath.indexOf(this.separator) + 1)
+        if (fatherProperty == 'softwareInfoCol') {
+          father = row[fatherProperty] == null ? null : row[fatherProperty][0]
+        } else {
+          father = row[fatherProperty]
+        }
+        if (father == null) {
+          return '尚未配置'
+        } else {
+          return father[childProperty]
         }
       }
+    }
   },
   created() {
     // this.getList()
     // this.getEmployeePrincal()
     // this.getModel()
-    this.columnSelect2Config();
-
+    this.columnSelect2Config()
   },
-  watch:{
-    columnSelect:function(newVa,oldVa){
-      this.columnSelect2Config();
+  watch: {
+    columnSelect: function(newVa, oldVa) {
+      this.columnSelect2Config()
     }
   },
   methods: {
-     onProgramStateChange(row){
-          var toState=row.programBasic.state
-          var index= this.stateArr.indexOf(row.programBasic.state);
-          if(index==-1){
-            return 
-          }else{
-            toState=this.stateArr[index+1]
-          }
+    onProgramStateChange(row) {
+      var toState = row.programBasic.state
+      var index = this.stateArr.indexOf(row.programBasic.state)
+      if (index == -1) {
+        return
+      } else {
+        toState = this.stateArr[index + 1]
+      }
 
-
-        if((toState=='正式项目'||toState=='完结项目')&&row.is_exist.ProgramTeamRole!=true){
-            this.$confirm('转正式项目/完结项目的前置条件是具备项目人员', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              return
-            }).catch(()=>{})
-            return
-        }
-        row.programBasic.state=toState
-        this.onProgramStarting=true;
-        let data=row.programBasic;
-        updateProgram(data).then(response => {
-        if(response.data.isOkay==true){
-          for (const v of this.list) {
-                  if (v.programBasic.id === row.programBasic.id) {
-                    const index = this.list.indexOf(v)
-                    this.list.splice(index, 1,row)
-                    break
-                  }
-                }
-                this.$notify({
-                  title: '项目状态已更新',
-                  message: '请在项目中查看此项目',
-                  type: 'success',
-                  duration: 2000
-                })
-        }
-        this.onProgramStarting=false;
-      })
-    },
-    handleDelete(row){
-        this.$confirm('此操作将永久删除此项目, 是否继续?', '提示', {
+      if ((toState == '正式项目' || toState == '完结项目') && row.is_exist.ProgramTeamRole != true) {
+        this.$confirm('转正式项目/完结项目的前置条件是具备项目人员', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.onDeleting=true;
-          destroyProgramEdit(row.programBasic.id).then(response => {
-            var data=response.data
-            if(data.is_okay==true){
-              for (const v of this.list) {
-                  if (v.programBasic.id === row.programBasic.id) {
-                    const index = this.list.indexOf(v)
-                    this.list.splice(index, 1)
-                    break
-                  }
-                }
-                this.$notify({
-                  title: '成功',
-                  message: '删除成功',
-                  type: 'success',
-                  duration: 2000
-                })
-              }else{
-                this.$notify({
-                  title: '删除失败',
-                  message: data.note,
-                  type: 'success',
-                  duration: 2000
-                })
-              }
-              this.onDeleting=false;
-
+          return
+        }).catch(() => {})
+        return
+      }
+      row.programBasic.state = toState
+      this.onProgramStarting = true
+      const data = row.programBasic
+      updateProgram(data).then(response => {
+        if (response.data.isOkay == true) {
+          for (const v of this.list) {
+            if (v.programBasic.id === row.programBasic.id) {
+              const index = this.list.indexOf(v)
+              this.list.splice(index, 1, row)
+              break
+            }
+          }
+          this.$notify({
+            title: '项目状态已更新',
+            message: '请在项目中查看此项目',
+            type: 'success',
+            duration: 2000
           })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
-      
-      },
-    handleConfigure(row,type){
-      this.programBasicId=row.programBasic.id
-      this.visibleCol[type]=true
-      this.is_exist=row.is_exist[type]
+        }
+        this.onProgramStarting = false
+      })
     },
-    handleClose(args){
-      this.visibleCol[args.type]=false
-      //如果是新增项目
-      if("created" in args&&args.created==true){
-        let justCreated={
-          programBasic:args.value,
-          contact:{
-              code: "",
-              plan: "",
-              quality: ""
+    handleDelete(row) {
+      this.$confirm('此操作将永久删除此项目, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.onDeleting = true
+        destroyProgramEdit(row.programBasic.id).then(response => {
+          var data = response.data
+          if (data.is_okay == true) {
+            for (const v of this.list) {
+              if (v.programBasic.id === row.programBasic.id) {
+                const index = this.list.indexOf(v)
+                this.list.splice(index, 1)
+                break
+              }
+            }
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: '删除失败',
+              message: data.note,
+              type: 'success',
+              duration: 2000
+            })
+          }
+          this.onDeleting = false
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    handleConfigure(row, type) {
+      this.programBasicId = row.programBasic.id
+      this.visibleCol[type] = true
+      this.is_exist = row.is_exist[type]
+    },
+    handleClose(args) {
+      this.visibleCol[args.type] = false
+      // 如果是新增项目
+      if ('created' in args && args.created == true) {
+        const justCreated = {
+          programBasic: args.value,
+          contact: {
+            code: '',
+            plan: '',
+            quality: ''
           },
-          programTeamRole:{
+          programTeamRole: {
             program_leader: '',
             program_team_strict: ''
           },
-          workflow:{
-              workflow_issue: '',
-              workflow_state: ''
+          workflow: {
+            workflow_issue: '',
+            workflow_state: ''
           },
-          softwareInfoCol:[
-              {code_langu: '',
+          softwareInfoCol: [
+            { code_langu: '',
               complier: '',
               cpu_type: '',
               id: '',
@@ -634,24 +618,24 @@ export default {
               software_sub_cate: '',
               software_type: '',
               software_usage: '',
-              version_id: ''}
-            ],
-          is_exist:{
-            ProgramBasic:true,
-            Contact:false,
-            SoftwareInfo:false,
-            Workflow:false,
-            ProgramTeamRole:false
+              version_id: '' }
+          ],
+          is_exist: {
+            ProgramBasic: true,
+            Contact: false,
+            SoftwareInfo: false,
+            Workflow: false,
+            ProgramTeamRole: false
           }
         }
         this.list.unshift(justCreated)
         return
       }
-      //如果是对已有项目的属性更改
-      if("state" in args&&args.state=='update'){
-        var item=this.list.find(x=>x.programBasic.id==args.programId)
-        if(item!=null){
-          item.is_exist[args.type]=true
+      // 如果是对已有项目的属性更改
+      if ('state' in args && args.state == 'update') {
+        var item = this.list.find(x => x.programBasic.id == args.programId)
+        if (item != null) {
+          item.is_exist[args.type] = true
         }
       }
     },
@@ -659,36 +643,35 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    indexMethod(index){
-      return index+(this.listQuery.page-1)*this.listQuery.limit+1;
+    indexMethod(index) {
+      return index + (this.listQuery.page - 1) * this.listQuery.limit + 1
     },
-    columnSelect2Config(){
-      let trim_values=this.columnSelect.values.filter(x=>x.includes(this.separator))
-      let trim_items =this.columnSelect.items.filter(x=>(x.key!='programBasic')
-                                        &&(x.key!='contact')
-                                        &&(x.key!='softwareInfoCol')
-                                        &&(x.key!='workflow')
-                                        &&(x.key!='programTeamRole'))
-      this.columnConfig={values:trim_values,items:trim_items}
+    columnSelect2Config() {
+      const trim_values = this.columnSelect.values.filter(x => x.includes(this.separator))
+      const trim_items = this.columnSelect.items.filter(x => (x.key != 'programBasic') &&
+                                        (x.key != 'contact') &&
+                                        (x.key != 'softwareInfoCol') &&
+                                        (x.key != 'workflow') &&
+                                        (x.key != 'programTeamRole'))
+      this.columnConfig = { values: trim_values, items: trim_items }
     },
-    OnRangeChange(args){
-       this.columnSelect=args;
+    OnRangeChange(args) {
+      this.columnSelect = args
     },
-    onFavorChange(args){
-       this.columnSelect=args;
+    onFavorChange(args) {
+      this.columnSelect = args
     },
-    onFavorListQueryChange(args){
-      if(args!=undefined){
-      this.listQuery=args;
-      this.getList()
+    onFavorListQueryChange(args) {
+      if (args != undefined) {
+        this.listQuery = args
+        this.getList()
       }
     },
 
     getList() {
-
-      this.listLoading = true;
+      this.listLoading = true
       indexCustomProgram(this.listQuery).then(response => {
-        var data=response.data
+        var data = response.data
         this.list = Object.values(data.items)
         this.total = data.total
 
@@ -710,80 +693,79 @@ export default {
       this.getList()
     },
 
- 
-    onNoteClick(row){
-      this.choosenRow=row.programBasic;
-      this.dialogNoteVisible=true;
+    onNoteClick(row) {
+      this.choosenRow = row.programBasic
+      this.dialogNoteVisible = true
     },
-    cancelNote(){
-      this.dialogNoteVisible=false;
+    cancelNote() {
+      this.dialogNoteVisible = false
     },
-    confirmNote(row){
-        updateProgram(row).then(response => {
-        if(response.data.isOkay==true){
-                this.dialogNoteVisible=false;
-                this.$notify({
-                  title: '项目备注已更新',
-                  message: '请在项目中查看此项目',
-                  type: 'success',
-                  duration: 2000
-                })
+    confirmNote(row) {
+      updateProgram(row).then(response => {
+        if (response.data.isOkay == true) {
+          this.dialogNoteVisible = false
+          this.$notify({
+            title: '项目备注已更新',
+            message: '请在项目中查看此项目',
+            type: 'success',
+            duration: 2000
+          })
         }
       })
     },
-    tableRowClassName({row, rowIndex}) {
-        if (row.programBasic.note !='') {
-          return 'warning-row';
-        } 
-        return '';
+    tableRowClassName({ row, rowIndex }) {
+      if (row.programBasic.note != '') {
+        return 'warning-row'
+      }
+      return ''
     },
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        var tHeader = this.columnConfig.items.map(x=>x.name);
-        tHeader.unshift('序号');
+        var tHeader = this.columnConfig.items.map(x => x.name)
+        tHeader.unshift('序号')
         const data = this.formatJson(this.columnConfig.values, this.multipleSelection)
-        var today = new Date();
-        var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-        var dateTime = date+' '+time;
+        var today = new Date()
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate()
+        var time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
+        var dateTime = date + ' ' + time
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: '项目信息'+dateTime
+          filename: '项目信息' + dateTime
         })
         this.downloadLoading = false
       })
     },
     formatJson(values, list) {
-      var id=1;
+      var id = 1
       return list.map(row => {
-          var ret=values.map(keyPath => {
-            var ret=null;
-            var father=null;
-            let fatherProperty=keyPath.slice(0,keyPath.indexOf(this.separator))
-            let childProperty=keyPath.slice(keyPath.indexOf(this.separator)+1)
-            if(fatherProperty=='softwareInfoCol'){
-                father=row[fatherProperty]==null?null:row[fatherProperty][0]
-            }else{
-                father=row[fatherProperty]
-            }
-            if(father==null){
-              return '尚未配置'
-            }else{
-              return father[childProperty]
-            }
+        var ret = values.map(keyPath => {
+          var ret = null
+          var father = null
+          const fatherProperty = keyPath.slice(0, keyPath.indexOf(this.separator))
+          const childProperty = keyPath.slice(keyPath.indexOf(this.separator) + 1)
+          if (fatherProperty == 'softwareInfoCol') {
+            father = row[fatherProperty] == null ? null : row[fatherProperty][0]
+          } else {
+            father = row[fatherProperty]
           }
-        )
-        ret.unshift(id);
-        id++;
-        return ret;
+          if (father == null) {
+            return '尚未配置'
+          } else {
+            return father[childProperty]
+          }
         }
+        )
+        ret.unshift(id)
+        id++
+        return ret
+      }
       )
     },
-    handleProgramCreate(){
-      this.visibleCol.ProgramBasic=true
-      this.is_exist=false
+    handleProgramCreate() {
+      this.visibleCol.ProgramBasic = true
+      this.is_exist = false
     }
   }
 }

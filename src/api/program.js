@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexProgram(query) {
   return request({
     url: 'program',
@@ -11,19 +10,19 @@ export function indexProgram(query) {
 
 export function showProgram(id) {
   return request({
-    url:'program/'+ id,
+    url: 'program/' + id,
     method: 'get'
   })
 }
 export function roleProgram(id) {
   return request({
-    url:'program/role/'+ id,
+    url: 'program/role/' + id,
     method: 'get'
   })
 }
-export function teamProgram(id){
+export function teamProgram(id) {
   return request({
-    url:'program/team/'+id,
+    url: 'program/team/' + id,
     method: 'get'
   })
 }
@@ -38,7 +37,7 @@ export function storeProgram(data) {
 
 export function updateProgram(data) {
   return request({
-    url: 'program/'+data.id,
+    url: 'program/' + data.id,
     method: 'put',
     data
   })
@@ -46,7 +45,7 @@ export function updateProgram(data) {
 
 export function destroyProgram(id) {
   return request({
-    url: 'program/'+id,
+    url: 'program/' + id,
     method: 'delete'
   })
 }

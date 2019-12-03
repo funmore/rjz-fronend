@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexEmployee(query) {
   return request({
     url: 'employee',
@@ -11,7 +10,7 @@ export function indexEmployee(query) {
 
 export function showEmployee(id) {
   return request({
-    url:'employee/'+ id,
+    url: 'employee/' + id,
     method: 'get'
   })
 }
@@ -26,7 +25,7 @@ export function storeEmployee(data) {
 
 export function updateEmployee(data) {
   return request({
-    url: 'employee/'+data.id,
+    url: 'employee/' + data.id,
     method: 'put',
     data
   })
@@ -34,7 +33,7 @@ export function updateEmployee(data) {
 
 export function destroyEmployee(id) {
   return request({
-    url: 'employee/'+id,
+    url: 'employee/' + id,
     method: 'delete'
   })
 }

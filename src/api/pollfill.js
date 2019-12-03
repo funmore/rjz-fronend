@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexPollFill(query) {
   return request({
     url: 'pollfill',
@@ -11,7 +10,7 @@ export function indexPollFill(query) {
 
 export function showPollFill(id) {
   return request({
-    url: 'pollfill/'+ id,
+    url: 'pollfill/' + id,
     method: 'get'
   })
 }
@@ -26,7 +25,7 @@ export function storePollFill(data) {
 
 export function updatePollFill(data) {
   return request({
-    url: 'pollfill/'+data.id,
+    url: 'pollfill/' + data.id,
     method: 'put',
     data
   })
@@ -34,7 +33,7 @@ export function updatePollFill(data) {
 
 export function destroyPollFill(id) {
   return request({
-    url: 'pollfill/'+id,
+    url: 'pollfill/' + id,
     method: 'delete'
   })
 }

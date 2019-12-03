@@ -185,7 +185,7 @@
             var node_task = Object.values(data.items)
           }
           var node_task_must_complete=node_task.filter(item => {
-            return item.is_must_complete=='是'
+            return item.is_must_complete=='是'&&item.state!=100
           })
           if(node_task_must_complete.length!=0){
             this.$confirm('当前阶段尚未有必要任务未完成', '提示', {

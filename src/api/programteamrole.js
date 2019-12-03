@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexProgramTeamRole(query) {
   return request({
     url: 'programteamrole',
@@ -11,7 +10,7 @@ export function indexProgramTeamRole(query) {
 
 export function showProgramTeamRole(id) {
   return request({
-    url:'programteamrole/'+ id,
+    url: 'programteamrole/' + id,
     method: 'get'
   })
 }
@@ -26,7 +25,7 @@ export function storeProgramTeamRole(data) {
 
 export function updateProgramTeamRole(data) {
   return request({
-    url: 'programteamrole/'+data.id,
+    url: 'programteamrole/' + data.id,
     method: 'put',
     data
   })
@@ -34,7 +33,7 @@ export function updateProgramTeamRole(data) {
 
 export function destroyProgramTeamRole(id) {
   return request({
-    url: 'programteamrole/'+id,
+    url: 'programteamrole/' + id,
     method: 'delete'
   })
 }

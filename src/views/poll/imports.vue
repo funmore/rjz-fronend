@@ -25,28 +25,28 @@
 import UploadExcelComponent from '@/components/UploadExcel/index.vue'
 import SelectEmployee from '@/components/SelectEmployee/index.vue'
 import { indexPoll, showPoll, storePoll, updatePoll,
-         destroyPoll } from '@/api/poll'
+  destroyPoll } from '@/api/poll'
 import Property from './property.vue'
 export default {
   name: 'uploadExcel',
-  components: { UploadExcelComponent,SelectEmployee,Property },
+  components: { UploadExcelComponent, SelectEmployee, Property },
   data() {
     return {
-      column_value:[],
+      column_value: [],
       ExcelData: [],
       tableHeader: [],
-      propertyData:[],
-      uploadVisible:true,
-      setRowVisible:false,
-      row:1,
-      setPropertyVisible:true,
-      request_data:{
-        poll:{        
-          name:'',
-          due_day:'',
-          range:[1,2]
+      propertyData: [],
+      uploadVisible: true,
+      setRowVisible: false,
+      row: 1,
+      setPropertyVisible: true,
+      request_data: {
+        poll: {
+          name: '',
+          due_day: '',
+          range: [1, 2]
         },
-        poll_column:[]
+        poll_column: []
       },
       inputVisible: false,
       inputValue: ''
@@ -69,103 +69,103 @@ export default {
     },
     handleSuccess({ results, header }) {
       this.ExcelData = results
-      
+
       this.tableHeader = header
-      this.uploadVisible=false
-      this.setRowVisible=true
+      this.uploadVisible = false
+      this.setRowVisible = true
       // if(this.ExcelData.length!=0){
       //   this.ExcelData.forEach(x=>{
       //     this.
       //   })
       // }
     },
-    handleRowChange(value){
+    handleRowChange(value) {
 
     },
-    OnNextClicked(){
-      if(this.setRowVisible==true){
-        for (let header of this.tableHeader) {
-            let type="数字"
-            let valid_value=[]
-            this.ExcelData.forEach(value=>{
-                if(value[header]!=null){
-                  if(valid_value.indexOf(value[header])==-1){
-                    valid_value.push(value[header])
-                  }
-                }
-              });
-            if(valid_value.length<3){
-              if(valid_value.length!=0){
-                for(let i=0;i<valid_value.length;i++){
-                  if(isNaN(parseInt(valid_value[i]))){
-                      type="单项选择"
-                      break
-                  }
+    OnNextClicked() {
+      if (this.setRowVisible == true) {
+        for (const header of this.tableHeader) {
+          let type = '数字'
+          const valid_value = []
+          this.ExcelData.forEach(value => {
+            if (value[header] != null) {
+              if (valid_value.indexOf(value[header]) == -1) {
+                valid_value.push(value[header])
+              }
+            }
+          })
+          if (valid_value.length < 3) {
+            if (valid_value.length != 0) {
+              for (let i = 0; i < valid_value.length; i++) {
+                if (isNaN(parseInt(valid_value[i]))) {
+                  type = '单项选择'
+                  break
                 }
               }
-            }else{
-              type="单项选择"
             }
-            let oneRow={
-              name:header,
-              type:type,
-              valid_value:valid_value
-            }
-            this.propertyData.push(oneRow)
+          } else {
+            type = '单项选择'
           }
-        this.setRowVisible=false
-        this.setPropertyVisible=true
+          const oneRow = {
+            name: header,
+            type: type,
+            valid_value: valid_value
+          }
+          this.propertyData.push(oneRow)
+        }
+        this.setRowVisible = false
+        this.setPropertyVisible = true
       }
     },
     toggleSelection(rows) {
-        if (rows) {
-          rows.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row);
-          });
-        } else {
-          this.$refs.multipleTable.clearSelection();
-        }
-      },
-    handleSelectionChange(val) {
-        this.request_data.poll_column = val;
-      },
-
-    //有效值tag  start
-    handleClose(tag,row) {
-        row.valid_value.splice(row.valid_value.indexOf(tag), 1);
-      },
-
-      showInput() {
-        this.inputVisible = true;
-        this.$nextTick(_ => {
-          this.$refs.saveTagInput.$refs.input.focus();
-        });
-      },
-
-      handleInputConfirm(row) {
-        let inputValue = this.inputValue;
-        if (inputValue) {
-          row.valid_value.push(inputValue);
-        }
-        this.inputVisible = false;
-        this.inputValue = '';
-      },
-    //有效值tag  end
-      OnCreatedClicked(){
-            storePoll(this.request_data).then(response => {
-              this.$notify({
-                title: '创建成功',
-                message: '请通知同事填写表单',
-                type: 'success',
-                duration: 2000
-              })
-          }).catch(err => {
-            console.log(err)
-          })
-      },
-      OnRangeChange(args){
-        this.request_data.poll.range=args;
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row)
+        })
+      } else {
+        this.$refs.multipleTable.clearSelection()
       }
+    },
+    handleSelectionChange(val) {
+      this.request_data.poll_column = val
+    },
+
+    // 有效值tag  start
+    handleClose(tag, row) {
+      row.valid_value.splice(row.valid_value.indexOf(tag), 1)
+    },
+
+    showInput() {
+      this.inputVisible = true
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
+    },
+
+    handleInputConfirm(row) {
+      const inputValue = this.inputValue
+      if (inputValue) {
+        row.valid_value.push(inputValue)
+      }
+      this.inputVisible = false
+      this.inputValue = ''
+    },
+    // 有效值tag  end
+    OnCreatedClicked() {
+      storePoll(this.request_data).then(response => {
+        this.$notify({
+          title: '创建成功',
+          message: '请通知同事填写表单',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    OnRangeChange(args) {
+      this.request_data.poll.range = args
+    }
 
   }
 }

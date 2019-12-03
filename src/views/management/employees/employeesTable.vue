@@ -367,14 +367,11 @@
 
 <script>
 import { indexEmployee, showEmployee, storeEmployee, updateEmployee,
-         destroyEmployee } from '@/api/employee'
+  destroyEmployee } from '@/api/employee'
 import { indexTeam, showTeam, storeTeam, updateTeam,
-         destroyTeam } from '@/api/Team'
+  destroyTeam } from '@/api/Team'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils/index.js'
-
-
-
 
 export default {
   name: 'employeesTable',
@@ -384,19 +381,19 @@ export default {
 
   data() {
     return {
-      selection:{
-        team:[
-             {id:1,name:'测试一部'},
-             {id:2,name:'测试二部'},
-             {id:3,name:'环境研发部'},
-             {id:4,name:'综合管理'},
-             {id:5,name:'室领导'}
-             ],
-        isOrNot:[
-            {id:1,name:'是'},
-            {id:0,name:'否'}
-           ],
-        sex:['男','女']
+      selection: {
+        team: [
+          { id: 1, name: '测试一部' },
+          { id: 2, name: '测试二部' },
+          { id: 3, name: '环境研发部' },
+          { id: 4, name: '综合管理' },
+          { id: 5, name: '室领导' }
+        ],
+        isOrNot: [
+          { id: 1, name: '是' },
+          { id: 0, name: '否' }
+        ],
+        sex: ['男', '女']
       },
       tableKey: 0,
       list: null,
@@ -405,32 +402,32 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        checkCOMPLEX:true
+        checkCOMPLEX: true
       },
-      xhTypeOptions: ["型号1","型号2","型号3"],
-      xmTypeOptions: ["战术","战略","运载"],
+      xhTypeOptions: ['型号1', '型号2', '型号3'],
+      xmTypeOptions: ['战术', '战略', '运载'],
       sortOptions: [{ label: 'ID 升序', key: '+id' }, { label: 'ID 降序', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       temp: {
-        id:undefined,             
-        name:"人员",        
-        age:null, 
-        sex:null,  
-        mobilephone:null,
-        team_id:null, 
-        is_director:null,
-        is_v_director:null,
-        is_chiefdesigner:null,
-        is_v_chiefdesigner:null,
-        is_teamleader:null,
-        is_p_leader:null,
-        is_p_principal:null,
-        is_qa:null,
-        is_cm:null,
-        is_bd:null,
-        is_tester:null,
-        is_admin:null
+        id: undefined,
+        name: '人员',
+        age: null,
+        sex: null,
+        mobilephone: null,
+        team_id: null,
+        is_director: null,
+        is_v_director: null,
+        is_chiefdesigner: null,
+        is_v_chiefdesigner: null,
+        is_teamleader: null,
+        is_p_leader: null,
+        is_p_principal: null,
+        is_qa: null,
+        is_cm: null,
+        is_bd: null,
+        is_tester: null,
+        is_admin: null
 
       },
       visible: false,
@@ -462,24 +459,23 @@ export default {
     this.getTeam()
   },
   methods: {
-    getTeam(){
-      let listQuery={type:'all'}
+    getTeam() {
+      const listQuery = { type: 'all' }
       indexTeam(listQuery).then(response => {
-        let data=response.data;
-        if(data.isOkay==true){
-          this.selection.team=Object.values(data.items);
+        const data = response.data
+        if (data.isOkay == true) {
+          this.selection.team = Object.values(data.items)
         }
       })
     },
     getList() {
       this.listLoading = true
       indexEmployee(this.listQuery).then(response => {
-        let data=response.data;
-        this.list = Object.values(data.items);
-        this.total = data.total;
-        this.listLoading=false
+        const data = response.data
+        this.list = Object.values(data.items)
+        this.total = data.total
+        this.listLoading = false
       })
-
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -502,24 +498,24 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id:undefined,             
-        name:"请输入姓名",        
-        age:'27', 
-        sex:'男',  
-        mobilephone:'88999',
-        team_id:1, 
-        is_director:0,
-        is_v_director:0,
-        is_chiefdesigner:0,
-        is_v_chiefdesigner:0,
-        is_teamleader:0,
-        is_p_leader:0,
-        is_p_principal:0,
-        is_qa:0,
-        is_cm:0,
-        is_bd:0,
-        is_tester:0,
-        is_admin:0
+        id: undefined,
+        name: '请输入姓名',
+        age: '27',
+        sex: '男',
+        mobilephone: '88999',
+        team_id: 1,
+        is_director: 0,
+        is_v_director: 0,
+        is_chiefdesigner: 0,
+        is_v_chiefdesigner: 0,
+        is_teamleader: 0,
+        is_p_leader: 0,
+        is_p_principal: 0,
+        is_qa: 0,
+        is_cm: 0,
+        is_bd: 0,
+        is_tester: 0,
+        is_admin: 0
       }
     },
     handleCreate() {
@@ -534,9 +530,9 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           storeEmployee(this.temp).then((response) => {
-            this.temp.id=response.data.items;
-            this.temp.username=this.temp.name;
-            this.temp.password='AB12345678c';
+            this.temp.id = response.data.items
+            this.temp.username = this.temp.name
+            this.temp.password = 'AB12345678c'
             this.list.unshift(this.temp)
             this.visible = false
             this.$notify({
@@ -556,17 +552,16 @@ export default {
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
-
     },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp)   //deep copy this.temp
+          const tempData = Object.assign({}, this.temp) // deep copy this.temp
           updateEmployee(tempData).then(() => {
             for (const v of this.list) {
               if (v.id === this.temp.id) {
                 const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.temp)   //将list中的原有的条目找到，并替换为新的条目
+                this.list.splice(index, 1, this.temp) // 将list中的原有的条目找到，并替换为新的条目
                 break
               }
             }

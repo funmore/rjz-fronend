@@ -116,7 +116,7 @@
 
 import waves from '@/directive/waves/index.js' // 水波纹指令
 import { indexPoll, showPoll, storePoll, updatePoll,
-         destroyPoll } from '@/api/poll'
+  destroyPoll } from '@/api/poll'
 
 export default {
   name: 'componentMixin-demo',
@@ -127,94 +127,92 @@ export default {
   },
   data() {
     return {
-      listQuery:{
-        type:'canPoll'
+      listQuery: {
+        type: 'canPoll'
       },
-      keyPath:['others','canPoll'],
-      isCollapse:false,
-      visible:false,
-      list:[],
-      listLoading:true,
-      onDeleting:false,
-
+      keyPath: ['others', 'canPoll'],
+      isCollapse: false,
+      visible: false,
+      list: [],
+      listLoading: true,
+      onDeleting: false
 
     }
   },
-  filters:{
-    checkPollType:function(value){
-      if(value==1){
+  filters: {
+    checkPollType: function(value) {
+      if (value == 1) {
         return '多次投票'
-      }else{
+      } else {
         return '单次投票'
       }
     }
   },
-  mounted(){
-    this.getList();
+  mounted() {
+    this.getList()
   },
-  methods:{
+  methods: {
     handleMenuSelect(key, keyPath) {
-      this.listQuery.type=key
-      this.keyPath=keyPath
+      this.listQuery.type = key
+      this.keyPath = keyPath
       this.listQuery.page = 1
-      this.list=[]
+      this.list = []
       this.getList()
-      },
-    getList(){
-      this.listLoading=true;
+    },
+    getList() {
+      this.listLoading = true
       indexPoll(this.listQuery).then(response => {
-        var data=response.data
-        if(data.total!=0){
+        var data = response.data
+        if (data.total != 0) {
           this.list = Object.values(data.items)
-        this.total = data.total
+          this.total = data.total
         }
-        this.listLoading=false;
+        this.listLoading = false
       })
     },
-    OnPollCreate(){
-      this.visible=true;
+    OnPollCreate() {
+      this.visible = true
     },
-    OnPollDelete(poll_id){
-       this.$confirm('此操作将永久删除此表单, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.onDeleting=true;
-           destroyPoll(poll_id).then(response => {
-            var data=response.data
-            if(data.is_okay==true){
-              for (const v of this.list) {
-                  if (v.id === poll_id) {
-                    const index = this.list.indexOf(v)
-                    this.list.splice(index, 1)
-                    break
-                  }
-                }
-                this.onDeleting=false;
-                this.$notify({
-                  title: '成功',
-                  message: '删除成功',
-                  type: 'success',
-                  duration: 2000
-                })
-              }else{
-                this.onDeleting=false;
-                this.$notify({
-                  title: '删除失败',
-                  message: '只有创建人可以删除',
-                  type: 'success',
-                  duration: 2000
-                })
+    OnPollDelete(poll_id) {
+      this.$confirm('此操作将永久删除此表单, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.onDeleting = true
+        destroyPoll(poll_id).then(response => {
+          var data = response.data
+          if (data.is_okay == true) {
+            for (const v of this.list) {
+              if (v.id === poll_id) {
+                const index = this.list.indexOf(v)
+                this.list.splice(index, 1)
+                break
               }
+            }
+            this.onDeleting = false
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.onDeleting = false
+            this.$notify({
+              title: '删除失败',
+              message: '只有创建人可以删除',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
-      
     }
   }
 }

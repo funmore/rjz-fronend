@@ -1,4 +1,4 @@
-import { login, logout, getInfo,test } from '@/api/login'
+import { login, logout, getInfo, test } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -7,7 +7,7 @@ const user = {
     name: '',
     avatar: '',
     roles: [],
-    notice:0
+    notice: 0
   },
 
   mutations: {
@@ -29,11 +29,11 @@ const user = {
   },
 
   actions: {
-    
+
     // 登录
     Login({ commit }, total) {
       return new Promise((resolve, reject) => {
-        login(total.name,total.password).then(response => {
+        login(total.name, total.password).then(response => {
           const data = response.data
           setToken(data.token)
           commit('SET_TOKEN', data.token)
@@ -55,8 +55,8 @@ const user = {
             reject('getInfo: roles must be a non-null array !')
           }
           commit('SET_NAME', data.name)
-          commit('SET_NOTICE',data.noticeNum)
-          //commit('SET_AVATAR', data.avatar)
+          commit('SET_NOTICE', data.noticeNum)
+          // commit('SET_AVATAR', data.avatar)
           resolve(response)
         }).catch(error => {
           reject(error)

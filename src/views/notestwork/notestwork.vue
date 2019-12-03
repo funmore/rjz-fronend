@@ -172,47 +172,46 @@
    
 </template>
 <script>
-
-  import { indexNoTestWork,indexNoTestWorkLogMonth, showNoTestWork, storeNoTestWork, updateNoTestWork,
-         destroyNoTestWork } from '@/api/NoTestWork'
-  import { zeroTime,dateTime,fullZeroTime,getLastMonday } from '@/utils/index.js'
+  import { indexNoTestWork, indexNoTestWorkLogMonth, showNoTestWork, storeNoTestWork, updateNoTestWork,
+    destroyNoTestWork } from '@/api/NoTestWork'
+  import { zeroTime, dateTime, fullZeroTime, getLastMonday } from '@/utils/index.js'
 
   export default {
     data() {
-      var nowTime=new Date();
+      var nowTime = new Date()
       return {
-        listLoading:true,
-        onDeleting:false,
-        listQuery:{
-          isAll:true,
-          title:''
+        listLoading: true,
+        onDeleting: false,
+        listQuery: {
+          isAll: true,
+          title: ''
         },
-        calenderDate:nowTime,
-        type:['技术把关与评审活动(内)','技术把关与评审活动(外)','能力建设','预先研究','成果申报','调研交流','知识分享(授课/典型案例)','专业学习(培训/自学)','团队活动','项目管理(测试项目协调)','综合管理(各类行政类/党团类会议/活动组织)'],
-        temp:{
-                date:zeroTime(nowTime,'{y}-{m}-{d} {h}:{i}:{s}'),
-                range_start:'08:00',
-                range_end:'08:30',
-                type:'技术把关与评审活动(内)',
-                assist_name:'',
-                output:'',
-                note:''
-            },
-        visible:false,
-        rules:{
+        calenderDate: nowTime,
+        type: ['技术把关与评审活动(内)', '技术把关与评审活动(外)', '能力建设', '预先研究', '成果申报', '调研交流', '知识分享(授课/典型案例)', '专业学习(培训/自学)', '团队活动', '项目管理(测试项目协调)', '综合管理(各类行政类/党团类会议/活动组织)'],
+        temp: {
+          date: zeroTime(nowTime, '{y}-{m}-{d} {h}:{i}:{s}'),
+          range_start: '08:00',
+          range_end: '08:30',
+          type: '技术把关与评审活动(内)',
+          assist_name: '',
+          output: '',
+          note: ''
+        },
+        visible: false,
+        rules: {
         },
 
-        list:[],
+        list: [],
 
         dialogStatus: '',
         textMap: {
           update: '更新',
           create: '创建'
         },
-        datesArr:[],
-        logMonthList:[]
-      };
-    },
+        datesArr: [],
+        logMonthList: []
+      }
+  },
     filters: {
       dateTime
       // test1(date){
@@ -222,159 +221,155 @@
       //   var data=data;
       // }
     },
-    created(){
+    created() {
       this.getList()
-      this.datesArr=this.get42dayArrayFromMonday();
+      this.datesArr = this.get42dayArrayFromMonday()
       this.getMonthList()
     },
 
     methods: {
-      //是否存在日志
-    ifOneDayLog(date){
-      date=zeroTime(date,'{y}-{m}-{d} {h}:{i}:{s}');
-      var item=this.logMonthList.find( x => x.date === date );
-      if(item!=null&&item.data!=0){
-        return true;
-      }else{
-        return false;
-      }
-    },
-
-    // oneDayLog(date){
-    //   date=zeroTime(date,'{y}-{m}-{d} {h}:{i}:{s}');
-    //   var item=this.logMonthList.find( x => x.date === date );
-    //   if(item!=null&&item.data!=null){
-    //     return item.data;
-    //   }else{
-    //     return null;
-    //   }
-    // },
-    oneDayLogLength(date){
-      date=zeroTime(date,'{y}-{m}-{d} {h}:{i}:{s}');
-      var item=this.logMonthList.find( x => x.date === date );
-      if(item!=null){
-        return item.data;
-      }else{
-        return 0;
-      }
-    },
-    getMonthList(){
-      let listQuery={
-          datesArr:this.datesArr
-        };
-      indexNoTestWorkLogMonth(listQuery).then(response => {
-        var data=response.data
-        if(data.total!=0){
-          this.logMonthList = data.items
+      // 是否存在日志
+      ifOneDayLog(date) {
+        date = zeroTime(date, '{y}-{m}-{d} {h}:{i}:{s}')
+        var item = this.logMonthList.find(x => x.date === date)
+        if (item != null && item.data != 0) {
+          return true
+        } else {
+          return false
         }
-      })
-    },
-    getList(){
-      this.listLoading = true;
-      this.listQuery={
-          date:this.temp.date,
-        };
-      this.list=[];
-      indexNoTestWork(this.listQuery).then(response => {
-        var data=response.data
-        if(data.total!=0){
-          this.list = Object.values(data.items)
-        }
-      this.listLoading=false;
-      })
-    },
-    handleFilter(){
+      },
 
-    },
-    handleCreate(){
-          this.dialogStatus='create';
-          this.temp={
-                date:zeroTime(this.calenderDate,'{y}-{m}-{d} {h}:{i}:{s}'),
-                range_start:'08:00',
-                range_end:'08:30',
-                type:'技术把关与评审活动(内)',
-                assist_name:'',
-                output:'',
-                note:''
-            },
-          this.visible=true;
+      // oneDayLog(date){
+      //   date=zeroTime(date,'{y}-{m}-{d} {h}:{i}:{s}');
+      //   var item=this.logMonthList.find( x => x.date === date );
+      //   if(item!=null&&item.data!=null){
+      //     return item.data;
+      //   }else{
+      //     return null;
+      //   }
+      // },
+      oneDayLogLength(date) {
+        date = zeroTime(date, '{y}-{m}-{d} {h}:{i}:{s}')
+        var item = this.logMonthList.find(x => x.date === date)
+        if (item != null) {
+          return item.data
+        } else {
+          return 0
+        }
+      },
+      getMonthList() {
+        const listQuery = {
+          datesArr: this.datesArr
+        }
+        indexNoTestWorkLogMonth(listQuery).then(response => {
+          var data = response.data
+          if (data.total != 0) {
+            this.logMonthList = data.items
+          }
+        })
+      },
+      getList() {
+        this.listLoading = true
+        this.listQuery = {
+          date: this.temp.date
+        }
+        this.list = []
+        indexNoTestWork(this.listQuery).then(response => {
+          var data = response.data
+          if (data.total != 0) {
+            this.list = Object.values(data.items)
+          }
+          this.listLoading = false
+        })
+      },
+      handleFilter() {
 
       },
-      handleEdit(row){
-           this.dialogStatus='update';
-          this.temp=row;
-          this.visible=true;
+      handleCreate() {
+        this.dialogStatus = 'create'
+        this.temp = {
+          date: zeroTime(this.calenderDate, '{y}-{m}-{d} {h}:{i}:{s}'),
+          range_start: '08:00',
+          range_end: '08:30',
+          type: '技术把关与评审活动(内)',
+          assist_name: '',
+          output: '',
+          note: ''
+        },
+        this.visible = true
       },
-      handleDelete(row){
+      handleEdit(row) {
+        this.dialogStatus = 'update'
+        this.temp = row
+        this.visible = true
+      },
+      handleDelete(row) {
         this.$confirm('此操作将永久该日志信息, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.onDeleting=true;
+          this.onDeleting = true
           destroyNoTestWork(row.id).then(response => {
-            var data=response.data
-            if(data.is_okay==true){
+            var data = response.data
+            if (data.is_okay == true) {
               for (const v of this.list) {
-                  if (v.id === row.id) {
-                    const index = this.list.indexOf(v)
-                    this.logMonthList.find( x => x.date === row.date ).data-=1;
-                    this.list.splice(index, 1)
-                    break
-                  }
+                if (v.id === row.id) {
+                  const index = this.list.indexOf(v)
+                  this.logMonthList.find(x => x.date === row.date).data -= 1
+                  this.list.splice(index, 1)
+                  break
                 }
-                this.$notify({
-                  title: '成功',
-                  message: '删除成功',
-                  type: 'success',
-                  duration: 2000
-                })
-              }else{
-                this.$notify({
-                  title: '删除失败',
-                  message: '只有管理员可以删除',
-                  type: 'success',
-                  duration: 2000
-                })
               }
-              this.onDeleting=false;
-
+              this.$notify({
+                title: '成功',
+                message: '删除成功',
+                type: 'success',
+                duration: 2000
+              })
+            } else {
+              this.$notify({
+                title: '删除失败',
+                message: '只有管理员可以删除',
+                type: 'success',
+                duration: 2000
+              })
+            }
+            this.onDeleting = false
           })
         }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
-        });
-      
+          })
+        })
       },
-      confirmCreate(item){
-
+      confirmCreate(item) {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.visible=false;
+            this.visible = false
             storeNoTestWork(item).then(response => {
-              var data=response.data
-              item.id=data.id;
-              item.created_at=data.created_at;
+              var data = response.data
+              item.id = data.id
+              item.created_at = data.created_at
               this.list.unshift(item)
-              this.logMonthList.find( x => x.date === item.date ).data+=1;
+              this.logMonthList.find(x => x.date === item.date).data += 1
               this.$notify({
                 title: '成功',
                 message: '更新成功',
                 type: 'success',
                 duration: 2000
               })
-          }).catch(err => {
-            console.log(err)
-          })
-        }
-      })
+            }).catch(err => {
+              console.log(err)
+            })
+          }
+        })
       },
-      confirmUpdate(item){
+      confirmUpdate(item) {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.visible=false;
+            this.visible = false
             updateNoTestWork(item).then(response => {
               this.$notify({
                 title: '成功',
@@ -382,40 +377,40 @@
                 type: 'success',
                 duration: 2000
               })
-          }).catch(err => {
-            console.log(err)
-          })
+            }).catch(err => {
+              console.log(err)
+            })
+          }
+        })
+      },
+      OnCalenderClick(date) {
+        this.temp.date = zeroTime(date, '{y}-{m}-{d} {h}:{i}:{s}')
+        this.getList()
+      },
+      get42dayArrayFromMonday(date) {
+        var date = date
+        if (date == null) {
+          date = new Date()
         }
-      })
-      },
-      OnCalenderClick(date){
-       this.temp.date=zeroTime(date,'{y}-{m}-{d} {h}:{i}:{s}')
-        this.getList();
-      },
-      get42dayArrayFromMonday(date){
-          var date=date;
-          if(date==null){
-            date=new Date();
-          }
-          var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-          if(firstDay.getDay()==1){
-            //当月的第一天就星期一
-          }else{
-            //否则去查询上个月的最后一个星期一
-            firstDay=getLastMonday(date.getMonth(),date.getFullYear());
-          }
-          //daysArray is in yyyy-mm-dd form  in 6 weeks 42 days
-          var daysArray=[zeroTime(firstDay,'{y}-{m}-{d} {h}:{i}:{s}')];
-          for(var count=0;count<41;count++){
-            let dateToPush=firstDay.setDate(firstDay.getDate() +1)
-            var dateToPushFormated=zeroTime(dateToPush,'{y}-{m}-{d} {h}:{i}:{s}')
-            daysArray.push(dateToPushFormated);
-          }
-          return daysArray;
+        var firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
+        if (firstDay.getDay() == 1) {
+          // 当月的第一天就星期一
+        } else {
+          // 否则去查询上个月的最后一个星期一
+          firstDay = getLastMonday(date.getMonth(), date.getFullYear())
+        }
+        // daysArray is in yyyy-mm-dd form  in 6 weeks 42 days
+        var daysArray = [zeroTime(firstDay, '{y}-{m}-{d} {h}:{i}:{s}')]
+        for (var count = 0; count < 41; count++) {
+          const dateToPush = firstDay.setDate(firstDay.getDate() + 1)
+          var dateToPushFormated = zeroTime(dateToPush, '{y}-{m}-{d} {h}:{i}:{s}')
+          daysArray.push(dateToPushFormated)
+        }
+        return daysArray
       }
 
     }
-  };
+  }
 </script>
 <style>
   .demo-table-expand {

@@ -95,15 +95,11 @@
 <script>
 
 import { indexStatisticPeople, showStatisticPeople, storeStatisticPeople, updateStatisticPeople,
-         destroyStatisticPeople } from '@/api/statisticpeople'
+  destroyStatisticPeople } from '@/api/statisticpeople'
 import { indexTeam, showTeam, storeTeam, updateTeam,
-         destroyTeam } from '@/api/Team'
+  destroyTeam } from '@/api/Team'
 import waves from '@/directive/waves' // 水波纹指令
 import Task from './components/Task'
-
-
-
-
 
 export default {
   name: 'peopleTable',
@@ -111,38 +107,36 @@ export default {
   directives: {
     waves
   },
-  filters:{
-      Roles(roles){
-        return roles.map(x=>x.role).join('/')
-      }
+  filters: {
+    Roles(roles) {
+      return roles.map(x => x.role).join('/')
+    }
   },
   data() {
     return {
-      
-      selection:{
-        team:[
-             {id:1,name:'测试一部'},
-             {id:2,name:'测试二部'},
-             {id:3,name:'环境研发部'},
-             {id:4,name:'综合管理'},
-             {id:5,name:'室领导'}
-             ]
+
+      selection: {
+        team: [
+          { id: 1, name: '测试一部' },
+          { id: 2, name: '测试二部' },
+          { id: 3, name: '环境研发部' },
+          { id: 4, name: '综合管理' },
+          { id: 5, name: '室领导' }
+        ]
       },
       listLoading: true,
-      detailLoading:false,
-
+      detailLoading: false,
 
       program_list: [],
-      detail_list:[],
+      detail_list: [],
       total: new Number(),
-      current_employee_id:null,
+      current_employee_id: null,
 
       listQuery: {
         page: 1,
         limit: 20,
-        team:null
+        team: null
       },
-
 
       temp: {
 
@@ -155,23 +149,21 @@ export default {
   created() {
     this.getList()
     this.getTeam()
-
   },
   methods: {
-     getTeam(){
-      let listQuery={type:'all'}
+    getTeam() {
+      const listQuery = { type: 'all' }
       indexTeam(listQuery).then(response => {
-        let data=response.data;
-        if(data.isOkay==true){
-          this.selection.team=Object.values(data.items);
+        const data = response.data
+        if (data.isOkay == true) {
+          this.selection.team = Object.values(data.items)
         }
       })
     },
     getList() {
-
-      this.listLoading = true;
+      this.listLoading = true
       indexStatisticPeople(this.listQuery).then(response => {
-        var data=response.data
+        var data = response.data
         this.program_list = Object.values(data.items)
         this.total = data.total
 
@@ -180,10 +172,10 @@ export default {
       })
     },
     getPeopleDetailList(id) {
-      this.detail_list=[];
-      this.detailLoading = true;
+      this.detail_list = []
+      this.detailLoading = true
       showStatisticPeople(id).then(response => {
-        var data=response.data
+        var data = response.data
         this.detail_list = Object.values(data.items)
         this.total = data.total
 
@@ -193,9 +185,9 @@ export default {
         }, 1.5 * 1000)
       })
     },
-    OnPeopleChange(row){
-      this.current_employee_id=row.id;
-      this.getPeopleDetailList(row.id);
+    OnPeopleChange(row) {
+      this.current_employee_id = row.id
+      this.getPeopleDetailList(row.id)
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -212,17 +204,17 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['序号', '软件名称','项目成员', '当前状态','待解决问题','预计完成时间']
-        const filterVal = ['id', 'name', 'program_team_strict', 'state', 'issue','plan_end_time']
+        const tHeader = ['序号', '软件名称', '项目成员', '当前状态', '待解决问题', '预计完成时间']
+        const filterVal = ['id', 'name', 'program_team_strict', 'state', 'issue', 'plan_end_time']
         const data = this.formatJson(filterVal, this.program_list)
-        var today = new Date();
-        var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-        var dateTime = date+' '+time;
+        var today = new Date()
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate()
+        var time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
+        var dateTime = date + ' ' + time
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: '项目信息'+dateTime
+          filename: '项目信息' + dateTime
         })
         this.downloadLoading = false
       })
@@ -230,7 +222,7 @@ export default {
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
         if (j === '') {
-          return '';//parseTime(v[j])
+          return ''//parseTime(v[j])
         } else {
           return v[j]
         }

@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexSoftwareInfo(query) {
   return request({
     url: 'softwareinfo',
@@ -11,7 +10,7 @@ export function indexSoftwareInfo(query) {
 
 export function showSoftwareInfo(id) {
   return request({
-    url:'softwareinfo/'+ id,
+    url: 'softwareinfo/' + id,
     method: 'get'
   })
 }
@@ -26,7 +25,7 @@ export function storeSoftwareInfo(data) {
 
 export function updateSoftwareInfo(data) {
   return request({
-    url: 'softwareinfo/'+data.id,
+    url: 'softwareinfo/' + data.id,
     method: 'put',
     data
   })
@@ -34,7 +33,7 @@ export function updateSoftwareInfo(data) {
 
 export function destroySoftwareInfo(id) {
   return request({
-    url: 'softwareinfo/'+id,
+    url: 'softwareinfo/' + id,
     method: 'delete'
   })
 }

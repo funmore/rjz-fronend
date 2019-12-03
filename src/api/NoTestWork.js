@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexNoTestWork(query) {
   return request({
     url: 'notestwork',
@@ -16,10 +15,9 @@ export function indexNoTestWorkLogMonth(query) {
   })
 }
 
-
 export function showNoTestWork(id) {
   return request({
-    url: 'notestwork/'+ id,
+    url: 'notestwork/' + id,
     method: 'get'
   })
 }
@@ -34,7 +32,7 @@ export function storeNoTestWork(data) {
 
 export function updateNoTestWork(data) {
   return request({
-    url: 'notestwork/'+data.id,
+    url: 'notestwork/' + data.id,
     method: 'put',
     data
   })
@@ -42,7 +40,7 @@ export function updateNoTestWork(data) {
 
 export function destroyNoTestWork(id) {
   return request({
-    url: 'notestwork/'+id,
+    url: 'notestwork/' + id,
     method: 'delete'
   })
 }

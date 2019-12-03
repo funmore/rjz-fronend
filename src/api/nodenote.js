@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexNodeNote(query) {
   return request({
     url: 'nodenote',
@@ -11,7 +10,7 @@ export function indexNodeNote(query) {
 
 export function showNodeNote(id) {
   return request({
-    url:'nodenote/'+ id,
+    url: 'nodenote/' + id,
     method: 'get'
   })
 }
@@ -26,7 +25,7 @@ export function storeNodeNote(data) {
 
 export function updateNodeNote(data) {
   return request({
-    url: 'nodenote/'+data.id,
+    url: 'nodenote/' + data.id,
     method: 'put',
     data
   })
@@ -34,7 +33,7 @@ export function updateNodeNote(data) {
 
 export function destroyNodeNote(id) {
   return request({
-    url: 'nodenote/'+id,
+    url: 'nodenote/' + id,
     method: 'delete'
   })
 }

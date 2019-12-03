@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexModel(query) {
   return request({
     url: 'model',
@@ -11,7 +10,7 @@ export function indexModel(query) {
 
 export function showModel(id) {
   return request({
-    url: 'model/'+ id,
+    url: 'model/' + id,
     method: 'get'
   })
 }
@@ -26,7 +25,7 @@ export function storeModel(data) {
 
 export function updateModel(data) {
   return request({
-    url: 'model/'+data.id,
+    url: 'model/' + data.id,
     method: 'put',
     data
   })
@@ -34,7 +33,7 @@ export function updateModel(data) {
 
 export function destroyModel(id) {
   return request({
-    url: 'model/'+id,
+    url: 'model/' + id,
     method: 'delete'
   })
 }

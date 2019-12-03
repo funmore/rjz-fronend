@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexWorkflow(query) {
   return request({
     url: 'workflow',
@@ -11,7 +10,7 @@ export function indexWorkflow(query) {
 
 export function showWorkflow(id) {
   return request({
-    url:'workflow/'+ id,
+    url: 'workflow/' + id,
     method: 'get'
   })
 }
@@ -26,7 +25,7 @@ export function storeWorkflow(data) {
 
 export function updateWorkflow(data) {
   return request({
-    url: 'workflow/'+data.id,
+    url: 'workflow/' + data.id,
     method: 'put',
     data
   })
@@ -34,7 +33,7 @@ export function updateWorkflow(data) {
 
 export function destroyWorkflow(id) {
   return request({
-    url: 'workflow/'+id,
+    url: 'workflow/' + id,
     method: 'delete'
   })
 }

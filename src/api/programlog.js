@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexProgramLog(query) {
   return request({
     url: 'programlog',
@@ -11,7 +10,7 @@ export function indexProgramLog(query) {
 
 export function showProgramLog(id) {
   return request({
-    url: 'programlog/'+ id,
+    url: 'programlog/' + id,
     method: 'get'
   })
 }
@@ -26,7 +25,7 @@ export function storeProgramLog(data) {
 
 export function updateProgramLog(data) {
   return request({
-    url: 'programlog/'+data.id,
+    url: 'programlog/' + data.id,
     method: 'put',
     data
   })
@@ -34,7 +33,7 @@ export function updateProgramLog(data) {
 
 export function destroyProgramLog(id) {
   return request({
-    url: 'programlog/'+id,
+    url: 'programlog/' + id,
     method: 'delete'
   })
 }

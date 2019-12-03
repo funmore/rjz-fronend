@@ -7,7 +7,7 @@
 
 
 
-        <el-table :key='list.created_at' :data="list"  v-loading="listLoading" border fit highlight-current-row
+        <el-table :key='list.created_at' :data="list"  v-loading="listLoading" border fit highlight-current-row :default-sort="{prop:'model_name',order:'ascending'}"
         style="width: 100%;">
 
             <el-table-column  label="序号"
@@ -15,7 +15,7 @@
               width="50">
             </el-table-column>
 
-            <el-table-column width="140px" align="center" label="型号名称">
+            <el-table-column width="140px" align="center" label="型号名称" prop="model_name" sortable>
               <template slot-scope="scope">
                 <span >{{scope.row.model_name}}</span>
               </template>
@@ -74,148 +74,142 @@
    
 </template>
 <script>
-
   import { indexModel, showModel, storeModel, updateModel,
-         destroyModel } from '@/api/model'
+    destroyModel } from '@/api/model'
   import { indexEmployee } from '@/api/employee'
 
   export default {
     data() {
       return {
-        listLoading:true,
-        onDeleting:false,
-        listQuery:{
-          isAll:true,
-          title:''
+        listLoading: true,
+        onDeleting: false,
+        listQuery: {
+          isAll: true,
+          title: ''
         },
 
-        temp:{
-          model_name:'',
-          employee_id:''
+        temp: {
+          model_name: '',
+          employee_id: ''
         },
-        visible:false,
-        rules:{
-          model_name:[
-          { required: true, message: '请输入型号名称', trigger: 'blur' }
+        visible: false,
+        rules: {
+          model_name: [
+            { required: true, message: '请输入型号名称', trigger: 'blur' }
           ],
-          employee_id:[
-            {  required: true, message: '请选择型号负责人', trigger: 'change' }
+          employee_id: [
+            { required: true, message: '请选择型号负责人', trigger: 'change' }
           ]
         },
 
-        list:[],
-        employees:null,
+        list: [],
+        employees: null,
         dialogStatus: '',
         textMap: {
           update: '更新',
           create: '创建'
         }
-      };
-    },
+      }
+  },
 
-
-    created(){
+    created() {
       this.getEmployeePrincal()
-
     },
-    mounted(){
+    mounted() {
       this.getList()
     },
 
     methods: {
-    getList(){
-      this.listLoading = true;
-      this.listQuery={
-          isAll:true,
-          title:''
-        };
-      indexModel(this.listQuery).then(response => {
-        var data=response.data
-        if(data.total!=0){
-          this.list = Object.values(data.items)
+      getList() {
+        this.listLoading = true
+        this.listQuery = {
+          isAll: true,
+          title: ''
         }
-      this.listLoading=false;
-      })
-    },
-    getEmployeePrincal(){
-        var listQuery={
-          checkPM:true
+        indexModel(this.listQuery).then(response => {
+          var data = response.data
+          if (data.total != 0) {
+            this.list = Object.values(data.items)
+          }
+          this.listLoading = false
+        })
+      },
+      getEmployeePrincal() {
+        var listQuery = {
+          checkPM: true
         }
         indexEmployee(listQuery).then(response => {
-        var data=response.data
-        this.employees = data.items
-      })
-    },
-    handleFilter(){
-
-    },
-    handleCreate(){
-          this.dialogStatus='create';
-          this.temp={
-                model_name:'',
-                employee_id:''
-            },
-          this.visible=true;
+          var data = response.data
+          this.employees = data.items
+        })
+      },
+      handleFilter() {
 
       },
-      handleEdit(row){
-           this.dialogStatus='update';
-          this.temp=row;
-          this.visible=true;
+      handleCreate() {
+        this.dialogStatus = 'create'
+        this.temp = {
+          model_name: '',
+          employee_id: ''
+        },
+        this.visible = true
       },
-      handleDelete(row){
+      handleEdit(row) {
+        this.dialogStatus = 'update'
+        this.temp = row
+        this.visible = true
+      },
+      handleDelete(row) {
         this.$confirm('此操作将永久该型号信息, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.onDeleting=true;
+          this.onDeleting = true
           destroyModel(row.id).then(response => {
-            var data=response.data
-            if(data.is_okay==true){
+            var data = response.data
+            if (data.is_okay == true) {
               for (const v of this.list) {
-                  if (v.id === row.id) {
-                    const index = this.list.indexOf(v)
-                    this.list.splice(index, 1)
-                    break
-                  }
+                if (v.id === row.id) {
+                  const index = this.list.indexOf(v)
+                  this.list.splice(index, 1)
+                  break
                 }
-                this.$notify({
-                  title: '成功',
-                  message: '删除成功',
-                  type: 'success',
-                  duration: 2000
-                })
-              }else{
-                this.$notify({
-                  title: '删除失败',
-                  message: '只有管理员可以删除',
-                  type: 'success',
-                  duration: 2000
-                })
               }
-              this.onDeleting=false;
-
+              this.$notify({
+                title: '成功',
+                message: '删除成功',
+                type: 'success',
+                duration: 2000
+              })
+            } else {
+              this.$notify({
+                title: '删除失败',
+                message: '只有管理员可以删除',
+                type: 'success',
+                duration: 2000
+              })
+            }
+            this.onDeleting = false
           })
         }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
-        });
-      
+          })
+        })
       },
-      confirmCreate(item){
-        item.programteamrole_id=this.propTeamMemberId;
+      confirmCreate(item) {
+        item.programteamrole_id = this.propTeamMemberId
 
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.visible=false;
+            this.visible = false
             storeModel(item).then(response => {
-              var data=response.data
-              item.id=data.id;
-              item.created_at=data.created_at;
-              item.manager_name=this.employees.find(x=>x.id==item.employee_id).name;
+              var data = response.data
+              item.id = data.id
+              item.created_at = data.created_at
+              item.manager_name = this.employees.find(x => x.id == item.employee_id).name
               this.list.unshift(item)
               this.$notify({
                 title: '成功',
@@ -223,16 +217,16 @@
                 type: 'success',
                 duration: 2000
               })
-          }).catch(err => {
-            console.log(err)
-          })
-        }
-      })
+            }).catch(err => {
+              console.log(err)
+            })
+          }
+        })
       },
-      confirmUpdate(item){
+      confirmUpdate(item) {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.visible=false;
+            this.visible = false
             updateModel(item).then(response => {
               this.$notify({
                 title: '成功',
@@ -240,15 +234,15 @@
                 type: 'success',
                 duration: 2000
               })
-          }).catch(err => {
-            console.log(err)
-          })
-        }
-      })
+            }).catch(err => {
+              console.log(err)
+            })
+          }
+        })
       }
 
     }
-  };
+  }
 </script>
 <style>
   .demo-table-expand {

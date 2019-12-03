@@ -166,11 +166,11 @@
 </template>
 
 <script>
-  import { indexModel} from '@/api/model'
+  import { indexModel } from '@/api/model'
 import { indexEmployee } from '@/api/employee'
 
 import { indexProgramEdit, showProgramEdit, storeProgramEdit, updateProgramEdit,
-         destroyProgramEdit } from '@/api/programedit'
+    destroyProgramEdit } from '@/api/programedit'
 import WorkflowItem from '@/components/Workflow'
 import SoftwareInfo from '@/components/SoftwareInfo'
 import Contact from '@/components/Contact'
@@ -178,363 +178,348 @@ import ProgramTeamRole from '@/components/ProgramTeamRole'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils/index.js'
 
-const constModel = ['model1','model2','model3']
-const constProgramType = ['配置项测试','定型测试','回归测试']
-const constClassification = ['机密','秘密','内部']
-const constProgramStage = ['方案','初样','试样','定型']
-const constDevType = ['1类','2类','3类','4类']
-const constProgramSource = ['12所','外所软件']
+const constModel = ['model1', 'model2', 'model3']
+const constProgramType = ['配置项测试', '定型测试', '回归测试']
+const constClassification = ['机密', '秘密', '内部']
+const constProgramStage = ['方案', '初样', '试样', '定型']
+const constDevType = ['1类', '2类', '3类', '4类']
+const constProgramSource = ['12所', '外所软件']
 
-const constSoftwareType = ['A级','B级','C级','D级']
-const constSoftwareUsage = ['弹上','地面']
-const constCodeLangu = ['C','FPGA','PLC']
-const constComplier = ['神舟IDE','IED2','IED3']
-const constRuntime = ['RUNTIME A','RUNTIME B']
-const constSoftwareCate = ['嵌入','非嵌','FPGA','PLC']
-const constSoftwareSubCate = ['飞控','信息处理','组合导航','CPLD','PLC','伺服','综合控制']
-const constCpuType = ['cpu1','cpu2','cpu3','cpu4']
-const constSize = ['大','中','小']
-
-
+const constSoftwareType = ['A级', 'B级', 'C级', 'D级']
+const constSoftwareUsage = ['弹上', '地面']
+const constCodeLangu = ['C', 'FPGA', 'PLC']
+const constComplier = ['神舟IDE', 'IED2', 'IED3']
+const constRuntime = ['RUNTIME A', 'RUNTIME B']
+const constSoftwareCate = ['嵌入', '非嵌', 'FPGA', 'PLC']
+const constSoftwareSubCate = ['飞控', '信息处理', '组合导航', 'CPLD', 'PLC', '伺服', '综合控制']
+const constCpuType = ['cpu1', 'cpu2', 'cpu3', 'cpu4']
+const constSize = ['大', '中', '小']
 
 export default {
   name: 'complexTable',
-  components: { WorkflowItem, ProgramTeamRole,SoftwareInfo,Contact },
+  components: { WorkflowItem, ProgramTeamRole, SoftwareInfo, Contact },
   directives: {
-    waves
+      waves
   },
   data() {
-    return {
-      
-      selection:{
-        model:constModel,
-        programType:constProgramType,
-        classification:constClassification,
-        programStage:constProgramStage,
-        programSource:constProgramSource,
-        devType:constDevType,
-        managers:undefined,
-        type:['运载','战术','战略','空军','海军'],
+      return {
+  
+        selection: {
+          model: constModel,
+          programType: constProgramType,
+          classification: constClassification,
+          programStage: constProgramStage,
+          programSource: constProgramSource,
+          devType: constDevType,
+          managers: undefined,
+          type: ['运载', '战术', '战略', '空军', '海军'],
 
-        softwareType:constSoftwareType,
-        softwareUsage:constSoftwareUsage,
-        codeLangu:constCodeLangu,
-        complier:constComplier,
-        runtime:constRuntime,
-        softwareCate:constSoftwareCate,
-        softwareSubCate:constSoftwareSubCate,
-        cpuType:constCpuType,
-        size:constSize
-      },
-      listLoading: true,
-      visible:false,
-      previsible:false,
-      program_type:'',
-      program_step:[true,true,true,true,true],
+          softwareType: constSoftwareType,
+          softwareUsage: constSoftwareUsage,
+          codeLangu: constCodeLangu,
+          complier: constComplier,
+          runtime: constRuntime,
+          softwareCate: constSoftwareCate,
+          softwareSubCate: constSoftwareSubCate,
+          cpuType: constCpuType,
+          size: constSize
+        },
+        listLoading: true,
+        visible: false,
+        previsible: false,
+        program_type: '',
+        program_step: [true, true, true, true, true],
 
-      tableKey: 0,
+        tableKey: 0,
 
-      list: [],
-      total: new Number(),
+        list: [],
+        total: new Number(),
 
-      listQuery: {
-        page: 1,
-        limit: 20,
-        model_id:undefined,   //型号
-        program_type:undefined,
-        manager:undefined,
-        classification:undefined,
-        title: undefined,
-        type:'leader',
-        state:'正式项目'
-      },
+        listQuery: {
+          page: 1,
+          limit: 20,
+          model_id: undefined, // 型号
+          program_type: undefined,
+          manager: undefined,
+          classification: undefined,
+          title: undefined,
+          type: 'leader',
+          state: '正式项目'
+        },
 
-
-      temp: {
-        programBasic:{
-            id:undefined,
-            program_source:"",
-            type:"",
-            ref:"",
-            state:"",
-            name:"",
-            model:"",
-            program_type:'',
-            program_identity:'',
-            classification:'',
-            program_stage:'',
-            dev_type:'',
-            plan_start_time:new Date(),  
-            plan_end_time :new Date(),
-            manager_id:''
+        temp: {
+          programBasic: {
+            id: undefined,
+            program_source: '',
+            type: '',
+            ref: '',
+            state: '',
+            name: '',
+            model: '',
+            program_type: '',
+            program_identity: '',
+            classification: '',
+            program_stage: '',
+            dev_type: '',
+            plan_start_time: new Date(),
+            plan_end_time: new Date(),
+            manager_id: ''
           },
 
-        contact:[
-          {is_12s:'是',organ:'12所',type:'计划',name:'',tele:'',isEdit:true},
-          {is_12s:'是',organ:'12所',type:'质量',name:'',tele:'',isEdit:true},
-          {is_12s:'是',organ:'12所',type:'设计',name:'',tele:'',isEdit:true}
-        ],
-        softwareInfo:[{
-          name:'',
-          version_id:new Number(),
-          size:'',
-          reduced_code_size:'',
-          reduced_reason:'',
-          software_type:'',
-          software_usage:'',
-          code_langu:'',
-          complier:'',
-          runtime:'',
-          cpu_type:'',
-          software_cate:'',
-          software_sub_cate:''
-        }],
-        workflow:{
-          workflow_name:'测试工作流',
-          active:2,
-          workflowArray:[
-            {name:'建项',plan_day:'',type:'建项'},
-            {name:'被测件出库',plan_day:'',type:'测试执行'},
-            {name:'静态问题提交',plan_day:'',type:'报告'},
-            {name:'大纲/用例初版入库',plan_day:'',type:'建项'},
-            {name:'测试就绪',plan_day:'',type:'建项'},
-            {name:'首轮执行结束(提交动态问题单)',plan_day:'',type:'建项'},
-            {name:'回归版本入库',plan_day:'',type:'建项'},
-            {name:'回归测试结束(提交动态问题单)',plan_day:'',type:'建项'},
-            {name:'报告编写完成(问题单闭环)',plan_day:'',type:'建项'},
-            {name:'工作产品入库',plan_day:'',type:'建项'}
+          contact: [
+            { is_12s: '是', organ: '12所', type: '计划', name: '', tele: '', isEdit: true },
+            { is_12s: '是', organ: '12所', type: '质量', name: '', tele: '', isEdit: true },
+            { is_12s: '是', organ: '12所', type: '设计', name: '', tele: '', isEdit: true }
           ],
-          isError:false
+          softwareInfo: [{
+            name: '',
+            version_id: new Number(),
+            size: '',
+            reduced_code_size: '',
+            reduced_reason: '',
+            software_type: '',
+            software_usage: '',
+            code_langu: '',
+            complier: '',
+            runtime: '',
+            cpu_type: '',
+            software_cate: '',
+            software_sub_cate: ''
+          }],
+          workflow: {
+            workflow_name: '测试工作流',
+            active: 2,
+            workflowArray: [
+              { name: '建项', plan_day: '', type: '建项' },
+              { name: '被测件出库', plan_day: '', type: '测试执行' },
+              { name: '静态问题提交', plan_day: '', type: '报告' },
+              { name: '大纲/用例初版入库', plan_day: '', type: '建项' },
+              { name: '测试就绪', plan_day: '', type: '建项' },
+              { name: '首轮执行结束(提交动态问题单)', plan_day: '', type: '建项' },
+              { name: '回归版本入库', plan_day: '', type: '建项' },
+              { name: '回归测试结束(提交动态问题单)', plan_day: '', type: '建项' },
+              { name: '报告编写完成(问题单闭环)', plan_day: '', type: '建项' },
+              { name: '工作产品入库', plan_day: '', type: '建项' }
+            ],
+            isError: false
+          },
+          programTeamRole: [
+            { role: '项目组长', employee_id: null, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+            { role: '项目组员', employee_id: null, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+            { role: '监督人员', employee_id: null, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+            { role: '配置管理员', employee_id: null, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+            { role: '质量保证员', employee_id: null, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false }
+          ]
+
         },
-        programTeamRole:[
-          {role:'项目组长',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'项目组员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'监督人员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'配置管理员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'质量保证员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false}
-        ]
 
-      },
+        dialogStatus: '',
+        textMap: {
+          update: '更新',
+          create: '创建'
+        },
 
-      dialogStatus: '',
-      textMap: {
-        update: '更新',
-        create: '创建'
-      },  
-
-      downloadLoading: false,
-      check:{
+        downloadLoading: false,
+        check: {
           checkAll: false,
-           checkedCities: ['上海', '北京'],
-           cities: ['上海', '北京', '广州', '深圳'],
-           isIndeterminate: true
-         }
-    }
+          checkedCities: ['上海', '北京'],
+          cities: ['上海', '北京', '广州', '深圳'],
+          isIndeterminate: true
+        }
+      }
   },
   filters: {
-    parseTime,
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
+      parseTime,
+      statusFilter(status) {
+        const statusMap = {
+          published: 'success',
+          draft: 'info',
+          deleted: 'danger'
+        }
+        return statusMap[status]
       }
-      return statusMap[status]
-    }
 
   },
   created() {
-    this.getList()
-    this.getEmployeePrincal()
-    this.getModel()
+      this.getList()
+      this.getEmployeePrincal()
+      this.getModel()
   },
   methods: {
-    getModel(){
-      var listQuery={
-          isAll:true
-        };
-        indexModel(listQuery).then(response => {
-        var data=response.data
-        if(data.total!=0){
-          this.selection.model = Object.values(data.items)
+      getModel() {
+        var listQuery = {
+          isAll: true
         }
-      })
-    },
-    getList() {
+        indexModel(listQuery).then(response => {
+          var data = response.data
+          if (data.total != 0) {
+            this.selection.model = Object.values(data.items)
+          }
+        })
+      },
+      getList() {
+        this.listLoading = true
+        indexProgramEdit(this.listQuery).then(response => {
+          var data = response.data
+          this.list = Object.values(data.items)
+          this.total = data.total
 
-      this.listLoading = true;
-      indexProgramEdit(this.listQuery).then(response => {
-        var data=response.data
-        this.list = Object.values(data.items)
-        this.total = data.total
-
-        // Just to simulate the time of the request
-        this.listLoading = false
-      })
-    },
-    getEmployeePrincal(){
-        var listQuery={
-          checkPM:true
+          // Just to simulate the time of the request
+          this.listLoading = false
+        })
+      },
+      getEmployeePrincal() {
+        var listQuery = {
+          checkPM: true
         }
         indexEmployee(listQuery).then(response => {
-        var data=response.data
-        this.selection.managers = data.items
-      })
-    },
-    handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
-    },
-    handleMenuSelect(key, keyPath) {
-      this.listQuery.type=key
-      this.listQuery.page = 1
-      this.getList()
+          var data = response.data
+          this.selection.managers = data.items
+        })
       },
-    handleSizeChange(val) {
-      this.listQuery.limit = val
-      this.getList()
-    },
-    handleCurrentChange(val) {
-      this.listQuery.page = val
-      this.getList()
-    },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作成功',
-        type: 'success'
-      })
-      row.status = status
-    },
-    resetTemp(){
-      this.temp= {
-        programBasic:{
-          id:undefined,
-          program_source:"",
-          type:"",
-          ref:"",
-          state:"",
+      handleFilter() {
+        this.listQuery.page = 1
+        this.getList()
+      },
+      handleMenuSelect(key, keyPath) {
+        this.listQuery.type = key
+        this.listQuery.page = 1
+        this.getList()
+      },
+      handleSizeChange(val) {
+        this.listQuery.limit = val
+        this.getList()
+      },
+      handleCurrentChange(val) {
+        this.listQuery.page = val
+        this.getList()
+      },
+      handleModifyStatus(row, status) {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        row.status = status
+      },
+      resetTemp() {
+        this.temp = {
+          programBasic: {
+            id: undefined,
+            program_source: '',
+            type: '',
+            ref: '',
+            state: '',
 
-          name:"",
-          model:"",
-          program_type:'',
-          program_identity:'',
-          classification:'',
-          program_stage:'',
-          dev_type:'',
-          plan_start_time:new Date(),  
-          plan_end_time :new Date(),
-          manager_id:''
-        },
-        contact:[
-          {is_12s:'是',organ:'',type:'计划',name:'',tele:'',isEdit:true},
-          {is_12s:'是',organ:'',type:'质量',name:'',tele:'',isEdit:true},
-          {is_12s:'是',organ:'',type:'设计',name:'',tele:'',isEdit:true}
-        ],
-        softwareInfo:[{
-          name:'',
-          version_id:new Number(),
-          size:'',
-          reduced_code_size:'',
-          reduced_reason:'',
-          software_type:'',
-          software_usage:'',
-          code_langu:'',
-          complier:'',
-          runtime:'',
-          cpu_type:'',
-          software_cate:'',
-          software_sub_cate:''
-        }],
-        workflow:{
-          workflow_name:'测试工作流',
-          active:2,
-          workflowArray:[
-            {name:'建项',plan_day:'',type:'建项'},
-            {name:'被测件出库',plan_day:'',type:'测试执行'},
-            {name:'静态问题提交',plan_day:'',type:'报告'},
-            {name:'大纲/用例初版入库',plan_day:'',type:'建项'},
-            {name:'测试就绪',plan_day:'',type:'建项'},
-            {name:'首轮执行结束(提交动态问题单)',plan_day:'',type:'建项'},
-            {name:'回归版本入库',plan_day:'',type:'建项'},
-            {name:'回归测试结束(提交动态问题单)',plan_day:'',type:'建项'},
-            {name:'报告编写完成(问题单闭环)',plan_day:'',type:'建项'},
-            {name:'工作产品入库',plan_day:'',type:'建项'}
-          ]
-        },
-        programTeamRole:[
-          {role:'项目组长',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'项目组员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'监督人员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'配置管理员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'质量保证员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false}
-        ],
+            name: '',
+            model: '',
+            program_type: '',
+            program_identity: '',
+            classification: '',
+            program_stage: '',
+            dev_type: '',
+            plan_start_time: new Date(),
+            plan_end_time: new Date(),
+            manager_id: ''
+          },
+          contact: [
+            { is_12s: '是', organ: '', type: '计划', name: '', tele: '', isEdit: true },
+            { is_12s: '是', organ: '', type: '质量', name: '', tele: '', isEdit: true },
+            { is_12s: '是', organ: '', type: '设计', name: '', tele: '', isEdit: true }
+          ],
+          softwareInfo: [{
+            name: '',
+            version_id: new Number(),
+            size: '',
+            reduced_code_size: '',
+            reduced_reason: '',
+            software_type: '',
+            software_usage: '',
+            code_langu: '',
+            complier: '',
+            runtime: '',
+            cpu_type: '',
+            software_cate: '',
+            software_sub_cate: ''
+          }],
+          workflow: {
+            workflow_name: '测试工作流',
+            active: 2,
+            workflowArray: [
+              { name: '建项', plan_day: '', type: '建项' },
+              { name: '被测件出库', plan_day: '', type: '测试执行' },
+              { name: '静态问题提交', plan_day: '', type: '报告' },
+              { name: '大纲/用例初版入库', plan_day: '', type: '建项' },
+              { name: '测试就绪', plan_day: '', type: '建项' },
+              { name: '首轮执行结束(提交动态问题单)', plan_day: '', type: '建项' },
+              { name: '回归版本入库', plan_day: '', type: '建项' },
+              { name: '回归测试结束(提交动态问题单)', plan_day: '', type: '建项' },
+              { name: '报告编写完成(问题单闭环)', plan_day: '', type: '建项' },
+              { name: '工作产品入库', plan_day: '', type: '建项' }
+            ]
+          },
+          programTeamRole: [
+            { role: '项目组长', employee_id: new Number(), plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+            { role: '项目组员', employee_id: new Number(), plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+            { role: '监督人员', employee_id: new Number(), plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+            { role: '配置管理员', employee_id: new Number(), plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+            { role: '质量保证员', employee_id: new Number(), plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false }
+          ],
 
-        step:0 
-      }
-    },
-    handleProgramCreate() {
-      this.previsible=true;
-    },
-   
-
-
-    handleSizeChange(val) {
-      this.listQuery.limit = val
-      this.getList()
-    },
-    handleCurrentChange(val) {
-      this.listQuery.page = val
-      this.getList()
-    },
-    handleDownload() {
-      this.downloadLoading = true
+          step: 0
+        }
+      },
+      handleProgramCreate() {
+        this.previsible = true
+      },
+      handleDownload() {
+        this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['序号', '软件名称','项目成员', '当前状态','待解决问题','预计完成时间']
-        const filterVal = ['id', 'name', 'program_team_strict', 'state', 'issue','plan_end_time']
+        const tHeader = ['序号', '软件名称', '项目成员', '当前状态', '待解决问题', '预计完成时间']
+        const filterVal = ['id', 'name', 'program_team_strict', 'state', 'issue', 'plan_end_time']
         const data = this.formatJson(filterVal, this.list)
-        var today = new Date();
-        var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-        var dateTime = date+' '+time;
+        var today = new Date()
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate()
+        var time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
+        var dateTime = date + ' ' + time
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: '项目信息'+dateTime
+          filename: '项目信息' + dateTime
         })
         this.downloadLoading = false
       })
-    },
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === '') {
-          return '';//parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
-    createProgramPeople(){
-      var index=this.temp.programTeamRole.length-4;
-      this.temp.programTeamRole.splice(index,0,{role:'项目组员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false});
-    },
-    onCloseDia(){
-      this.visible=false;
-    },
-    onPreCompleted(args){
-      this.previsible=false;
-      this.visible=true
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.program_step=args
-    },
-     handleCheckAllChange(val) {
-        this.check.checkedCities = val ? this.check.cities : [];
-        this.check.isIndeterminate = false;
+      },
+      formatJson(filterVal, jsonData) {
+        return jsonData.map(v => filterVal.map(j => {
+          if (j === '') {
+            return ''// parseTime(v[j])
+          } else {
+            return v[j]
+          }
+        }))
+      },
+      createProgramPeople() {
+        var index = this.temp.programTeamRole.length - 4
+        this.temp.programTeamRole.splice(index, 0, { role: '项目组员', employee_id: null, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false })
+      },
+      onCloseDia() {
+        this.visible = false
+      },
+      onPreCompleted(args) {
+        this.previsible = false
+        this.visible = true
+        this.resetTemp()
+        this.dialogStatus = 'create'
+        this.program_step = args
+      },
+      handleCheckAllChange(val) {
+        this.check.checkedCities = val ? this.check.cities : []
+        this.check.isIndeterminate = false
       },
       handleCheckedCitiesChange(value) {
-        let checkedCount = value.length;
-        this.check.checkAll = checkedCount === this.check.cities.length;
-        this.check.isIndeterminate = checkedCount > 0 && checkedCount < this.check.cities.length;
+        const checkedCount = value.length
+        this.check.checkAll = checkedCount === this.check.cities.length
+        this.check.isIndeterminate = checkedCount > 0 && checkedCount < this.check.cities.length
       }
   }
 }

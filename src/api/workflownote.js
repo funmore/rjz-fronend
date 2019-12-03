@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexWorkflowNote(query) {
   return request({
     url: 'workflownote',
@@ -11,7 +10,7 @@ export function indexWorkflowNote(query) {
 
 export function showWorkflowNote(id) {
   return request({
-    url:'workflownote/'+ id,
+    url: 'workflownote/' + id,
     method: 'get'
   })
 }
@@ -26,7 +25,7 @@ export function storeWorkflowNote(data) {
 
 export function updateWorkflowNote(data) {
   return request({
-    url: 'workflownote/'+data.id,
+    url: 'workflownote/' + data.id,
     method: 'put',
     data
   })
@@ -34,7 +33,7 @@ export function updateWorkflowNote(data) {
 
 export function destroyWorkflowNote(id) {
   return request({
-    url: 'workflownote/'+id,
+    url: 'workflownote/' + id,
     method: 'delete'
   })
 }

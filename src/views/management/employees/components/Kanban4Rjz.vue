@@ -50,8 +50,8 @@ export default {
       'roles'
     ])
   },
-  data(){
-    return{
+  data() {
+    return {
       rules: {
         workers: [{ required: true, message: 'type is required', trigger: 'change' }],
         timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
@@ -60,10 +60,10 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       temp: {
-        id:undefined,
-        index:"",            
-        phase:"",          
-       
+        id: undefined,
+        index: '',
+        phase: ''
+
       }
     }
   },
@@ -86,18 +86,18 @@ export default {
       }
     }
   },
-  methods:{
-    handleClick(){
-        this.handleCreate()
+  methods: {
+    handleClick() {
+      this.handleCreate()
     },
-    handleOpen(element){
-        this.handleUpdate(element)
+    handleOpen(element) {
+      this.handleUpdate(element)
     },
     resetTemp() {
       this.temp = {
-        id:undefined,
-        index:"",            
-        content:"",          
+        id: undefined,
+        index: '',
+        content: ''
       }
     },
     handleCreate() {
@@ -113,14 +113,14 @@ export default {
         if (valid) {
           this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
           this.list.unshift(this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
-            })
-          //real code
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '成功',
+            message: '创建成功',
+            type: 'success',
+            duration: 2000
+          })
+          // real code
           // createArticle(this.temp).then(() => {
           //   this.list.unshift(this.temp)
           //   this.dialogFormVisible = false
@@ -141,28 +141,27 @@ export default {
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
-
     },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp)   //deep copy this.temp
+          const tempData = Object.assign({}, this.temp) // deep copy this.temp
           for (const v of this.list) {
-              if (v.id === this.temp.id) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.temp)   //将list中的原有的条目找到，并替换为新的条目
-                break
-              }
+            if (v.id === this.temp.id) {
+              const index = this.list.indexOf(v)
+              this.list.splice(index, 1, this.temp) // 将list中的原有的条目找到，并替换为新的条目
+              break
             }
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
-            })
+          }
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
 
-          //real code
+          // real code
           // updateArticle(tempData).then(() => {
           //   for (const v of this.list) {
           //     if (v.id === this.temp.id) {

@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexDailyNote(query) {
   return request({
     url: 'dailynote',
@@ -11,7 +10,7 @@ export function indexDailyNote(query) {
 
 export function showDailyNote(id) {
   return request({
-    url:'dailynote/'+ id,
+    url: 'dailynote/' + id,
     method: 'get'
   })
 }
@@ -26,7 +25,7 @@ export function storeDailyNote(data) {
 
 export function updateDailyNote(data) {
   return request({
-    url: 'dailynote/'+data.id,
+    url: 'dailynote/' + data.id,
     method: 'put',
     data
   })
@@ -34,7 +33,7 @@ export function updateDailyNote(data) {
 
 export function destroyDailyNote(id) {
   return request({
-    url: 'dailynote/'+id,
+    url: 'dailynote/' + id,
     method: 'delete'
   })
 }

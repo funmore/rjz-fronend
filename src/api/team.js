@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexTeam(query) {
   return request({
     url: 'Team',
@@ -11,7 +10,7 @@ export function indexTeam(query) {
 
 export function showTeam(id) {
   return request({
-    url: 'Team/'+ id,
+    url: 'Team/' + id,
     method: 'get'
   })
 }
@@ -26,7 +25,7 @@ export function storeTeam(data) {
 
 export function updateTeam(data) {
   return request({
-    url: 'Team/'+data.id,
+    url: 'Team/' + data.id,
     method: 'put',
     data
   })
@@ -34,7 +33,7 @@ export function updateTeam(data) {
 
 export function destroyTeam(id) {
   return request({
-    url: 'Team/'+id,
+    url: 'Team/' + id,
     method: 'delete'
   })
 }

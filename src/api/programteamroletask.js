@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 export function indexProgramTeamRoleTask(query) {
   return request({
     url: 'programteamroletask',
@@ -11,7 +10,7 @@ export function indexProgramTeamRoleTask(query) {
 
 export function showProgramTeamRoleTask(id) {
   return request({
-    url:'programteamroletask/'+ id,
+    url: 'programteamroletask/' + id,
     method: 'get'
   })
 }
@@ -26,7 +25,7 @@ export function storeProgramTeamRoleTask(data) {
 
 export function updateProgramTeamRoleTask(data) {
   return request({
-    url: 'programteamroletask/'+data.id,
+    url: 'programteamroletask/' + data.id,
     method: 'put',
     data
   })
@@ -34,7 +33,7 @@ export function updateProgramTeamRoleTask(data) {
 
 export function destroyProgramTeamRoleTask(id) {
   return request({
-    url: 'programteamroletask/'+id,
+    url: 'programteamroletask/' + id,
     method: 'delete'
   })
 }
