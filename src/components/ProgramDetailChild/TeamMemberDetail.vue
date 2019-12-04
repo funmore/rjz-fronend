@@ -58,112 +58,110 @@
   import eee from '@/components/PreProgramCom/ProgramTeamRole.vue'
 
   import { indexWorkflow, showWorkflow, storeWorkflow, updateWorkflow,
-         destroyWorkflow } from '@/api/workflow'  
+    destroyWorkflow } from '@/api/workflow'
   import { indexProgramTeamRole, showProgramTeamRole, storeProgramTeamRole, updateProgramTeamRole,
-         destroyProgramTeamRole } from '@/api/programteamrole'
+    destroyProgramTeamRole } from '@/api/programteamrole'
 
   export default {
-      components: {TeamMemberTask,eee },
+    components: { TeamMemberTask, eee },
     data() {
       return {
-        generalVisible:false,
-        is_exist:true,
+        generalVisible: false,
+        is_exist: true,
 
-        programTeamRole:null,
-        activeName:'0',
-        ptr_note:[],
-        workflow:{
-          active:undefined,
-          workflowArray:undefined
+        programTeamRole: null,
+        activeName: '0',
+        ptr_note: [],
+        workflow: {
+          active: undefined,
+          workflowArray: undefined
         }
-      };
+      }
+  },
+    props: {
+      propVisible: Boolean,
+      propProgramBasicId: Number,
+      propRole: Array
     },
-    props:{
-        propVisible:Boolean,
-        propProgramBasicId:Number,
-        propRole:Array
-    },
-    computed:{
-      //闭包实现传参数
-      closure(){    
-        return function(item){
-          return item.role+ '-'+item.employee_name
+    computed: {
+      // 闭包实现传参数
+      closure() {
+        return function(item) {
+          return item.role + '-' + item.employee_name
         }
       }
     },
-        watch:{
-      //propVisible start
-    propVisible:function(newVa,oldVa){
-        if(newVa==true){
+    watch: {
+      // propVisible start
+      propVisible: function(newVa, oldVa) {
+        if (newVa == true) {
           this.showWorkflow()
           this.getData()
         }
-      },
-      //propVisible end
+      }
+      // propVisible end
   },
-    created(){
+    created() {
       // this.showWorkflow()
       // this.getData()
     },
-    mounted(){
+    mounted() {
     },
     methods: {
-      showWorkflow(){
+      showWorkflow() {
         showWorkflow(this.propProgramBasicId).then(response => {
-          var data=response.data
-          if(data.isOkay==true){
+          var data = response.data
+          if (data.isOkay == true) {
             this.workflow = data.item
           }
-        })},
-      handleConfigure(is_exist){
-        this.is_exist=is_exist;
-        this.generalVisible=true;
-      },  
-      handleClose(args){
-        this.generalVisible=false
+        })
+      },
+      handleConfigure(is_exist) {
+        this.is_exist = is_exist
+        this.generalVisible = true
+      },
+      handleClose(args) {
+        this.generalVisible = false
         this.getData()
       },
-      getData(){
+      getData() {
         const loading = this.$loading({
           lock: true,
           text: 'Loading',
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)'
-          });
+        })
         showProgramTeamRole(this.propProgramBasicId).then(response => {
-          var data=response.data
-          if(data.isOkay==true){
+          var data = response.data
+          if (data.isOkay == true) {
             this.programTeamRole = data.item
           }
-          loading.close();
+          loading.close()
         })
 		  },
 
-
-      edit(item){
-        item.isEdit=true;
-        this.$forceUpdate();  
+      edit(item) {
+        item.isEdit = true
+        this.$forceUpdate()
       },
-      confirm(item){
+      confirm(item) {
         updateProgramTeamRole(item).then(() => {
-            item.isEdit=false;
-            this.$forceUpdate();  
-            this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
-            })
+          item.isEdit = false
+          this.$forceUpdate()
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
           })
-
+        })
       },
-
 
       handleClick(tab, event) {
         // this.$refs.teamMemberNote[parseInt(this.activeName)].getNote(this.programTeamRole.find((item,index)=>index==parseInt(this.activeName)).id);
-      },
+      }
     }
-  };
+  }
 </script>
 <style>
   .demo-table-expand {

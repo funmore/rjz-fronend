@@ -34,16 +34,15 @@
 <script>
 
 import { indexPreProgram, showPreProgram, storePreProgram, updatePreProgram,
-         destroyPreProgram } from '@/api/preprogram'
+  destroyPreProgram } from '@/api/preprogram'
 import { indexProgram, showProgram, storeProgram, updateProgram,
-         destroyProgram } from '@/api/program'
+  destroyProgram } from '@/api/program'
 import { indexProgramEdit, showProgramEdit, storeProgramEdit, updateProgramEdit,
-         destroyProgramEdit } from '@/api/programedit'
+  destroyProgramEdit } from '@/api/programedit'
 import { indexContact, showContact, storeContact, updateContact,
-         destroyContact } from '@/api/contact'
+  destroyContact } from '@/api/contact'
 import { indexSoftwareInfo, showSoftwareInfo, storeSoftwareInfo, updateSoftwareInfo,
-         destroySoftwareInfo } from '@/api/softwareinfo'
-
+  destroySoftwareInfo } from '@/api/softwareinfo'
 
 import ProgramBasic from '@/components/ProgramBasic'
 import WorkflowItem from '@/components/Workflow'
@@ -51,7 +50,7 @@ import SoftwareInfo from '@/components/SoftwareInfo'
 import Contact from '@/components/Contact'
 import ProgramTeamRole from '@/components/ProgramTeamRole'
 
-//item: 
+// item:
 //  programBasic:   Object
 //  contact     :   Array
 //  softwareInfo:   Array
@@ -59,63 +58,60 @@ import ProgramTeamRole from '@/components/ProgramTeamRole'
 //  programTeamRole:Array
 export default {
   name: 'programEditPanel',
-  components: { WorkflowItem, ProgramTeamRole,SoftwareInfo,Contact,ProgramBasic},
+  components: { WorkflowItem, ProgramTeamRole, SoftwareInfo, Contact, ProgramBasic },
 
-  props:{
-    propStep:Array,
+  props: {
+    propStep: Array,
     propProgram: Object,
-    propVisible:Boolean,
-    propSelection:Object,
-    propState:String
+    propVisible: Boolean,
+    propSelection: Object,
+    propState: String
   },
   data() {
     return {
-      active:0,
-      activeName:'program-edit',
-      steps:new Number(),
-      programItem:new Object(),
-      programChildren:['programBasic','contact','softwareInfo','workflow','programTeamRole'],
-      
+      active: 0,
+      activeName: 'program-edit',
+      steps: new Number(),
+      programItem: new Object(),
+      programChildren: ['programBasic', 'contact', 'softwareInfo', 'workflow', 'programTeamRole']
+
     }
   },
-   methods: {
-      next(){
-        this.active=this.active+1;
-      },
-      previous(){
-        if(this.active!=0){
-          this.active=this.active-1
-        }
-      },
-      confirm(){
-        this.$emit('close-dia');
-        this.createProgram()
-        
-      },
-      onClose(){
-        this.$emit('close-dia');
-      },
-      onOpen(){
-        this.active=0;
-        this.steps=this.propStep.lastIndexOf(true)+1;
-        this.programItem=this.propProgram;
-        for(var i=this.steps;i<this.propStep.length;i++){
-          this.programItem[this.programChildren[i]]=undefined;
-        }
-        if(this.programItem.programBasic!=undefined){
-          this.programItem.programBasic.state=this.propState;
-        }
-
-      },
-      createProgram() {
-          storeProgramEdit(this.programItem).then((response) => {
-            var newData=response.data.item;
-            this.$emit('update-list',newData)
-
-        })
+  methods: {
+    next() {
+      this.active = this.active + 1
+    },
+    previous() {
+      if (this.active != 0) {
+        this.active = this.active - 1
+      }
+    },
+    confirm() {
+      this.$emit('close-dia')
+      this.createProgram()
+    },
+    onClose() {
+      this.$emit('close-dia')
+    },
+    onOpen() {
+      this.active = 0
+      this.steps = this.propStep.lastIndexOf(true) + 1
+      this.programItem = this.propProgram
+      for (var i = this.steps; i < this.propStep.length; i++) {
+        this.programItem[this.programChildren[i]] = undefined
+      }
+      if (this.programItem.programBasic != undefined) {
+        this.programItem.programBasic.state = this.propState
+      }
+    },
+    createProgram() {
+      storeProgramEdit(this.programItem).then((response) => {
+        var newData = response.data.item
+        this.$emit('update-list', newData)
+      })
     }
 
-    }
+  }
 
 }
 </script>

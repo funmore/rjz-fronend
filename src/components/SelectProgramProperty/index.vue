@@ -22,29 +22,28 @@
 
 <script>
 
-
 export default {
   name: 'select-program-property',
-  props:{
-    propList:Array,
-    propSeparator:String,
-    propValue:Array,
+  props: {
+    propList: Array,
+    propSeparator: String,
+    propValue: Array
   },
   data() {
     return {
-      value:this.propValue
+      value: this.propValue
     }
   },
-  watch:{
-    propValue:function(newVa,oldVa){
-      this.value=newVa;
+  watch: {
+    propValue: function(newVa, oldVa) {
+      this.value = newVa
     }
   },
-   methods: {
+  methods: {
     ispChange(values, items) {
-      let treeData={values:values,items:items}
-      this.$emit('rangeChange',treeData);
-    },
+      const treeData = { values: values, items: items }
+      this.$emit('rangeChange', treeData)
+    }
     // getNodeBykey(tree,key){
     //     var ret=null
     //     for(let i=0;i<tree.length;i++){

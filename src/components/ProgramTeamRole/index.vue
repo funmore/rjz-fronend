@@ -75,71 +75,68 @@
 <script>
 
 import { indexEmployee, showEmployee, storeEmployee, updateEmployee,
-         destroyEmployee } from '@/api/employee'
-
-
+  destroyEmployee } from '@/api/employee'
 
 export default {
   name: 'workload-demo',
-  //components: { 'tinymce':Tinymce },
-  //components: { 'workflow':workflow},
-  props:{
+  // components: { 'tinymce':Tinymce },
+  // components: { 'workflow':workflow},
+  props: {
     propProgramTeamRole: Array,
-    isAllEdit:Boolean
+    isAllEdit: Boolean
   },
 
   data() {
     return {
-        employees:new Array(),
-        listLoading:true,
-        rules:{
-          workload_note:[ { required: true, message: '请输入工作量', trigger: 'blur' } ],
-          plan_workload:[ { required: true, message: '请输入计划工作时长', trigger: 'blur' } ],
-          actual_workload:[ { required: true, message: '请输入实际工作时长', trigger: 'blur' } ],
-        },
-        model:{
-          programTeamRole:this.propProgramTeamRole
-        }
+      employees: new Array(),
+      listLoading: true,
+      rules: {
+        workload_note: [{ required: true, message: '请输入工作量', trigger: 'blur' }],
+        plan_workload: [{ required: true, message: '请输入计划工作时长', trigger: 'blur' }],
+        actual_workload: [{ required: true, message: '请输入实际工作时长', trigger: 'blur' }]
+      },
+      model: {
+        programTeamRole: this.propProgramTeamRole
+      }
     }
   },
-  watch:{
+  watch: {
     model: {
-        handler:function(newVa,oldVa){
-          this.changeFatherData()
-        },
-        deep:true
-    },
+      handler: function(newVa, oldVa) {
+        this.changeFatherData()
+      },
+      deep: true
+    }
   },
   created() {
-    if(this.propProgramTeamRole==null){
-      this.model.programTeamRole=[
-          {role:'项目组长',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'项目组员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'监督人员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'配置管理员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-          {role:'质量保证员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false}
-        ]
-    }else{
-      this.model.programTeamRole=this.propProgramTeamRole
+    if (this.propProgramTeamRole == null) {
+      this.model.programTeamRole = [
+        { role: '项目组长', employee_id: null, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+        { role: '项目组员', employee_id: null, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+        { role: '监督人员', employee_id: null, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+        { role: '配置管理员', employee_id: null, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+        { role: '质量保证员', employee_id: null, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false }
+      ]
+    } else {
+      this.model.programTeamRole = this.propProgramTeamRole
     }
     this.getList()
   },
 
-   methods: {
+  methods: {
     getList() {
-      this.listLoading = true;
-      var listQuery={
-          checkALL:true
-        }
+      this.listLoading = true
+      var listQuery = {
+        checkALL: true
+      }
       indexEmployee(listQuery).then(response => {
-        var data=response.data
+        var data = response.data
         this.employees = data.items
         this.listLoading = false
-
       })
     },
     cancelEdit(row) {
-      //row.title = row.originalTitle
+      // row.title = row.originalTitle
       row.isEdit = false
       this.$message({
         message: 'The title has been restored to the original value',
@@ -147,41 +144,40 @@ export default {
       })
     },
     confirmEdit(row) {
-      row.isEdit=!row.isEdit;
+      row.isEdit = !row.isEdit
       this.$message({
         message: 'The title has been edited',
         type: 'success'
       })
     },
-    confirmDelete(row,index) {
+    confirmDelete(row, index) {
       this.$confirm('此操作将删除该组员, 是否继续?', '提示', {
-                  confirmButtonText: '确定',
-                  cancelButtonText: '取消',
-                  type: 'warning'
-                }).then(() => {
-                  this.model.programTeamRole.splice(index,1)
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                }).catch(() => {
-                  this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                  });          
-                });
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.model.programTeamRole.splice(index, 1)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
-    createProgramPeople(){
-      var index=this.model.programTeamRole.length-4;
-      this.model.programTeamRole.splice(index,0,{role:'项目组员',employee_id:null,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false});
+    createProgramPeople() {
+      var index = this.model.programTeamRole.length - 4
+      this.model.programTeamRole.splice(index, 0, { role: '项目组员', employee_id: null, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false })
     },
-    changeFatherData(){
-      let data={data:this.model.programTeamRole,type:'programTeamRole'}
-      this.$emit('dataChange',data)
+    changeFatherData() {
+      const data = { data: this.model.programTeamRole, type: 'programTeamRole' }
+      this.$emit('dataChange', data)
     }
 
- }
-    
+  }
 
 }
 </script>

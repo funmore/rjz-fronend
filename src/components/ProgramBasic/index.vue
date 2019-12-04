@@ -134,66 +134,65 @@ import { indexEmployee } from '@/api/employee'
 export default {
   name: 'program-basic',
 
-  props:{
+  props: {
     propProgramBasic: Object,
-    propRef:String,
-    propSelection:Object
+    propRef: String,
+    propSelection: Object
   },
   data() {
     return {
 
-
-      programBasic:null,
-      rules: {},
+      programBasic: null,
+      rules: {}
     }
   },
-  computed:{
-    manager_name:function(){
-      if(this.propSelection.model.find(x=>x.id==this.programBasic.model_id)==null){
-        return null;
+  computed: {
+    manager_name: function() {
+      if (this.propSelection.model.find(x => x.id == this.programBasic.model_id) == null) {
+        return null
       }
-      this.programBasic.manager=this.propSelection.managers.find(x=>x.id==this.propSelection.model.find(x=>x.id==this.programBasic.model_id).employee_id)
-      return this.programBasic.manager.name;
+      this.programBasic.manager = this.propSelection.managers.find(x => x.id == this.propSelection.model.find(x => x.id == this.programBasic.model_id).employee_id)
+      return this.programBasic.manager.name
     }
   },
-  watch:{
+  watch: {
     programBasic: {
-        handler:function(newVa,oldVa){
-          this.changeFatherData()
-        },
-        deep:true
-    },
-  },
-  created(){
-    if(this.propProgramBasic==null){
-      this.programBasic={
-          id:null,
-          program_source:"",
-          type:"",
-          ref:"",
-          state:"",
-
-          name:"",
-          model_id:"",
-          program_type:'',
-          program_identity:'',
-          classification:'',
-          program_stage:'',
-          dev_type:'',
-          plan_start_time:new Date(),  
-          plan_end_time :new Date(),
-          actual_start_time:new Date(),  
-          actual_end_time :new Date(),
-          manager:Object.assign({}, this.propSelection.managers[0])
-        }
-    }else{
-      this.programBasic=this.propProgramBasic
+      handler: function(newVa, oldVa) {
+        this.changeFatherData()
+      },
+      deep: true
     }
   },
-   methods: {
-    changeFatherData(){
-      let data={data:this.programBasic,type:'programBasic'}
-      this.$emit('dataChange',data)
+  created() {
+    if (this.propProgramBasic == null) {
+      this.programBasic = {
+        id: null,
+        program_source: '',
+        type: '',
+        ref: '',
+        state: '',
+
+        name: '',
+        model_id: '',
+        program_type: '',
+        program_identity: '',
+        classification: '',
+        program_stage: '',
+        dev_type: '',
+        plan_start_time: new Date(),
+        plan_end_time: new Date(),
+        actual_start_time: new Date(),
+        actual_end_time: new Date(),
+        manager: Object.assign({}, this.propSelection.managers[0])
+      }
+    }else {
+      this.programBasic = this.propProgramBasic
+    }
+  },
+  methods: {
+    changeFatherData() {
+      const data = { data: this.programBasic, type: 'programBasic' }
+      this.$emit('dataChange', data)
     }
   }
 }

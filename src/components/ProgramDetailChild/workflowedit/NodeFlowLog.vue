@@ -20,47 +20,45 @@
 </div>
 </template>
 <script>
-
   import { indexWorkflowNote, showWorkflowNote, storeWorkflowNote, updateWorkflowNote,
-         destroyWorkflowNote } from '@/api/Workflownote'
-
+    destroyWorkflowNote } from '@/api/Workflownote'
 
   export default {
     data() {
       return {
-        reverse:false,
-        listLoading:false,
-        workflow_note:[]
-      };
+        reverse: false,
+        listLoading: false,
+        workflow_note: []
+      }
+  },
+    props: {
+      propVisible: Boolean,
+      propWorkflowId: Number,
+      propRole: Array
     },
-    props:{
-        propVisible:Boolean,
-        propWorkflowId:Number,
-        propRole:Array
-    },
-    watch:{
-      //propVisible start
-      propVisible:function(newVa,oldVa){
-        if(newVa==true){
-          this.getNote(this.propWorkflowId);  //获取操作流工作记录
-        }
-      },
-      //propVisible end
+    watch: {
+      // propVisible start
+      propVisible: function(newVa, oldVa) {
+        if (newVa == true) {
+          this.getNote(this.propWorkflowId)  //获取操作流工作记录
+      }
+      }
+      // propVisible end
     },
     methods: {
-      getNote(id){
-      this.listLoading = true;
-      var listQuery={id:id}
-      indexWorkflowNote(listQuery).then(response => {
-        var data=response.data
-        if(data.total!=0){
-          this.workflow_note = data.items
-        }
-        this.listLoading = false
-      })
+      getNote(id) {
+        this.listLoading = true
+    var listQuery = { id: id }
+        indexWorkflowNote(listQuery).then(response => {
+          var data = response.data
+          if (data.total != 0) {
+            this.workflow_note = data.items
+          }
+          this.listLoading = false
+        })
+      }
     }
-    }
-  };
+  }
 </script>
 <style>
   .demo-table-expand {

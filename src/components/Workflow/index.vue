@@ -40,135 +40,132 @@
 
 <script>
 const constNodeType = [
-                      {name:"建项"},
-                      {name:"需求接受"},
-                      {name:"环境准备"},
-                      {name:"测试执行"},
-                      {name:"评审"},
-                      {name:"报告"}
-                      ]
+  { name: '建项' },
+  { name: '需求接受' },
+  { name: '环境准备' },
+  { name: '测试执行' },
+  { name: '评审' },
+  { name: '报告' }
+]
 
 export default {
   name: 'workflow-demo',
-  //components: { 'tinymce':Tinymce },
-  //components: { 'workflow':workflow},
-  props:{
+  // components: { 'tinymce':Tinymce },
+  // components: { 'workflow':workflow},
+  props: {
     propWorkflow: Object,
     position: String,
     width: String
   },
   data() {
-      var validatePass = (rule, value, callback) => {
-      if(this.workflow.workflowArray[this.workflow.active].name!=''){
-          callback();
-        }else{
-          callback(new Error('请输出流程节点名'));
-        }
-      };
+    var validatePass = (rule, value, callback) => {
+      if (this.workflow.workflowArray[this.workflow.active].name != '') {
+        callback()
+      } else {
+        callback(new Error('请输出流程节点名'))
+      }
+    }
     return {
-      content:'请输入内容',
+      content: '请输入内容',
       rules: {
-        workflow_name:[ { required: true, message: '请输入流程名称', trigger: 'blur' } ],
-        name:{ validator: validatePass, trigger: 'blur' }
+        workflow_name: [{ required: true, message: '请输入流程名称', trigger: 'blur' }],
+        name: { validator: validatePass, trigger: 'blur' }
       },
 
-      nodeType:constNodeType,
-      icon:['el-icon-plus'],
-      worklfowTemplate:[],
-      workflow:null
+      nodeType: constNodeType,
+      icon: ['el-icon-plus'],
+      worklfowTemplate: [],
+      workflow: null
     }
   },
-  watch:{
+  watch: {
     workflow: {
-        handler:function(newVa,oldVa){
-          this.changeFatherData()
-        },
-        deep:true
-    },
-  },
-  created(){
-    if(this.propWorkflow==null){
-      this.workflow={
-          workflow_name:'测试工作流',
-          active:2,
-          workflowArray:[
-            {name:'建项',plan_day:'',type:'建项'},
-            {name:'被测件出库',plan_day:'',type:'测试执行'},
-            {name:'静态问题提交',plan_day:'',type:'报告'},
-            {name:'大纲/用例初版入库',plan_day:'',type:'建项'},
-            {name:'测试就绪',plan_day:'',type:'建项'},
-            {name:'首轮执行结束(提交动态问题单)',plan_day:'',type:'建项'},
-            {name:'回归版本入库',plan_day:'',type:'建项'},
-            {name:'回归测试结束(提交动态问题单)',plan_day:'',type:'建项'},
-            {name:'报告编写完成(问题单闭环)',plan_day:'',type:'建项'},
-            {name:'工作产品入库',plan_day:'',type:'建项'}
-          ],
-          isError:false
-        };
-    }else{
-      this.workflow=this.propWorkflow
+      handler: function(newVa, oldVa) {
+        this.changeFatherData()
+      },
+      deep: true
     }
   },
-   methods: {
+  created() {
+    if (this.propWorkflow == null) {
+      this.workflow = {
+        workflow_name: '测试工作流',
+        active: 2,
+        workflowArray: [
+          { name: '建项', plan_day: '', type: '建项' },
+          { name: '被测件出库', plan_day: '', type: '测试执行' },
+          { name: '静态问题提交', plan_day: '', type: '报告' },
+          { name: '大纲/用例初版入库', plan_day: '', type: '建项' },
+          { name: '测试就绪', plan_day: '', type: '建项' },
+          { name: '首轮执行结束(提交动态问题单)', plan_day: '', type: '建项' },
+          { name: '回归版本入库', plan_day: '', type: '建项' },
+          { name: '回归测试结束(提交动态问题单)', plan_day: '', type: '建项' },
+          { name: '报告编写完成(问题单闭环)', plan_day: '', type: '建项' },
+          { name: '工作产品入库', plan_day: '', type: '建项' }
+        ],
+        isError: false
+      }
+    } else {
+      this.workflow = this.propWorkflow
+    }
+  },
+  methods: {
     next() {
-      this.$refs['workflow'].validate().then(()=>{
-            this.workflow.active++;
-            if (this.workflow.active == this.workflow.workflowArray.length) this.workflow.active = 0;
-      }).catch(()=>{
-        this.workflow.isError=true;
-      });
-
+      this.$refs['workflow'].validate().then(() => {
+        this.workflow.active++
+        if (this.workflow.active == this.workflow.workflowArray.length) this.workflow.active = 0
+      }).catch(() => {
+        this.workflow.isError = true
+      })
     },
     previous() {
-      this.$refs['workflow'].validate().then(()=>{
-            this.workflow.active =this.workflow.active-1;
-            if (this.workflow.active ==-1) this.workflow.active = this.workflow.workflowArray.length-1;
-      });
-        
+      this.$refs['workflow'].validate().then(() => {
+        this.workflow.active = this.workflow.active - 1
+        if (this.workflow.active == -1) this.workflow.active = this.workflow.workflowArray.length - 1
+      })
     },
-    deleteNode(){
-         var workflow = this.workflow;
-         this.$confirm('此操作将删除该节点, 是否继续?', '提示', {
-                  confirmButtonText: '确定',
-                  cancelButtonText: '取消',
-                  type: 'warning'
-                }).then(() => {
-                  this.workflow.workflowArray.splice(this.workflow.active,1);
-                  if(this.workflow.active==this.workflow.workflowArray.length) this.workflow.active--;
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                }).catch(() => {
-                  this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                  });          
-                });
-
+    deleteNode() {
+      var workflow = this.workflow
+      this.$confirm('此操作将删除该节点, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.workflow.workflowArray.splice(this.workflow.active, 1)
+        if (this.workflow.active == this.workflow.workflowArray.length) this.workflow.active--
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
-    createNode(){
-         var workflow = this.workflow;
-         this.$confirm('此操作将新增节点, 是否继续?', '提示', {
-                  confirmButtonText: '确定',
-                  cancelButtonText: '取消',
-                  type: 'warning'
-                }).then(() => {
-                  workflow.workflowArray.splice(this.workflow.active+1,0,{type:0,name:'New Step'});
-                  this.$message({
-                    type: 'success',
-                    message: '创建成功!'
-                  });
-                }).catch(() => {
-                  this.$message({
-                    type: 'info',
-                    message: '已取消创建'
-                  });          
-                });
+    createNode() {
+      var workflow = this.workflow
+      this.$confirm('此操作将新增节点, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        workflow.workflowArray.splice(this.workflow.active + 1, 0, { type: 0, name: 'New Step' })
+        this.$message({
+          type: 'success',
+          message: '创建成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消创建'
+        })
+      })
     },
-    changeFatherData(){
-      let data={data:this.workflow,type:'workflow'}
-      this.$emit('dataChange',data)
+    changeFatherData() {
+      const data = { data: this.workflow, type: 'workflow' }
+      this.$emit('dataChange', data)
     }
   }
 

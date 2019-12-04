@@ -170,111 +170,109 @@
    
 </template>
 <script>
-
   import DailyNote from './DailyNote'
   import { indexProgramTeamRoleTask, showProgramTeamRoleTask, storeProgramTeamRoleTask, updateProgramTeamRoleTask,
-         destroyProgramTeamRoleTask } from '@/api/programteamroletask'
+    destroyProgramTeamRoleTask } from '@/api/programteamroletask'
 
   export default {
-    components: {DailyNote },
+    components: { DailyNote },
     data() {
       return {
-        listLoading:true,
-        listQuery:{
-          workflowArray:''
+        listLoading: true,
+        listQuery: {
+          workflowArray: ''
         },
-        state:['0','20','40','60','80','100'],
+        state: ['0', '20', '40', '60', '80', '100'],
 
         // ptr_note:[],
-        temp:{
-          task:'',
-          due_day:'',
-          overdue_reason:'',
-          note:'',
-          before_node_id:'',
-          state:'',
-          ratio:'',
-          score:''
+        temp: {
+          task: '',
+          due_day: '',
+          overdue_reason: '',
+          note: '',
+          before_node_id: '',
+          state: '',
+          ratio: '',
+          score: ''
         },
-        visible:false,
-        rules:{},
+        visible: false,
+        rules: {},
 
-        ptr_note:[],
-        is_leader:false,
+        ptr_note: [],
+        is_leader: false,
         dialogStatus: '',
         textMap: {
           update: '更新',
           create: '创建'
         },
-        isEditable:false
+        isEditable: false
 
-      };
-    },
-    props:{
-        propTeamMemberId:Number,
-        propWorkflow:Object,
-        propRole:Array
+      }
+  },
+    props: {
+      propTeamMemberId: Number,
+      propWorkflow: Object,
+      propRole: Array
     },
 
-    created(){
+    created() {
 
     },
-    mounted(){
+    mounted() {
       this.getNote()
-      this.isEditable=this.checkPermission(this.propRole);
-    },
+      this.isEditable = this.checkPermission(this.propRole)
+  },
 
     methods: {
-    checkPermission(propRole){
-      return propRole.includes("项目组长");
+      checkPermission(propRole) {
+        return propRole.includes('项目组长')
     },
-    getNote(id){
-      this.listLoading = true;
-      this.listQuery.id=this.propTeamMemberId;
-      this.listQuery.isOne=true;
-      indexProgramTeamRoleTask(this.listQuery).then(response => {
-        var data=response.data
-        if(data.total!=0){
-          this.ptr_note = Object.values(data.items)        
+      getNote(id) {
+        this.listLoading = true
+        this.listQuery.id = this.propTeamMemberId
+        this.listQuery.isOne = true
+        indexProgramTeamRoleTask(this.listQuery).then(response => {
+          var data = response.data
+          if (data.total != 0) {
+            this.ptr_note = Object.values(data.items)
           }
-      this.listLoading=false;
-      })
+          this.listLoading = false
+        })
       },
-    handleFilter(){
-
-    },
-    handleCreate(){
-          this.dialogStatus='create';
-          this.temp={
-                task:'',
-                due_day:'',
-                overdue_reason:'',
-                note:'',
-                before_node_id:this.propWorkflow.workflowArray[this.propWorkflow.active].id,
-                state:10,
-                ratio:10,
-                score:5
-            },
-          this.visible=true;
+      handleFilter() {
 
       },
-      handleEdit(row){
-           this.dialogStatus='update';
-          this.temp=row;
-          this.visible=true;
+      handleCreate() {
+        this.dialogStatus = 'create'
+        this.temp = {
+          task: '',
+          due_day: '',
+          overdue_reason: '',
+          note: '',
+          before_node_id: this.propWorkflow.workflowArray[this.propWorkflow.active].id,
+          state: 10,
+          ratio: 10,
+          score: 5
+        },
+        this.visible = true
       },
-      edit(item){
-        item.isEdit=true;
-        this.$forceUpdate();  
+      handleEdit(row) {
+        this.dialogStatus = 'update'
+        this.temp = row
+        this.visible = true
       },
-      confirmCreate(item){
-        item.programteamrole_id=this.propTeamMemberId;
+      edit(item) {
+        item.isEdit = true
+        this.$forceUpdate()
+      },
+      confirmCreate(item) {
+        item.programteamrole_id = this.propTeamMemberId
 
         this.$refs['TeamMemberNoteEdit'].validate((valid) => {
           if (valid) {
-            this.visible=false;
+            this.visible = false
             storeProgramTeamRoleTask(item).then(response => {
-              var data=response.data
+              var data = response.data
               item = data.items
               this.ptr_note.unshift(item)
               this.$notify({
@@ -283,16 +281,16 @@
                 type: 'success',
                 duration: 2000
               })
-          }).catch(err => {
-            console.log(err)
-          })
-        }
-      })
+            }).catch(err => {
+              console.log(err)
+            })
+          }
+        })
       },
-      confirmUpdate(item){
+      confirmUpdate(item) {
         this.$refs['TeamMemberNoteEdit'].validate((valid) => {
           if (valid) {
-            this.visible=false;
+            this.visible = false
             updateProgramTeamRoleTask(item).then(response => {
               this.$notify({
                 title: '成功',
@@ -300,15 +298,15 @@
                 type: 'success',
                 duration: 2000
               })
-          }).catch(err => {
-            console.log(err)
-          })
-        }
-      })
+            }).catch(err => {
+              console.log(err)
+            })
+          }
+        })
       }
 
     }
-  };
+  }
 </script>
 <style>
   .demo-table-expand {

@@ -71,215 +71,212 @@
 </template>
 <script>
   import { indexWorkflow, showWorkflow, storeWorkflow, updateWorkflow,
-         destroyWorkflow } from '@/api/workflow'   
+    destroyWorkflow } from '@/api/workflow'
   import { indexWorkflowNote, showWorkflowNote, storeWorkflowNote, updateWorkflowNote,
-         destroyWorkflowNote } from '@/api/Workflownote'
-  import { indexProgramTeamRoleTask} from '@/api/programteamroletask'
+    destroyWorkflowNote } from '@/api/Workflownote'
+  import { indexProgramTeamRoleTask } from '@/api/programteamroletask'
   import NodeNote from './workflowedit/NodeNote'
   import NodeTask from './workflowedit/NodeTask'
   import NodeFlowLog from './workflowedit/NodeFlowLog'
 
   import ddd from '@/components/PreProgramCom/Workflow.vue'
 
-
   export default {
-    components: { NodeNote,NodeTask,ddd,NodeFlowLog },
+    components: { NodeNote, NodeTask, ddd, NodeFlowLog },
     data() {
       return {
-        generalVisible:false,
-        is_exist:true,
-        listLoading:true,
+        generalVisible: false,
+        is_exist: true,
+        listLoading: true,
 
-        workflow:null,
-        node_id:null,
+        workflow: null,
+        node_id: null,
 
-        visible:false,
-        rules:{},
-        temp:{},
-        listQuery:{
-          phaseCollection:''
+        visible: false,
+        rules: {},
+        temp: {},
+        listQuery: {
+          phaseCollection: ''
         },
-        active:'task'
-        
-      };
-    },
-    props:{
-        propVisible:Boolean,
-        propProgramBasicId:Number,
-        propRole:Array
+        active: 'task'
+  
+      }
+  },
+    props: {
+      propVisible: Boolean,
+      propProgramBasicId: Number,
+      propRole: Array
     },
     filters: {
-      statusComputed(node,workflow){
-              if(node.array_index<workflow.active){
-                if(node.undo_task_count!=0){
-                  return 'wait'   //有任务没解决
-                }else{
-                  return 'success'  //全部任务解决了
-                }
-              }else if(node.array_index==workflow.active){
-                return 'process'   //当前状态
-              }else{
-                return ''          //未到达状态
-              }
-     }
-    },
-    watch:{
-      //propVisible start
-      propVisible:function(newVa,oldVa){
-        if(newVa==true){
-          this.getData();
+      statusComputed(node, workflow) {
+        if (node.array_index < workflow.active) {
+          if (node.undo_task_count != 0) {
+            return 'wait' // 有任务没解决
+          } else {
+            return 'success' // 全部任务解决了
+          }
+        } else if (node.array_index == workflow.active) {
+          return 'process' // 当前状态
+        } else {
+          return '' // 未到达状态
         }
-      },
-      //propVisible end
-  },
-    created(){
-          this.getData();
+      }
     },
+    watch: {
+      // propVisible start
+      propVisible: function(newVa, oldVa) {
+        if (newVa == true) {
+          this.getData()
+        }
+      }
+      // propVisible end
+  },
+    created() {
+      this.getData()
+  },
     computed: {
-    to_node_name() {
-      return (workflow,temp)=>{ return    workflow.workflowArray.find( item => item.id === temp.to_node_id ).name}
-     },
+      to_node_name() {
+        return (workflow, temp) => { return workflow.workflowArray.find(item => item.id === temp.to_node_id).name }
+      }
 
-   },
+    },
 
     methods: {
-      handleConfigure(is_exist){
-        this.is_exist=is_exist;
-        this.generalVisible=true;
-      },  
-      handleClose(args){
-        this.generalVisible=false
+      handleConfigure(is_exist) {
+        this.is_exist = is_exist
+        this.generalVisible = true
+      },
+      handleClose(args) {
+        this.generalVisible = false
         this.getData()
       },
-      getData(){
+      getData() {
         const loading = this.$loading({
           lock: true,
           text: 'Loading',
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)'
-        });
-        var that=this;
+        })
+        var that = this
         showWorkflow(this.propProgramBasicId).then(response => {
-          var data=response.data
-          if(data.isOkay==true){
+          var data = response.data
+          if (data.isOkay == true) {
             that.workflow = null
             that.workflow = data.item
-            that.temp.to_node_id=that.workflow.workflowArray[that.workflow.active].id;
+            that.temp.to_node_id = that.workflow.workflowArray[that.workflow.active].id
           }
           loading.close()
-        })},
-      updateChildData(index){
-        this.$refs.NodeNote.getNodeNote(this.workflow.workflowArray[index-1].id);
-        this.$refs.NodeTask.getNodeTask(this.workflow.workflowArray[index-1].id);
+        })
+      },
+      updateChildData(index) {
+        this.$refs.NodeNote.getNodeNote(this.workflow.workflowArray[index - 1].id)
+        this.$refs.NodeTask.getNodeTask(this.workflow.workflowArray[index - 1].id)
       },
 
       next() {
         // this.listLoading = true;
-        var listQuery={
-          node_id:this.workflow.workflowArray[this.workflow.active].id,
-          type:"NodeTask"
+        var listQuery = {
+          node_id: this.workflow.workflowArray[this.workflow.active].id,
+          type: 'NodeTask'
         }
         indexProgramTeamRoleTask(listQuery).then(response => {
-          var data=response.data
-          if(data.total!=0){
+          var data = response.data
+          if (data.total != 0) {
             var node_task = Object.values(data.items)
           }
-          var node_task_must_complete=node_task.filter(item => {
-            return item.is_must_complete=='是'&&item.state!=100
+          var node_task_must_complete = node_task.filter(item => {
+            return item.is_must_complete == '是' && item.state != 100
           })
-          if(node_task_must_complete.length!=0){
+          if (node_task_must_complete.length != 0) {
             this.$confirm('当前阶段尚未有必要任务未完成', '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               type: 'warning'
             }).then(() => {
               return
-            }).catch(()=>{})
+            }).catch(() => {})
             return
           }
-          if(this.workflow.active==this.workflow.workflowArray.length-1){
-                      const h = this.$createElement;
-                      this.$notify({
-                        title: '流程已完结',
-                        message: h('i', { style: 'color: teal'}, '流程已经推进到终点')
-                      });
-                      return;
-            }
-          this.temp.note_type='推进';
-          this.temp.from_node_id=this.workflow.workflowArray[this.workflow.active].id;
-          this.temp.to_node_id=this.workflow.workflowArray[this.workflow.active+1].id;
-          this.temp.note='';
-          this.visible=true;
-          // this.listLoading=false;
-         })
-        
+          if (this.workflow.active == this.workflow.workflowArray.length - 1) {
+            const h = this.$createElement
+            this.$notify({
+              title: '流程已完结',
+              message: h('i', { style: 'color: teal' }, '流程已经推进到终点')
+            })
+            return
+          }
+          this.temp.note_type = '推进'
+          this.temp.from_node_id = this.workflow.workflowArray[this.workflow.active].id
+          this.temp.to_node_id = this.workflow.workflowArray[this.workflow.active + 1].id
+          this.temp.note = ''
+          this.visible = true
+        // this.listLoading=false;
+        })
+      },
+      previous() {
+        if (this.workflow.active == 0) {
+          const h = this.$createElement
+          this.$notify({
+            title: '已经是流程起点',
+            message: h('i', { style: 'color: teal' }, '已经回滚到流程起点')
+          })
+          return
+        }
+        this.temp.note_type = '回滚'
+        this.temp.from_node_id = this.workflow.workflowArray[this.workflow.active].id
+        this.temp.to_node_id = this.workflow.workflowArray[this.workflow.active - 1].id
+        this.temp.note = ''
+        this.visible = true
+      },
+      handleFilter() {
+
+      },
+      handleCreate() {
+        this.dialogStatus = 'create'
+        this.temp = {
+          task: '',
+          due_day: '',
+          overdue_reason: '',
+          note: '',
+          before_node_id: this.propWorkflow.workflowArray[this.propWorkflow.active].id,
+          state: 10,
+          ratio: 10,
+          score: 5
         },
-    previous() {
-            if(this.workflow.active==0){
-                      const h = this.$createElement;
-                      this.$notify({
-                        title: '已经是流程起点',
-                        message: h('i', { style: 'color: teal'}, '已经回滚到流程起点')
-                      });
-                      return;
-            }
-            this.temp.note_type='回滚';
-            this.temp.from_node_id=this.workflow.workflowArray[this.workflow.active].id;
-            this.temp.to_node_id=this.workflow.workflowArray[this.workflow.active-1].id;
-            this.temp.note='';
-            this.visible=true;       
-    },
-    handleFilter(){
-
-    },
-    handleCreate(){
-          this.dialogStatus='create';
-          this.temp={
-                task:'',
-                due_day:'',
-                overdue_reason:'',
-                note:'',
-                before_node_id:this.propWorkflow.workflowArray[this.propWorkflow.active].id,
-                state:10,
-                ratio:10,
-                score:5
-            },
-          this.visible=true;
-
+        this.visible = true
       },
-    handleCreate(){
-          this.temp={
-              task:'',
-              due_day:'',
-              note:'',
-              before_day:'',
-              state:'待解决'
-            },
-          this.visible=true;
-
+      handleCreate() {
+        this.temp = {
+          task: '',
+          due_day: '',
+          note: '',
+          before_day: '',
+          state: '待解决'
+        },
+        this.visible = true
       },
-      edit(item){
-        item.isEdit=true;
-        this.$forceUpdate();  
+      edit(item) {
+        item.isEdit = true
+        this.$forceUpdate()
       },
-      cancel(){
-        this.visible=false;
+      cancel() {
+        this.visible = false
       },
-      confirmCreate(item){
-        item.workflow_id=this.workflow.id;
+      confirmCreate(item) {
+        item.workflow_id = this.workflow.id
 
         this.$refs['workflow'].validate((valid) => {
           if (valid) {
-            this.visible=false;
+            this.visible = false
 
             storeWorkflowNote(item).then(response => {
-              var data=response.data;
-              var toAdd=1;
-              if(item.note_type=='推进'){
-                this.workflow.active=this.workflow.active+toAdd;
-              }else{
-                toAdd=-1;
-                this.workflow.active=this.workflow.active+toAdd;
+              var data = response.data
+              var toAdd = 1
+              if (item.note_type == '推进') {
+                this.workflow.active = this.workflow.active + toAdd
+              } else {
+                toAdd = -1
+                this.workflow.active = this.workflow.active + toAdd
               }
               this.$notify({
                 title: '成功',
@@ -287,14 +284,14 @@
                 type: 'success',
                 duration: 2000
               })
-          }).catch(err => {
-            console.log(err)
-          })
-        }
-      })
+            }).catch(err => {
+              console.log(err)
+            })
+          }
+        })
       }
     }
-  };
+  }
 </script>
 <style>
 </style>

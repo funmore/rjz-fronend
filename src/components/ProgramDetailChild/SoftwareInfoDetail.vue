@@ -104,70 +104,68 @@
 </template>
 <script>
 
-
 import { indexSoftwareInfo, showSoftwareInfo, storeSoftwareInfo, updateSoftwareInfo,
-         destroySoftwareInfo } from '@/api/softwareinfo'
+  destroySoftwareInfo } from '@/api/softwareinfo'
 import ccc from '@/components/PreProgramCom/SoftwareInfo.vue'
-  export default {
-    
-    name: 'workflow-demo',
-        components: { ccc },
-    data() {
-      return {
-        generalVisible:false,
-        is_exist:true,
+export default {
 
-        tableKey:0,
+  name: 'workflow-demo',
+  components: { ccc },
+  data() {
+    return {
+      generalVisible: false,
+      is_exist: true,
 
+      tableKey: 0,
 
-        softwareInfo:null
+      softwareInfo: null
 
-      };
-    },
-    props:{
-      propVisible:Boolean,
-      propProgramBasicId:Number
-        },
-    watch:{
-      //propVisible start
-    propVisible:function(newVa,oldVa){
-        if(newVa==true){
-          this.getData()
-        }
-      },
-      //propVisible end
+    }
   },
-    created(){
-      //this.getData()
-    },
-    
-    methods: {
-        getData(){
-          const loading = this.$loading({
-            lock: true,
-            text: 'Loading',
-            spinner: 'el-icon-loading',
-            background: 'rgba(0, 0, 0, 0.7)'
-            });
-          showSoftwareInfo(this.propProgramBasicId).then(response => {
-          var data=response.data
-          if(data.isOkay==true){
-            this.softwareInfo=[]
-            this.softwareInfo.push(data.item)
-          }
-          loading.close()
-          })
-        },
-        handleConfigure(is_exist){
-            this.is_exist=is_exist;
-            this.generalVisible=true;
-        }, 
-        handleClose(args){
-        this.generalVisible=false
+  props: {
+    propVisible: Boolean,
+    propProgramBasicId: Number
+  },
+  watch: {
+    // propVisible start
+    propVisible: function(newVa, oldVa) {
+      if (newVa == true) {
         this.getData()
       }
     }
-  };
+    // propVisible end
+  },
+  created() {
+    // this.getData()
+  },
+
+  methods: {
+    getData() {
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      showSoftwareInfo(this.propProgramBasicId).then(response => {
+        var data = response.data
+        if (data.isOkay == true) {
+          this.softwareInfo = []
+          this.softwareInfo.push(data.item)
+        }
+        loading.close()
+      })
+    },
+    handleConfigure(is_exist) {
+      this.is_exist = is_exist
+      this.generalVisible = true
+    },
+    handleClose(args) {
+      this.generalVisible = false
+      this.getData()
+    }
+  }
+}
 </script>
 <style>
 </style>

@@ -91,134 +91,132 @@
 <script>
 
 import { indexNodeNote, showNodeNote, storeNodeNote, updateNodeNote,
-         destroyNodeNote } from '@/api/NodeNote'
+  destroyNodeNote } from '@/api/NodeNote'
 
+export default {
+  data() {
+    return {
 
-  export default {
-    data() {
-      return {
-
-        activeName:'log',
-        listLoading:true,
-        listQuery:{
-          id:''
-        },
-        workflowArray:this.propWorkflowArray,
-
-
-        is_up:['是','否'],
-        state:['待解决','解决中','已解决'],
-        temp:{
-          state:'',
-          note:'',
-          is_up:''
-        },
-        visible:false,
-        rules:{},
-
-        program_note:[],
-        dialogStatus: '',
-        textMap: {
-          update: '更新',
-          create: '创建'
-        },
-        isEditable:false
-      };
-    },
-    props:{
-        propVisible:Boolean,
-        propNodeId:Number,
-        propRole:Array
-    },
-   watch:{
-      //propVisible start
-      propVisible:function(newVa,oldVa){
-        if(newVa==true){
-          this.getNodeNote(this.propNodeId);
-          this.isEditable=this.checkPermission(this.propRole);
-        }
+      activeName: 'log',
+      listLoading: true,
+      listQuery: {
+        id: ''
       },
-      //propVisible end
-  },
-    methods: {
-      checkPermission(propRole){
-      return propRole.includes("项目组长");
+      workflowArray: this.propWorkflowArray,
+
+      is_up: ['是', '否'],
+      state: ['待解决', '解决中', '已解决'],
+      temp: {
+        state: '',
+        note: '',
+        is_up: ''
+      },
+      visible: false,
+      rules: {},
+
+      program_note: [],
+      dialogStatus: '',
+      textMap: {
+        update: '更新',
+        create: '创建'
+      },
+      isEditable: false
+    }
     },
-    getNodeNote(id){
-      this.program_note=[];
-      this.listLoading = true;
-      this.listQuery.id=id;
+  props: {
+    propVisible: Boolean,
+    propNodeId: Number,
+    propRole: Array
+  },
+  watch: {
+    // propVisible start
+    propVisible: function(newVa, oldVa) {
+      if (newVa == true) {
+        this.getNodeNote(this.propNodeId)
+          this.isEditable = this.checkPermission(this.propRole)
+        }
+    }
+    // propVisible end
+  },
+  methods: {
+    checkPermission(propRole) {
+      return propRole.includes('项目组长')
+    },
+    getNodeNote(id) {
+      this.program_note = []
+      this.listLoading = true
+      this.listQuery.id = id
       indexNodeNote(this.listQuery).then(response => {
-        var data=response.data
-        if(data.total!=0){
+        var data = response.data
+        if (data.total != 0) {
           this.program_note = data.items
         }
-      this.listLoading=false;
+        this.listLoading = false
       })
-      },
-    handleFilter(){
+    },
+    handleFilter() {
 
     },
-    handleCreate(){
-          this.dialogStatus='create';
-          this.temp={
-            state:'',
-            note:'',
-            is_up:''
-            },
-          this.visible=true;
+    handleCreate() {
+      this.dialogStatus = 'create'
+          this.temp = {
+        state: '',
+        note: '',
+        is_up: ''
+      },
+      this.visible = true
 
       },
-      handleEdit(row){
-           this.dialogStatus='update';
-          this.temp=row;
-          this.visible=true;
+    handleEdit(row) {
+      this.dialogStatus = 'update'
+          this.temp = row
+          this.visible = true
       },
-      confirmCreate(item){
-        item.NodeId=this.propNodeId;
+    confirmCreate(item) {
+      item.NodeId = this.propNodeId
 
         this.$refs['NodeNote'].validate((valid) => {
-          if (valid) {
-            this.visible=false;
+        if (valid) {
+          this.visible = false
             storeNodeNote(item).then(response => {
-              var data=response.data
-              item = data.items
-              this.program_note.push(item)
-              this.$notify({
-                title: '成功',
-                message: '更新成功',
-                type: 'success',
-                duration: 2000
-              })
+            var data = response.data
+            item = data.items
+            this.program_note.push(item)
+            this.$notify({
+              title: '成功',
+              message: '更新成功',
+              type: 'success',
+              duration: 2000
+            })
           }).catch(err => {
             console.log(err)
           })
         }
       })
-      },
-      confirmUpdate(item){
-        this.$refs['NodeNote'].validate((valid) => {
-          if (valid) {
-            this.visible=false;
+    },
+    confirmUpdate(item) {
+      this.$refs['NodeNote'].validate((valid) => {
+        if (valid) {
+          this.visible = false
             updateNodeNote(item).then(response => {
-              this.$notify({
-                title: '成功',
-                message: '更新成功',
-                type: 'success',
-                duration: 2000
-              })
+            this.$notify({
+              title: '成功',
+              message: '更新成功',
+              type: 'success',
+              duration: 2000
+            })
           }).catch(err => {
             console.log(err)
           })
         }
       })
-      },
-      cancel(){
-        this.visible=false;
+    },
+    cancel() {
+      this.visible = false
       }
 
-    }
-  };
+  }
+}
 </script>
 <style>
   .demo-table-expand {

@@ -109,169 +109,165 @@
 </template>
 <script>
 import { indexFileProgram, showFileProgram, storeFileProgram, updateFileProgram,
-         destroyFileProgram } from '@/api/fileprogram'
+  destroyFileProgram } from '@/api/fileprogram'
 import { indexFileReview, showFileReview, storeFileReview, updateFileReview,
-         destroyFileReview } from '@/api/filereview'         
-  export default {
-    data() {
-      return {
-        fileCategory:['专家意见','型号负责人意见','修改后版本'],
-        active:'专家意见',
-        listLoading:true,
-        listQuery:{
-          // file_program_id:null
-        },
+  destroyFileReview } from '@/api/filereview'
+export default {
+  data() {
+    return {
+      fileCategory: ['专家意见', '型号负责人意见', '修改后版本'],
+      active: '专家意见',
+      listLoading: true,
+      listQuery: {
+        // file_program_id:null
+      },
 
-        temp:{
-          // file_program_id:null,
-          id:null,
-          version:'',
-          category:'',
-          phase:''
-        },
+      temp: {
         // file_program_id:null,
-        visible:false,
-        rules:{},
+        id: null,
+        version: '',
+        category: '',
+        phase: ''
+      },
+      // file_program_id:null,
+      visible: false,
+      rules: {},
 
-        assignForm: {
-          files: []
-        },
+      assignForm: {
+        files: []
+      },
 
-        specificFile:[],
-        dialogStatus: '',
-        textMap: {
-          update: '更新',
-          create: '创建'
-        }
-      };
-    },
-    props:{
-        propVisible:Boolean,
-        propProgramId:Number
-    },
-    watch:{
-      //propVisible start
-    propVisible:function(newVa,oldVa){
-        if(newVa==true){
-		      this.getFileReviewInfo();
-        }
-      },
-      //propVisible end
-  },
-    mounted(){
-      // this.getFileReviewInfo();
-    },
-    methods: {
-      getFileReviewInfo(){
-          this.listLoading = true;
-          this.listQuery.program_id=this.propProgramId
-          // this.listQuery.file_program_id=this.file_program_id;
-          this.listQuery.category=this.$refs.menu.activeIndex
-          this.listQuery.phase=this.active
-          indexFileReview(this.listQuery).then(response => {
-            // this.file_program_id=response.data.file_program_id
-            var data=response.data
-            if(data.total!=0){
-              this.specificFile =Object.values(data.items)
-
-            }
-          this.listLoading=false;
-          })
-          },
-      fileChange(file, fileList) {
-        this.assignForm.files.push(file.raw);
-      },
-      removeFile(file, fileList) {
-        // 筛选选中的文件
-        let index = this.assignForm.files.findIndex(val => val.uid === file.raw.uid);
-        this.assignForm.files.splice(index, 1);
-      },
-      cancel(){
-        this.visible=false;
-      },
-      submitAssignForm(){
-
-          this.temp.files=this.assignForm.files;
-          this.visible=false;
-          storeFileReview(this.temp).then(response => {
-              var item=response.data.items;
-
-              let index =this.specificFile.findIndex(one=>one.id==item.id);
-              if(index<0){
-                  this.specificFile.push(item)
-                  this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
-              }else{
-                  this.specificFile.splice(index,1,item)
-                  this.$notify({
-                  title: '成功',
-                  message: '更新成功',
-                  type: 'success',
-                  duration: 2000
-                })
-                }
-
-                this.$notify({
-                  title: '成功',
-                  message: '更新成功',
-                  type: 'success',
-                  duration: 2000
-                })
-
-            }).catch(err => {
-              console.log(err)
-            })
-      },
-      download(row){
-        showFileReview(row.id).then(response => {
-              let type=row.name.split('.')[row.name.split('.').length-1]
-              let blob = new Blob([response.data], { type: 'application/'+type })
-              let link = document.createElement('a')
-              link.href = window.URL.createObjectURL(blob)
-              link.download = row.name
-              link.click()
-
-            }).catch(err => {
-              console.log(err)
-            })
-      },
-      edit(){},
-      replace(row){
-        this.dialogStatus='update';
-        this.visible=true;
-        // this.temp.file_program_id=this.file_program_id;
-        this.temp.program_id=this.propProgramId;
-        this.temp.version=row.version;
-        this.temp.phase=this.active;
-        this.temp.category=this.$refs.menu.activeIndex
-        this.temp.id=row.id;
-        this.assignForm.files.splice(-1, 1);
-      },
-      create(){
-        this.dialogStatus='create';
-        this.visible=true;
-        // this.temp.file_program_id=this.file_program_id;
-        this.temp.program_id=this.propProgramId;
-        this.temp.version=null;
-        this.temp.category=this.$refs.menu.activeIndex
-        this.temp.phase=this.active;
-        this.temp.id=null;
-      },
-      handleSelect(key, keyPath) {
-        this.specificFile=[];
-        this.getFileReviewInfo();
-      },
-      handleClick(tab, event) {
-        this.specificFile=[];
-        this.getFileReviewInfo();
+      specificFile: [],
+      dialogStatus: '',
+      textMap: {
+        update: '更新',
+        create: '创建'
       }
     }
-   
-  };
+  },
+  props: {
+    propVisible: Boolean,
+    propProgramId: Number
+  },
+  watch: {
+    // propVisible start
+    propVisible: function(newVa, oldVa) {
+      if (newVa == true) {
+		      this.getFileReviewInfo()
+      }
+    }
+    // propVisible end
+  },
+  mounted() {
+    // this.getFileReviewInfo();
+  },
+  methods: {
+    getFileReviewInfo() {
+      this.listLoading = true
+      this.listQuery.program_id = this.propProgramId
+      // this.listQuery.file_program_id=this.file_program_id;
+      this.listQuery.category = this.$refs.menu.activeIndex
+      this.listQuery.phase = this.active
+      indexFileReview(this.listQuery).then(response => {
+        // this.file_program_id=response.data.file_program_id
+        var data = response.data
+        if (data.total != 0) {
+          this.specificFile = Object.values(data.items)
+        }
+        this.listLoading = false
+      })
+    },
+    fileChange(file, fileList) {
+      this.assignForm.files.push(file.raw)
+    },
+    removeFile(file, fileList) {
+      // 筛选选中的文件
+      const index = this.assignForm.files.findIndex(val => val.uid === file.raw.uid)
+      this.assignForm.files.splice(index, 1)
+    },
+    cancel() {
+      this.visible = false
+    },
+    submitAssignForm() {
+      this.temp.files = this.assignForm.files
+      this.visible = false
+      storeFileReview(this.temp).then(response => {
+        var item = response.data.items
+
+        const index = this.specificFile.findIndex(one => one.id == item.id)
+        if (index < 0) {
+          this.specificFile.push(item)
+          this.$notify({
+            title: '成功',
+            message: '创建成功',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.specificFile.splice(index, 1, item)
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+
+        this.$notify({
+          title: '成功',
+          message: '更新成功',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    download(row) {
+      showFileReview(row.id).then(response => {
+        const type = row.name.split('.')[row.name.split('.').length - 1]
+        const blob = new Blob([response.data], { type: 'application/' + type })
+        const link = document.createElement('a')
+        link.href = window.URL.createObjectURL(blob)
+        link.download = row.name
+        link.click()
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    edit() {},
+    replace(row) {
+      this.dialogStatus = 'update'
+      this.visible = true
+      // this.temp.file_program_id=this.file_program_id;
+      this.temp.program_id = this.propProgramId
+      this.temp.version = row.version
+      this.temp.phase = this.active
+      this.temp.category = this.$refs.menu.activeIndex
+      this.temp.id = row.id
+      this.assignForm.files.splice(-1, 1)
+    },
+    create() {
+      this.dialogStatus = 'create'
+      this.visible = true
+      // this.temp.file_program_id=this.file_program_id;
+      this.temp.program_id = this.propProgramId
+      this.temp.version = null
+      this.temp.category = this.$refs.menu.activeIndex
+      this.temp.phase = this.active
+      this.temp.id = null
+    },
+    handleSelect(key, keyPath) {
+      this.specificFile = []
+      this.getFileReviewInfo()
+    },
+    handleClick(tab, event) {
+      this.specificFile = []
+      this.getFileReviewInfo()
+    }
+  }
+
+}
 </script>
 <style>
 

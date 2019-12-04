@@ -45,7 +45,7 @@ export default {
       this.onUploading = true
       storeBatchImport(this.tableData).then(response => {
         this.onUploading = false
-            this.$notify({
+        this.$notify({
           title: '成功',
           message: '批量导入成功',
           type: 'success',

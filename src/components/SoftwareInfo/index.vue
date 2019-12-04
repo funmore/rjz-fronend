@@ -140,85 +140,80 @@
 </template>
 
 <script>
-const constSoftwareType = ['A级','B级','C级','D级']
-const constSoftwareUsage = ['弹上','地面']
-const constCodeLangu = ['C','FPGA','PLC']
-const constComplier = ['神舟IDE','IED2','IED3']
-const constRuntime = ['RUNTIME A','RUNTIME B']
-const constSoftwareCate = ['嵌入','非嵌','FPGA','PLC']
-const constSoftwareSubCate = ['飞控','信息处理','组合导航','CPLD','PLC','伺服','综合控制']
-const constCpuType = ['cpu1','cpu2','cpu3','cpu4']
-const constSize = ['大','中','小']
-const constClassification = ['机密','秘密','内部']
-
+const constSoftwareType = ['A级', 'B级', 'C级', 'D级']
+const constSoftwareUsage = ['弹上', '地面']
+const constCodeLangu = ['C', 'FPGA', 'PLC']
+const constComplier = ['神舟IDE', 'IED2', 'IED3']
+const constRuntime = ['RUNTIME A', 'RUNTIME B']
+const constSoftwareCate = ['嵌入', '非嵌', 'FPGA', 'PLC']
+const constSoftwareSubCate = ['飞控', '信息处理', '组合导航', 'CPLD', 'PLC', '伺服', '综合控制']
+const constCpuType = ['cpu1', 'cpu2', 'cpu3', 'cpu4']
+const constSize = ['大', '中', '小']
+const constClassification = ['机密', '秘密', '内部']
 
 export default {
   name: 'workflow-demo',
 
-  props:{
+  props: {
     propSoftwareInfo: Array,
-    propRef:String
+    propRef: String
   },
   data() {
     return {
-      softwareType:constSoftwareType,
-      softwareUsage:constSoftwareUsage,
-      codeLangu:constCodeLangu,
-      complier:constComplier,
-      runtime:constRuntime,
-      softwareCate:constSoftwareCate,
-      softwareSubCate:constSoftwareSubCate,
-      cpuType:constCpuType,
-      size:constSize,
-      classification:constClassification,
+      softwareType: constSoftwareType,
+      softwareUsage: constSoftwareUsage,
+      codeLangu: constCodeLangu,
+      complier: constComplier,
+      runtime: constRuntime,
+      softwareCate: constSoftwareCate,
+      softwareSubCate: constSoftwareSubCate,
+      cpuType: constCpuType,
+      size: constSize,
+      classification: constClassification,
 
-
-
-      softwareInfo:new Object,
+      softwareInfo: new Object(),
 
       rules: {
-           name:[ { required: true, message: '请输入流程名称', trigger: 'blur' } ],
+        name: [{ required: true, message: '请输入流程名称', trigger: 'blur' }]
 
       }
     }
   },
-  watch:{
+  watch: {
     softwareInfo: {
-        handler:function(newVa,oldVa){
-          this.changeFatherData()
-        },
-        deep:true
-    },
-  },
-  created(){
-    if(this.propSoftwareInfo==null||this.propSoftwareInfo.length==0){
-      this.softwareInfo={
-          name:'',
-          version_id:new Number(),
-          size:'',
-          reduced_code_size:'',
-          reduced_reason:'',
-          software_type:'',
-          software_usage:'',
-          code_langu:'',
-          complier:'',
-          runtime:'',
-          cpu_type:'',
-          software_cate:'',
-          software_sub_cate:''
-        }
-    }else{
-      this.softwareInfo=this.propSoftwareInfo[0]
+      handler: function(newVa, oldVa) {
+        this.changeFatherData()
+      },
+      deep: true
     }
-
   },
-   methods: {
-      changeFatherData(){
-      let data={data:this.softwareInfo,type:'softwareInfo'}
-      this.$emit('dataChange',data)
+  created() {
+    if (this.propSoftwareInfo == null || this.propSoftwareInfo.length == 0) {
+      this.softwareInfo = {
+        name: '',
+        version_id: new Number(),
+        size: '',
+        reduced_code_size: '',
+        reduced_reason: '',
+        software_type: '',
+        software_usage: '',
+        code_langu: '',
+        complier: '',
+        runtime: '',
+        cpu_type: '',
+        software_cate: '',
+        software_sub_cate: ''
+      }
+    } else{
+      this.softwareInfo = this.propSoftwareInfo[0]
+    }
+  },
+  methods: {
+    changeFatherData() {
+      const data = { data: this.softwareInfo, type: 'softwareInfo' }
+      this.$emit('dataChange', data)
     }
   }
-
 
 }
 </script>

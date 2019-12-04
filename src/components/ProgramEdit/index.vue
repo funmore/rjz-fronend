@@ -19,18 +19,17 @@
 <script>
 
 import { indexPreProgram, showPreProgram, storePreProgram, updatePreProgram,
-         destroyPreProgram } from '@/api/preprogram'
+  destroyPreProgram } from '@/api/preprogram'
 import { indexProgram, showProgram, storeProgram, updateProgram,
-         destroyProgram } from '@/api/program'
+  destroyProgram } from '@/api/program'
 import { indexContact, showContact, storeContact, updateContact,
-         destroyContact } from '@/api/contact'
+  destroyContact } from '@/api/contact'
 import { indexSoftwareInfo, showSoftwareInfo, storeSoftwareInfo, updateSoftwareInfo,
-         destroySoftwareInfo } from '@/api/softwareInfo'
+  destroySoftwareInfo } from '@/api/softwareInfo'
 import { indexWorkflow, showWorkflow, storeWorkflow, updateWorkflow,
-         destroyWorkflow } from '@/api/workflow'       
+  destroyWorkflow } from '@/api/workflow'
 import { indexProgramTeamRole, showProgramTeamRole, storeProgramTeamRole, updateProgramTeamRole,
-         destroyProgramTeamRole } from '@/api/ProgramTeamRole'
-
+  destroyProgramTeamRole } from '@/api/ProgramTeamRole'
 
 import ProgramBasic from '@/components/ProgramBasic'
 import WorkflowItem from '@/components/Workflow'
@@ -38,7 +37,7 @@ import SoftwareInfo from '@/components/SoftwareInfo'
 import Contact from '@/components/Contact'
 import ProgramTeamRole from '@/components/ProgramTeamRole'
 
-//item: 
+// item:
 //  programBasic:   Object
 //  contact     :   Array
 //  softwareInfo:   Array
@@ -46,90 +45,85 @@ import ProgramTeamRole from '@/components/ProgramTeamRole'
 //  programTeamRole:Array
 export default {
   name: 'programEditPanel',
-  components: { WorkflowItem, ProgramTeamRole,SoftwareInfo,Contact,ProgramBasic},
+  components: { WorkflowItem, ProgramTeamRole, SoftwareInfo, Contact, ProgramBasic },
 
-  props:{
+  props: {
     propProgram: Object,
-    propVisible:Boolean,
-    propSelection:Object,
-    propDialogStatus:String,
-    propProperty:String
+    propVisible: Boolean,
+    propSelection: Object,
+    propDialogStatus: String,
+    propProperty: String
   },
   data() {
     return {
-      active:0,
+      active: 0,
       textMap: {
         update: '更新',
         create: '创建'
       },
-      programItem:new Object(),
-      data:{
-        programBasic:null,
-        contact:null,
-        softwareInfo:null,
-        programTeamRole:null,
-        workflow:null
+      programItem: new Object(),
+      data: {
+        programBasic: null,
+        contact: null,
+        softwareInfo: null,
+        programTeamRole: null,
+        workflow: null
       },
-      requestStoreArray:{
-        programBasic:storeProgram,
-        contact:storeContact,
-        softwareInfo:storeSoftwareInfo,
-        workflow:storeWorkflow,
-        programTeamRole:storeProgramTeamRole
+      requestStoreArray: {
+        programBasic: storeProgram,
+        contact: storeContact,
+        softwareInfo: storeSoftwareInfo,
+        workflow: storeWorkflow,
+        programTeamRole: storeProgramTeamRole
       },
-      requestUpdateArray:{
-        programBasic:updateProgram,
-        contact:updateContact,
-        softwareInfo:updateSoftwareInfo,
-        workflow:updateWorkflow,
-        programTeamRole:updateProgramTeamRole
+      requestUpdateArray: {
+        programBasic: updateProgram,
+        contact: updateContact,
+        softwareInfo: updateSoftwareInfo,
+        workflow: updateWorkflow,
+        programTeamRole: updateProgramTeamRole
       }
-      
 
-      
     }
   },
-   methods: {
+  methods: {
 
-      onClose(){
-        this.$emit('close-dia');
-      },
-      onOpen(){
-        this.programItem=this.propProgram;
-
-      },
-      confirm(){
-        this.$emit('close-dia');
-        if(this.propDialogStatus=='update'){
-          this.updateProgram();
-        }else{
-          this.createProgram();
-        }
-      },
-      createProgram() {
-          let request_data={
-            programId:this.programItem.programBasic.id,
-            data:this.data[this.propProperty]
-          }
-          this.requestStoreArray[this.propProperty](request_data).then((response) => {
-            this.programItem[this.propProperty]=response.data.items
-            var updateData={data:this.programItem[this.propProperty],type:this.propProperty};
-            this.$emit('update-list',updateData)
-
-        })
+    onClose() {
+      this.$emit('close-dia')
     },
-      updateProgram() {
-          let request_data=this.data[this.propProperty]
-          this.requestUpdateArray[this.propProperty](request_data).then((response) => {
-            var updateData={data:this.programItem[this.propProperty],type:this.propProperty};
-              this.$emit('update-list',updateData)
-
-        })
-      },
-      OnDataChange(args){
-        this.data[args.type]=args.data;
+    onOpen() {
+      this.programItem = this.propProgram
+    },
+    confirm() {
+      this.$emit('close-dia')
+      if (this.propDialogStatus == 'update') {
+        this.updateProgram()
+      } else {
+        this.createProgram()
       }
+    },
+    createProgram() {
+      const request_data = {
+        programId: this.programItem.programBasic.id,
+        data: this.data[this.propProperty]
+      }
+      this.requestStoreArray[this.propProperty](request_data).then((response) => {
+        this.programItem[this.propProperty] = response.data.items
+        var updateData = { data: this.programItem[this.propProperty], type: this.propProperty }
+        this.$emit('update-list', updateData)
+      })
+    },
+    updateProgram() {
+      const request_data = this.data[this.propProperty]
+      this.requestUpdateArray[this.propProperty](request_data).then((response) => {
+        var updateData = { data: this.programItem[this.propProperty], type: this.propProperty }
+        this.$emit('update-list', updateData)
+      })
+    },
+    OnDataChange(args) {
+      this.data[args.type] = args.data
     }
+  }
 
 }
 </script>

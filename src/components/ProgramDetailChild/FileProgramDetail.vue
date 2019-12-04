@@ -77,182 +77,179 @@
 </template>
 <script>
 import { indexFileProgram, showFileProgram, storeFileProgram, updateFileProgram,
-         destroyFileProgram } from '@/api/fileprogram'
-  export default {
-    data() {
-      return {
-        fileCategory:this.propFileCategory==="input"?['任务书','软件需求','软件设计','使用手册','接口协议','被测软件','测试任务书','软件更改']:['测试计划','测试说明','测试大纲','测试报告','测试记录'],
-        active:this.propActive,
-        listLoading:true,
-        listQuery:{
-          program_id:this.propProgramId,
-          category:null
-        },
+  destroyFileProgram } from '@/api/fileprogram'
+export default {
+  data() {
+    return {
+      fileCategory: this.propFileCategory === 'input' ? ['任务书', '软件需求', '软件设计', '使用手册', '接口协议', '被测软件', '测试任务书', '软件更改'] : ['测试计划', '测试说明', '测试大纲', '测试报告', '测试记录'],
+      active: this.propActive,
+      listLoading: true,
+      listQuery: {
+        program_id: this.propProgramId,
+        category: null
+      },
 
-        temp:{
-          program_id:this.propProgramId,
-          id:null,
-          version:'',
-          category:''
-        },
-        visible:false,
-        rules:{},
+      temp: {
+        program_id: this.propProgramId,
+        id: null,
+        version: '',
+        category: ''
+      },
+      visible: false,
+      rules: {},
 
-        assignForm: {
-          files: []
-        },
+      assignForm: {
+        files: []
+      },
 
-        //uploadedFile:[],
-        specificFile:[],
-        toReviewFileId:null,
-        dialogStatus: '',
-        textMap: {
-          update: '更新',
-          create: '创建'
-        }
-      };
-    },
-    props:{
-        propVisible:Boolean,
-        propProgramId:Number,
-        propFileCategory:String,
-        propActive:String
-    },
-
-    watch: {
-      toReviewFileId:function(newVa,oldVa){
-        let id=parseInt(newVa);
-        let data=this.specificFile.find(item=>item.id==id);
-          if(data.review_state!=='是'){
-            data.review_state='是'
-            updateFileProgram(data).then(response => {
-                let c=1;
-                }).catch(err => {
-                  console.log(err)
-                })
-          }
-      },
-      propVisible:function(newVa,oldVa){
-        if(newVa==true){
-		      this.getFileProgramInfo(this.propProgramId);
-        }
-      },
-     },
-    mounted(){
-      // this.getFileProgramInfo(this.propProgramId);
-    },
-    methods: {
-      getFileProgramInfo(id){
-          this.listLoading = true;
-          this.listQuery.program_id=id;
-          this.listQuery.category=this.active
-          indexFileProgram(this.listQuery).then(response => {
-            var data=response.data
-            if(data.total!=0){
-              this.specificFile =Object.values(data.items)
-              let toReviewFile=this.specificFile.find(x=>x.review_state=='是');
-              if(toReviewFile!=null){
-                this.toReviewFileId=toReviewFile.id;
-              }
-            }
-          this.listLoading=false;
-          })
-          },
-      fileChange(file, fileList) {
-        this.assignForm.files.push(file.raw);
-      },
-      removeFile(file, fileList) {
-        // 筛选选中的文件
-        let index = this.assignForm.files.findIndex(val => val.uid === file.raw.uid);
-        this.assignForm.files.splice(index, 1);
-      },
-      cancel(){
-        this.visible=false;
-      },
-      submitAssignForm(){
-
-          this.temp.files=this.assignForm.files;
-          this.visible=false;
-          storeFileProgram(this.temp).then(response => {
-              var item=response.data.items;
-
-              let index =this.specificFile.findIndex(one=>one.id==item.id);
-              if(index<0){
-                  this.specificFile.push(item)
-                  this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
-              }else{
-                  this.specificFile.splice(index,1,item)
-                  this.$notify({
-                  title: '成功',
-                  message: '更新成功',
-                  type: 'success',
-                  duration: 2000
-                })
-                }
-
-                this.$notify({
-                  title: '成功',
-                  message: '更新成功',
-                  type: 'success',
-                  duration: 2000
-                })
-
-            }).catch(err => {
-              console.log(err)
-            })
-      },
-      download(row){
-        showFileProgram(row.id).then(response => {
-              let type=row.name.split('.')[row.name.split('.').length-1]
-              let blob = new Blob([response.data], { type: 'application/'+type })
-              let link = document.createElement('a')
-              link.href = window.URL.createObjectURL(blob)
-              link.download = row.name
-              link.click()
-
-            }).catch(err => {
-              console.log(err)
-            })
-      },
-      edit(){},
-      replace(row){
-        this.dialogStatus='update';
-        this.visible=true;
-        this.temp.version=row.version;
-        this.temp.category=this.active;
-        this.temp.id=row.id;
-        // this.assignForm.files=[];
-        this.assignForm.files.splice(-1, 1);
-      },
-      create(){
-        this.dialogStatus='create';
-        this.visible=true;
-        this.temp.version=null;
-        this.temp.category=this.active;
-        this.temp.id=null;
-      },
-      update(row){
-        let data=row;
-        row.review_state='是'
-        updateFileProgram(data).then(response => {
-            let c=1;
-            }).catch(err => {
-              console.log(err)
-            })
-      },
-      handleClick(tab, event) {
-        this.specificFile=[];
-        this.getFileProgramInfo(this.propProgramId);
+      // uploadedFile:[],
+      specificFile: [],
+      toReviewFileId: null,
+      dialogStatus: '',
+      textMap: {
+        update: '更新',
+        create: '创建'
       }
-
     }
-   
-  };
+  },
+  props: {
+    propVisible: Boolean,
+    propProgramId: Number,
+    propFileCategory: String,
+    propActive: String
+  },
+
+  watch: {
+    toReviewFileId: function(newVa, oldVa) {
+      const id = parseInt(newVa)
+      const data = this.specificFile.find(item => item.id == id)
+      if (data.review_state !== '是') {
+        data.review_state = '是'
+        updateFileProgram(data).then(response => {
+          const c = 1
+        }).catch(err => {
+          console.log(err)
+        })
+      }
+    },
+    propVisible: function(newVa, oldVa) {
+      if (newVa == true) {
+		      this.getFileProgramInfo(this.propProgramId)
+      }
+    }
+  },
+  mounted() {
+    // this.getFileProgramInfo(this.propProgramId);
+  },
+  methods: {
+    getFileProgramInfo(id) {
+      this.listLoading = true
+      this.listQuery.program_id = id
+      this.listQuery.category = this.active
+      indexFileProgram(this.listQuery).then(response => {
+        var data = response.data
+        if (data.total != 0) {
+          this.specificFile = Object.values(data.items)
+          const toReviewFile = this.specificFile.find(x => x.review_state == '是')
+          if (toReviewFile != null) {
+            this.toReviewFileId = toReviewFile.id
+          }
+        }
+        this.listLoading = false
+      })
+    },
+    fileChange(file, fileList) {
+      this.assignForm.files.push(file.raw)
+    },
+    removeFile(file, fileList) {
+      // 筛选选中的文件
+      const index = this.assignForm.files.findIndex(val => val.uid === file.raw.uid)
+      this.assignForm.files.splice(index, 1)
+    },
+    cancel() {
+      this.visible = false
+    },
+    submitAssignForm() {
+      this.temp.files = this.assignForm.files
+      this.visible = false
+      storeFileProgram(this.temp).then(response => {
+        var item = response.data.items
+
+        const index = this.specificFile.findIndex(one => one.id == item.id)
+        if (index < 0) {
+          this.specificFile.push(item)
+          this.$notify({
+            title: '成功',
+            message: '创建成功',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.specificFile.splice(index, 1, item)
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+
+        this.$notify({
+          title: '成功',
+          message: '更新成功',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    download(row) {
+      showFileProgram(row.id).then(response => {
+        const type = row.name.split('.')[row.name.split('.').length - 1]
+        const blob = new Blob([response.data], { type: 'application/' + type })
+        const link = document.createElement('a')
+        link.href = window.URL.createObjectURL(blob)
+        link.download = row.name
+        link.click()
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    edit() {},
+    replace(row) {
+      this.dialogStatus = 'update'
+      this.visible = true
+      this.temp.version = row.version
+      this.temp.category = this.active
+      this.temp.id = row.id
+      // this.assignForm.files=[];
+      this.assignForm.files.splice(-1, 1)
+    },
+    create() {
+      this.dialogStatus = 'create'
+      this.visible = true
+      this.temp.version = null
+      this.temp.category = this.active
+      this.temp.id = null
+    },
+    update(row) {
+      const data = row
+      row.review_state = '是'
+      updateFileProgram(data).then(response => {
+        const c = 1
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    handleClick(tab, event) {
+      this.specificFile = []
+      this.getFileProgramInfo(this.propProgramId)
+    }
+
+  }
+
+}
 </script>
 <style>
 
