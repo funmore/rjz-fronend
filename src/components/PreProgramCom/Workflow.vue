@@ -47,9 +47,8 @@
 
 <script>
 import mixin from './mixin'
-import { indexWorkflow, showWorkflow, storeWorkflow, updateWorkflow,
-  destroyWorkflow } from '@/api/workflow'
-import { indexNode, showNode, storeNode, updateNode,
+import { showWorkflow, storeWorkflow } from '@/api/workflow'
+import { storeNode, updateNode,
   destroyNode } from '@/api/Node'
 const constNodeType = [
   {
@@ -89,9 +88,9 @@ export default {
     var validatePass = (rule, value, callback) => {
       if (this.workflow.workflowArray[this.workflow.active].name != '') {
         callback()
-        } else{
+      } else {
         callback(new Error('请输出流程阶段名'))
-        }
+      }
     }
     return {
       content: '请输入内容',
@@ -128,12 +127,12 @@ export default {
   methods: {
     getData() {
       this.listLoading = true
-        showWorkflow(this.propProgramBasicId).then(response => {
+      showWorkflow(this.propProgramBasicId).then(response => {
         var data = response.data
         if (data.isOkay == true) {
           this.dialogStatus = 'update'
           this.workflow = data.item
-        }else {
+        } else {
           this.dialogStatus = 'create'
         }
         this.listLoading = false
@@ -180,35 +179,33 @@ export default {
       this.$refs['workflow'].validate().then(() => {
         if (this.dialogStatus == 'update') { // 更新的情况
           this.updateNode(this.workflow, this.workflow.workflowArray[this.workflow.active], this.workflow.active, 'node_update_next', )
-        } else{ // 创建的流程
+        } else { // 创建的流程
           this.workflow.active++
-            if (this.workflow.active == this.workflow.workflowArray.length) this.workflow.active = 0
-          }
+          if (this.workflow.active == this.workflow.workflowArray.length) this.workflow.active = 0
+        }
       }).catch(() => {
       })
-
     },
     previous() {
       this.$refs['workflow'].validate().then(() => {
         if (this.dialogStatus == 'update') { // 更新的情况
           this.updateNode(this.workflow, this.workflow.workflowArray[this.workflow.active], this.workflow.active, 'node_update_previous')
-        } else{ // 创建的流程
+        } else { // 创建的流程
           this.workflow.active = this.workflow.active - 1
-            if (this.workflow.active == -1) this.workflow.active = this.workflow.workflowArray.length - 1
-          }
+          if (this.workflow.active == -1) this.workflow.active = this.workflow.workflowArray.length - 1
+        }
       })
-        
     },
     deleteNode() {
       var workflow = this.workflow
-         if (this.workflow.workflowArray.length == 1) {
+      if (this.workflow.workflowArray.length == 1) {
         this.$confirm('至少保留一个阶段', '提示', {
           confirmButtonText: '确定',
           showCancelButton: false,
           type: 'warning'
         })
         return
-         }
+      }
       this.$confirm('此操作将删除该阶段, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -216,25 +213,24 @@ export default {
       }).then(() => {
         if (this.dialogStatus == 'update') { // 更新的情况
           this.updateNode(this.workflow, this.workflow.workflowArray[this.workflow.active], this.workflow.active, 'node_delete')
-        } else{ // 创建的流程
+        } else { // 创建的流程
           this.workflow.workflowArray.splice(this.workflow.active, 1)
-                      if (this.workflow.active == this.workflow.workflowArray.length) this.workflow.active--
-                      this.$message({
+          if (this.workflow.active == this.workflow.workflowArray.length) this.workflow.active--
+          this.$message({
             type: 'success',
             message: '删除成功!'
           })
-                  }
+        }
       }).catch(() => {
         this.$message({
           type: 'info',
           message: '已取消删除'
-        })          
-                })
-
+        })
+      })
     },
     createNode() {
       var workflow = this.workflow
-         this.$confirm('此操作将新增阶段, 是否继续?', '提示', {
+      this.$confirm('此操作将新增阶段, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -242,19 +238,19 @@ export default {
         var node = { type: '建项', name: 'New Step', plan_day: '' }
         if (this.dialogStatus == 'update') {
           this.updateNode(this.workflow, node, this.workflow.active, 'node_create')
-        }else {
+        } else {
           workflow.workflowArray.splice(this.workflow.active + 1, 0, node)
-                      this.$message({
+          this.$message({
             type: 'success',
             message: '创建成功!'
           })
-                  }
+        }
       }).catch(() => {
         this.$message({
           type: 'info',
           message: '已取消创建'
-        })          
-                })
+        })
+      })
     },
     updateNode(workflow, node, index, type) {
       const Data = {
@@ -269,75 +265,75 @@ export default {
           if (response.data.isOkay == true) {
             const node = response.data.items
             workflow.workflowArray.splice(this.workflow.active + 1, 0, node)
-                  this.$message({
+            this.$message({
               type: 'success',
               message: '创建成功!'
             })
-                }
+          }
           this.buttonLoading = false
         }).catch(() => {
           this.$message({
             type: 'success',
             message: '创建失败!'
           })
-                this.buttonLoading = false
+          this.buttonLoading = false
         })
       }
       if (type == 'node_delete') {
         destroyNode(Data.data.id).then(response => {
           if (response.data.isOkay == true) {
             this.workflow.workflowArray.splice(this.workflow.active, 1)
-                      if (this.workflow.active == this.workflow.workflowArray.length) this.workflow.active--
-                      this.$message({
+            if (this.workflow.active == this.workflow.workflowArray.length) this.workflow.active--
+            this.$message({
               type: 'success',
               message: '删除成功!'
             })
-                }
+          }
           this.buttonLoading = false
         }).catch(() => {
           this.$message({
             type: 'success',
             message: '删除失败!'
           })
-                this.buttonLoading = false
+          this.buttonLoading = false
         })
       }
       if (type == 'node_update_next') {
         updateNode(Data).then(response => {
           if (response.data.isOkay == true) {
             this.workflow.active++
-                      if (this.workflow.active == this.workflow.workflowArray.length) this.workflow.active = 0
-                      this.$message({
+            if (this.workflow.active == this.workflow.workflowArray.length) this.workflow.active = 0
+            this.$message({
               type: 'success',
               message: '更新成功!'
             })
-                }
+          }
           this.buttonLoading = false
         }).catch(() => {
           this.$message({
             type: 'success',
             message: '更新失败!'
           })
-                this.buttonLoading = false
+          this.buttonLoading = false
         })
       }
       if (type == 'node_update_previous') {
         updateNode(Data).then(response => {
           if (response.data.isOkay == true) {
             this.workflow.active = this.workflow.active - 1
-                    if (this.workflow.active == -1) this.workflow.active = this.workflow.workflowArray.length - 1
-                    this.$message({
+            if (this.workflow.active == -1) this.workflow.active = this.workflow.workflowArray.length - 1
+            this.$message({
               type: 'success',
               message: '更新成功!'
             })
-                }
+          }
           this.buttonLoading = false
         }).catch(() => {
           this.$message({
             type: 'success',
             message: '更新失败!'
           })
-                this.buttonLoading = false
+          this.buttonLoading = false
         })
       }
     }

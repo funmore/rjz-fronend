@@ -24,8 +24,7 @@
 <script>
 import UploadExcelComponent from '@/components/UploadExcel/index.vue'
 import SelectEmployee from '@/components/SelectEmployee/index.vue'
-import { indexPoll, showPoll, storePoll, updatePoll,
-  destroyPoll } from '@/api/poll'
+import { storePoll } from '@/api/poll'
 import Property from './property.vue'
 export default {
   name: 'uploadExcel',
@@ -73,7 +72,7 @@ export default {
       this.tableHeader = header
       this.uploadVisible = false
       this.setRowVisible = true
-      // if(this.ExcelData.length!=0){
+      // if(this.ExcelData.length!==0){
       //   this.ExcelData.forEach(x=>{
       //     this.
       //   })
@@ -83,19 +82,19 @@ export default {
 
     },
     OnNextClicked() {
-      if (this.setRowVisible == true) {
+      if (this.setRowVisible === true) {
         for (const header of this.tableHeader) {
           let type = '数字'
           const valid_value = []
           this.ExcelData.forEach(value => {
-            if (value[header] != null) {
-              if (valid_value.indexOf(value[header]) == -1) {
+            if (value[header] !== null) {
+              if (valid_value.indexOf(value[header]) === -1) {
                 valid_value.push(value[header])
               }
             }
           })
           if (valid_value.length < 3) {
-            if (valid_value.length != 0) {
+            if (valid_value.length !== 0) {
               for (let i = 0; i < valid_value.length; i++) {
                 if (isNaN(parseInt(valid_value[i]))) {
                   type = '单项选择'

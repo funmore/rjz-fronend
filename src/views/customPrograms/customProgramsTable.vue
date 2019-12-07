@@ -84,18 +84,10 @@
 import { indexModel } from '@/api/model'
 import { indexEmployee } from '@/api/employee'
 import SelectEmployee from '@/components/SelectEmployee/index.vue'
-import { indexFavor, showFavor, storeFavor, updateFavor,
-  destroyFavor } from '@/api/favor'
 
-import { indexProgramEdit, indexCustomProgram, showProgramEdit, storeProgramEdit, updateProgramEdit,
-  destroyProgramEdit } from '@/api/programedit'
+import { indexCustomProgram } from '@/api/programedit'
 import SelectProgramProperty from '@/components/SelectProgramProperty/index.vue'
-import WorkflowItem from '@/components/Workflow'
-import SoftwareInfo from '@/components/SoftwareInfo'
-import Contact from '@/components/Contact'
-import ProgramTeamRole from '@/components/ProgramTeamRole'
 import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils/index.js'
 import Favor from '@/components/Favor.vue'
 
 const constProgramType = ['配置项测试', '定型测试', '回归测试']
@@ -116,7 +108,7 @@ const constSize = ['大', '中', '小']
 
 export default {
   name: 'complexTable',
-  components: { WorkflowItem, ProgramTeamRole, SoftwareInfo, Contact, SelectProgramProperty, SelectEmployee, Favor },
+  components: { SelectProgramProperty, SelectEmployee, Favor },
   directives: {
     waves
   },
@@ -151,7 +143,7 @@ export default {
       tableKey: 0,
 
       list: [],
-      total: new Number(),
+      total: 0,
 
       listQuery: {
         page: 1,
@@ -391,12 +383,12 @@ export default {
   //         let keyPath=columnConfig.values[index];
   //         let fatherProperty=keyPath.slice(0,keyPath.indexOf(separator))
   //         let childProperty=keyPath.slice(keyPath.indexOf(separator)+1)
-  //         if(fatherProperty=='softwareInfoCol'){
+  //         if(fatherProperty==='softwareInfoCol'){
   //             father=row[fatherProperty][0]
   //         }else{
   //             father=row[fatherProperty]
   //         }
-  //         if(father==null){
+  //         if(father===null){
   //           return '尚未配置'
   //         }else{
   //           return father[childProperty]
@@ -406,17 +398,16 @@ export default {
   computed: {
     valueComputed() {
       return (row, index) => {
-        var ret = null
         var father = null
         const keyPath = this.columnConfig.values[index]
         const fatherProperty = keyPath.slice(0, keyPath.indexOf(this.separator))
         const childProperty = keyPath.slice(keyPath.indexOf(this.separator) + 1)
-        if (fatherProperty == 'softwareInfoCol') {
+        if (fatherProperty === 'softwareInfoCol') {
           father = row[fatherProperty][0]
         } else {
           father = row[fatherProperty]
         }
-        if (father == null) {
+        if (father === null) {
           return '尚未配置'
         } else {
           return father[childProperty]
@@ -442,12 +433,12 @@ export default {
     //     let keyPath=this.columnConfig.values[index];
     //     let fatherProperty=keyPath.slice(0,keyPath.indexOf(this.separator))
     //     let childProperty=keyPath.slice(keyPath.indexOf(this.separator)+1)
-    //     if(fatherProperty=='softwareInfoCol'){
+    //     if(fatherProperty==='softwareInfoCol'){
     //         father=row[fatherProperty][0]
     //     }else{
     //         father=row[fatherProperty]
     //     }
-    //     if(father==null){
+    //     if(father===null){
     //       return '尚未配置'
     //     }else{
     //       return father[childProperty]
@@ -461,11 +452,11 @@ export default {
     },
     columnSelect2Config() {
       const trim_values = this.columnSelect.values.filter(x => x.includes(this.separator))
-      const trim_items = this.columnSelect.items.filter(x => (x.key != 'programBasic') &&
-                                        (x.key != 'contact') &&
-                                        (x.key != 'softwareInfoCol') &&
-                                        (x.key != 'workflow') &&
-                                        (x.key != 'programTeamRole'))
+      const trim_items = this.columnSelect.items.filter(x => (x.key !== 'programBasic') &&
+                                        (x.key !== 'contact') &&
+                                        (x.key !== 'softwareInfoCol') &&
+                                        (x.key !== 'workflow') &&
+                                        (x.key !== 'programTeamRole'))
       this.columnConfig = { values: trim_values, items: trim_items }
     },
     OnRangeChange(args) {
@@ -480,7 +471,7 @@ export default {
       }
       indexModel(listQuery).then(response => {
         var data = response.data
-        if (data.total != 0) {
+        if (data.total !== 0) {
           this.selection.model = Object.values(data.items)
         }
       })
@@ -547,7 +538,7 @@ export default {
           } else {
             father = row[fatherProperty]
           }
-          if (father == null) {
+          if (father === null) {
             return '尚未配置'
           } else {
             return father[childProperty]

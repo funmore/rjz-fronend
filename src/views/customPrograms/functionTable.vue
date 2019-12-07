@@ -56,7 +56,7 @@
 
       <el-table-column width="80px" align="center" label="项目备注" class-name="note">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.programBasic.note==''" type="primary" size="small" @click="onNoteClick(scope.row)">新增</el-button>
+          <el-button v-if="scope.row.programBasic.note===''" type="primary" size="small" @click="onNoteClick(scope.row)">新增</el-button>
           <span v-else @click="onNoteClick(scope.row)">{{scope.row.programBasic.note}}</span>
         </template>
       </el-table-column>
@@ -93,7 +93,7 @@
                      >
                   </el-option>
             </el-select> -->
-            <span v-if="scope.row.programBasic.state=='完结项目'"><el-button type="primary" size="small" disabled>已完结</el-button></span>
+            <span v-if="scope.row.programBasic.state==='完结项目'"><el-button type="primary" size="small" disabled>已完结</el-button></span>
             <span v-else><el-button type="primary" size="small"  @click="onProgramStateChange(scope.row)">切换为{{scope.row.programBasic.state|toState(stateArr)}}</el-button></span>
             
           <el-button type="danger" size="small" icon="el-icon-edit" :loading="onDeleting" @click="handleDelete(scope.row)">删除</el-button>
@@ -149,12 +149,8 @@
 
 import selection_minx from '@/components/PublicMixin/selection'
 
-import { indexFavor, showFavor, storeFavor, updateFavor,
-  destroyFavor } from '@/api/favor'
-import { indexProgram, showProgram, storeProgram, updateProgram,
-  destroyProgram } from '@/api/program'
-import { indexProgramEdit, indexCustomProgram, showProgramEdit, storeProgramEdit, updateProgramEdit,
-  destroyProgramEdit } from '@/api/programedit'
+import { updateProgram } from '@/api/program'
+import { indexCustomProgram, destroyProgramEdit } from '@/api/programedit'
 import SelectProgramProperty from '@/components/SelectProgramProperty/index.vue'
 
 import waves from '@/directive/waves' // 水波纹指令
@@ -185,7 +181,7 @@ export default {
         ProgramTeamRole: false
       },
       is_exist: false,
-      programBasicId: new Number(),
+      programBasicId: 0,
 
       separator: '.',
 
@@ -197,7 +193,7 @@ export default {
       tableKey: 0,
 
       list: [],
-      total: new Number(),
+      total: 0,
 
       listQuery: {
         page: 1,
@@ -454,11 +450,11 @@ export default {
       }
     },
     toState(state, stateArr) {
-      if (state == '完结项目') {
+      if (state === '完结项目') {
         return null
       }
       var index = stateArr.indexOf(state)
-      if (index == -1) {
+      if (index === -1) {
         return '预备项目'
       } else {
         return stateArr[index + 1]
@@ -469,17 +465,16 @@ export default {
   computed: {
     valueComputed() {
       return (row, index) => {
-        var ret = null
         var father = null
         const keyPath = this.columnConfig.values[index]
         const fatherProperty = keyPath.slice(0, keyPath.indexOf(this.separator))
         const childProperty = keyPath.slice(keyPath.indexOf(this.separator) + 1)
-        if (fatherProperty == 'softwareInfoCol') {
-          father = row[fatherProperty] == null ? null : row[fatherProperty][0]
+        if (fatherProperty === 'softwareInfoCol') {
+          father = row[fatherProperty] === null ? null : row[fatherProperty][0]
         } else {
           father = row[fatherProperty]
         }
-        if (father == null) {
+        if (father === null) {
           return '尚未配置'
         } else {
           return father[childProperty]
@@ -502,13 +497,13 @@ export default {
     onProgramStateChange(row) {
       var toState = row.programBasic.state
       var index = this.stateArr.indexOf(row.programBasic.state)
-      if (index == -1) {
+      if (index === -1) {
         return
       } else {
         toState = this.stateArr[index + 1]
       }
 
-      if ((toState == '正式项目' || toState == '完结项目') && row.is_exist.ProgramTeamRole != true) {
+      if ((toState === '正式项目' || toState === '完结项目') && row.is_exist.ProgramTeamRole !== true) {
         this.$confirm('转正式项目/完结项目的前置条件是具备项目人员', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -522,7 +517,7 @@ export default {
       this.onProgramStarting = true
       const data = row.programBasic
       updateProgram(data).then(response => {
-        if (response.data.isOkay == true) {
+        if (response.data.isOkay === true) {
           for (const v of this.list) {
             if (v.programBasic.id === row.programBasic.id) {
               const index = this.list.indexOf(v)
@@ -549,7 +544,7 @@ export default {
         this.onDeleting = true
         destroyProgramEdit(row.programBasic.id).then(response => {
           var data = response.data
-          if (data.is_okay == true) {
+          if (data.is_okay === true) {
             for (const v of this.list) {
               if (v.programBasic.id === row.programBasic.id) {
                 const index = this.list.indexOf(v)
@@ -588,7 +583,7 @@ export default {
     handleClose(args) {
       this.visibleCol[args.type] = false
       // 如果是新增项目
-      if ('created' in args && args.created == true) {
+      if ('created' in args && args.created === true) {
         const justCreated = {
           programBasic: args.value,
           contact: {
@@ -632,9 +627,9 @@ export default {
         return
       }
       // 如果是对已有项目的属性更改
-      if ('state' in args && args.state == 'update') {
-        var item = this.list.find(x => x.programBasic.id == args.programId)
-        if (item != null) {
+      if ('state' in args && args.state === 'update') {
+        var item = this.list.find(x => x.programBasic.id === args.programId)
+        if (item !== null) {
           item.is_exist[args.type] = true
         }
       }
@@ -648,11 +643,11 @@ export default {
     },
     columnSelect2Config() {
       const trim_values = this.columnSelect.values.filter(x => x.includes(this.separator))
-      const trim_items = this.columnSelect.items.filter(x => (x.key != 'programBasic') &&
-                                        (x.key != 'contact') &&
-                                        (x.key != 'softwareInfoCol') &&
-                                        (x.key != 'workflow') &&
-                                        (x.key != 'programTeamRole'))
+      const trim_items = this.columnSelect.items.filter(x => (x.key !== 'programBasic') &&
+                                        (x.key !== 'contact') &&
+                                        (x.key !== 'softwareInfoCol') &&
+                                        (x.key !== 'workflow') &&
+                                        (x.key !== 'programTeamRole'))
       this.columnConfig = { values: trim_values, items: trim_items }
     },
     OnRangeChange(args) {
@@ -662,7 +657,7 @@ export default {
       this.columnSelect = args
     },
     onFavorListQueryChange(args) {
-      if (args != undefined) {
+      if (args !== undefined) {
         this.listQuery = args
         this.getList()
       }
@@ -702,7 +697,7 @@ export default {
     },
     confirmNote(row) {
       updateProgram(row).then(response => {
-        if (response.data.isOkay == true) {
+        if (response.data.isOkay === true) {
           this.dialogNoteVisible = false
           this.$notify({
             title: '项目备注已更新',
@@ -714,7 +709,7 @@ export default {
       })
     },
     tableRowClassName({ row, rowIndex }) {
-      if (row.programBasic.note != '') {
+      if (row.programBasic.note !== '') {
         return 'warning-row'
       }
       return ''
@@ -741,16 +736,15 @@ export default {
       var id = 1
       return list.map(row => {
         var ret = values.map(keyPath => {
-          var ret = null
           var father = null
           const fatherProperty = keyPath.slice(0, keyPath.indexOf(this.separator))
           const childProperty = keyPath.slice(keyPath.indexOf(this.separator) + 1)
-          if (fatherProperty == 'softwareInfoCol') {
-            father = row[fatherProperty] == null ? null : row[fatherProperty][0]
+          if (fatherProperty === 'softwareInfoCol') {
+            father = row[fatherProperty] === null ? null : row[fatherProperty][0]
           } else {
             father = row[fatherProperty]
           }
-          if (father == null) {
+          if (father === null) {
             return '尚未配置'
           } else {
             return father[childProperty]

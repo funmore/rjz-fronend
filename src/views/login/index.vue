@@ -30,8 +30,8 @@
 </template>
 
 <script>
-//import { isvalidUsername } from '@/utils/validate'
-var sha1 = require('@/utils/sha1.js');
+// import { isvalidUsername } from '@/utils/validate'
+var sha1 = require('@/utils/sha1.js')
 
 export default {
   name: 'login',
@@ -72,27 +72,12 @@ export default {
         this.pwdType = 'password'
       }
     },
-    // handleLogin() {
-    //   this.$refs.loginForm.validate(valid => {
-    //     if (valid) {
-    //       this.loading = true
-    //       this.$store.dispatch('Login', this.loginForm).then(() => {
-    //         this.loading = false
-    //         this.$router.push({ path: '/' })
-    //       }).catch(() => {
-    //         this.loading = false
-    //       })
-    //     } else {
-    //       console.log('error submit!!')
-    //       return false
-    //     }
-    //   })
-    // },
+
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          var total={name:this.loginForm.username.trim(),password:this.loginForm.password.trim()};
+          var total = { name: this.loginForm.username.trim(), password: this.loginForm.password.trim() }
           this.$store.dispatch('Login', total).then(() => {
             this.loading = false
             this.$router.push({ path: '/' })

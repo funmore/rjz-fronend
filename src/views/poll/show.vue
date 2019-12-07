@@ -79,9 +79,8 @@
 
 <script>
 import waves from '@/directive/waves/index.js' // 水波纹指令
-import { showPoll, showUnPollPeople } from '@/api/poll'
-import { indexPollFill, showPollFill, storePollFill, updatePollFill,
-  destroyPollFill } from '@/api/pollfill'
+import { showUnPollPeople } from '@/api/poll'
+import { indexPollFill, destroyPollFill } from '@/api/pollfill'
 
 export default {
   name: 'complexTable',
@@ -91,10 +90,10 @@ export default {
   },
   filters: {
     output: function(row, item) {
-      return Object.values(row).find(value => value.poll_column_id == item.id).value
+      return Object.values(row).find(value => value.poll_column_id === item.id).value
     },
     pollState: function(count) {
-      return count == 0 ? '未填写' : '已填写'
+      return count === 0 ? '未填写' : '已填写'
     }
   },
   data() {
@@ -104,7 +103,7 @@ export default {
       onDeleting: false,
       list: [],
       structure: [],
-      total: new Number(),
+      total: 0,
       downloadLoading: false,
       visible: false,
       unPolledListLoading: true,
@@ -137,7 +136,7 @@ export default {
         this.onDeleting = true
         destroyPollFill(poll_fill_id).then(response => {
           var data = response.data
-          if (data.is_okay == true) {
+          if (data.is_okay === true) {
             for (const v of this.list) {
               if (v.poll_fill_id === poll_fill_id) {
                 const index = this.list.indexOf(v)
@@ -193,13 +192,13 @@ export default {
         this.downloadLoading = false
       })
     },
-    // {{Object.values(scope.row).find(value=>value.poll_column_id==item.id).value}}
+    // {{Object.values(scope.row).find(value=>value.poll_column_id===item.id).value}}
     formatJson(filterVal, list) {
       return list.map(v => filterVal.map(j => {
         if (v instanceof Object) {
-          return Object.values(v).find(k => k.poll_column_id == j.id).value
+          return Object.values(v).find(k => k.poll_column_id === j.id).value
         } else {
-          var b = 1
+          return
         }
       }))
     },

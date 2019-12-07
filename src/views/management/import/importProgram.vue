@@ -3,18 +3,17 @@
           <el-upload v-show="uploadVisible" class="upload-demo" :auto-upload="false" :on-change="fileChange" :multiple="false" :limit="1"   :file-list="assignForm">
             <el-button slot="trigger" size="small"><i class="icon-up margin-right-8"></i>从本地选择文件</el-button>
           </el-upload>
-          <pre-program-edit :propStep="program_step" :propDialogStatus="'create'" :propProgram="temp" :propVisible="configVisible" :propSelection="selection" @close-dia="onCloseDia" @update-list="onUpdateList"></pre-program-edit>
+          <!-- <pre-program-edit :propStep="program_step" :propDialogStatus="'create'" :propProgram="temp" :propVisible="configVisible" :propSelection="selection" @close-dia="onCloseDia" @update-list="onUpdateList"></pre-program-edit> -->
   </div>
 </template>
 
 <script>
 import { indexModel } from '@/api/model'
 import { indexEmployee } from '@/api/employee'
-import PreProgramEdit from '@/components/PreProgramEdit'
+// import PreProgramEdit from '@/components/PreProgramEdit'
 
 export default {
   name: 'uploadProgram',
-  components: { PreProgramEdit },
   data() {
     return {
       // assignForm: {
@@ -72,7 +71,7 @@ export default {
         ],
         softwareInfo: [{
           name: '',
-          version_id: new Number(),
+          version_id: [],
           size: '',
           reduced_code_size: '',
           reduced_reason: '',

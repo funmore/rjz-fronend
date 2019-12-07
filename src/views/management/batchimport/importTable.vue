@@ -11,8 +11,7 @@
 
 <script>
 import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-import { indexBatchImport, showBatchImport, storeBatchImport, updateBatchImport,
-  destroyBatchImport } from '@/api/BatchImport'
+import { storeBatchImport } from '@/api/BatchImport'
 export default {
   name: 'uploadExcel',
   components: { UploadExcelComponent },

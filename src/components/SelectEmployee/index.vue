@@ -22,13 +22,13 @@
   import { indexEmployee } from '@/api/employee'
 
 export default {
-  name: 'select-employee',
-  props: {
+    name: 'select-employee',
+    props: {
       propIdList: Array,
       propLabel: String,
       propProp: String
-  },
-  data() {
+    },
+    data() {
       return {
         rawList: [],
         list: [
@@ -39,10 +39,10 @@ export default {
           isp: []
         }
       }
-  },
-  mounted() {
+    },
+    mounted() {
       this.getLists()
-  },
+    },
     methods: {
       getLists() {
         var listQuery = {
@@ -70,7 +70,7 @@ export default {
         this.id_list = values.filter(x => x.includes('/')).map(x => x.slice(x.indexOf('/') + 1))
         this.$emit('rangeChange', this.id_list)
       }
-  }
+    }
 
 }
 </script>

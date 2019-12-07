@@ -61,7 +61,7 @@
 
         <el-table-column width="600px" align="center" label="有效值">
             <template slot-scope="scope">
-              <div v-if="scope.row.type=='数字'">
+              <div v-if="scope.row.type==='数字'">
                 <el-form ref="form" :model="scope.row.valid_value" label-width="100px">
                  <el-form-item label="最小值">
                   <el-input v-model="scope.row.valid_value[0]" width="100px"></el-input>
@@ -71,7 +71,7 @@
                 </el-form-item>
               </el-form>
               </div>
-              <div v-else-if="scope.row.type=='单项选择'">
+              <div v-else-if="scope.row.type==='单项选择'">
                 <el-tag
                 :key="tag"
                 v-for="tag in scope.row.valid_value"
@@ -93,7 +93,7 @@
               <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.row)">+ 有效值</el-button>
               </div>
 
-              <div v-else-if="scope.row.type=='多项选择'">
+              <div v-else-if="scope.row.type==='多项选择'">
                 <el-tag
                 :key="tag"
                 v-for="tag in scope.row.valid_value"
@@ -114,7 +114,7 @@
               </el-input>
               <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.row)">+ 有效值</el-button>
               </div>
-              <div v-else-if="scope.row.type=='单行文字'">
+              <div v-else-if="scope.row.type==='单行文字'">
               </div>
           </template>
         </el-table-column>
@@ -135,8 +135,7 @@
 
 <script>
 import SelectEmployee from '@/components/SelectEmployee/index.vue'
-import { indexPoll, showPoll, storePoll, updatePoll,
-  destroyPoll } from '@/api/poll'
+import { storePoll } from '@/api/poll'
 export default {
   name: 'uploadExcel',
   components: { SelectEmployee },
@@ -149,7 +148,7 @@ export default {
       insertAfterName: '', // 在某一行之后新增
       insertName: '',
       typeOptions: ['数字', '多项选择', '单项选择', '单行文字'],
-      propertyData: this.propPropertyData == undefined ? [] : this.propPropertyData,
+      propertyData: this.propPropertyData === undefined ? [] : this.propPropertyData,
       request_data: {
         poll: {
           name: '',
@@ -167,7 +166,7 @@ export default {
           { required: true,
             trigger: 'change',
             validator(rule, val, cb) {
-              if (val == '') {
+              if (val === '') {
                 cb(new Error('请选择截止日期'))
               } else if (new Date(val) < new Date()) {
                 cb(new Error('截止日期必须大于当前时间'))
@@ -250,7 +249,7 @@ export default {
     },
     OnDelete(row) {
       for (const v of this.propertyData) {
-        if (v == row) {
+        if (v === row) {
           const index = this.propertyData.indexOf(v)
           this.propertyData.splice(index, 1)
           break
@@ -258,9 +257,9 @@ export default {
       }
     },
     OnInsert() {
-      if (this.propertyData.length == 0) {
+      if (this.propertyData.length === 0) {
         const value = {
-          name: this.insertName == '' ? '新增字段' + (++this.id).toString() : this.insertName,
+          name: this.insertName === '' ? '新增字段' + (++this.id).toString() : this.insertName,
           type: '数字',
           valid_value: [],
           inputValue: '',
@@ -273,7 +272,7 @@ export default {
         if (v.name === this.insertAfterName) {
           const index = this.propertyData.indexOf(v)
           const value = {
-            name: this.insertName == '' ? '新增字段' + (++this.id).toString() : this.insertName,
+            name: this.insertName === '' ? '新增字段' + (++this.id).toString() : this.insertName,
             type: '数字',
             valid_value: [],
             inputValue: '',

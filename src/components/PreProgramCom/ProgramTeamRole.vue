@@ -17,21 +17,26 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="100px" label="姓名">
+      <el-table-column width="300px" label="姓名">
         <template slot-scope="scope">
-                <el-select v-model="scope.row.employee_id" placeholder="请选择">
+                <!-- <el-select v-model="scope.row.employee_id" placeholder="请选择">
                   <el-option
                     v-for="item in employees"
                     :key="item.id"
                     :label="item.name"
                     :value="item.id">
                   </el-option>
-                </el-select> 
+                </el-select> -->
+                <select-employee-one
+                  :propEmployeeId="scope.row.employee_id"
+                  :propRawList= "employees"
+                  @onHandleChange="onHandleSelectChange($event,scope.row)"
+                ></select-employee-one>  
             
         </template>
       </el-table-column>
 
-      <el-table-column width="100px" label="工作内容">
+      <el-table-column width="200px" label="工作内容">
         <template slot-scope="scope" >
               <el-input class="edit-input" size="small" v-model="scope.row.workload_note" ></el-input>
         </template>
@@ -46,13 +51,13 @@
 
       <el-table-column width="200px" label="操作" >
         <template slot-scope="scope">
-          <el-button v-if="scope.row.role=='项目组员'" type="warning" @click="confirmDelete(scope.row,scope.$index)" size="small" icon="el-icon-circle-check-outline">删除</el-button>
+          <el-button v-if="scope.row.role==='项目组员'" type="warning" @click="confirmDelete(scope.row,scope.$index)" size="small" icon="el-icon-circle-check-outline">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
               <div slot="footer" class="dialog-footer">
               <el-button @click="cancel()">取消</el-button>
-              <el-button type="primary" :loading="onConfirming" @click="confirmCreate" v-if="dialogStatus=='create'">确认</el-button>
+              <el-button type="primary" :loading="onConfirming" @click="confirmCreate" v-if="dialogStatus==='create'">确认</el-button>
               <el-button type="primary" :loading="onConfirming" @click="confirmUpdate" v-else>确认</el-button>
       </div>
 </el-dialog>
@@ -61,15 +66,16 @@
 
 <script>
 
-import { indexEmployee, showEmployee, storeEmployee, updateEmployee,
-  destroyEmployee } from '@/api/employee'
+import { indexEmployee } from '@/api/employee'
 
-import { indexProgramTeamRole, showProgramTeamRole, storeProgramTeamRole, updateProgramTeamRole,
-  destroyProgramTeamRole } from '@/api/programteamrole'
+import { showProgramTeamRole, storeProgramTeamRole, updateProgramTeamRole } from '@/api/programteamrole'
+import SelectEmployeeOne from '@/components/SelectEmployeeOne.vue'
+
 import mixin from './mixin'
 
 export default {
   name: 'ProgramTeamRole',
+  components: { SelectEmployeeOne },
   props: {
     propVisible: Boolean,
     propProgramBasicId: Number
@@ -81,11 +87,11 @@ export default {
       employees: [],
       listLoading: true,
       programTeamRole: [
-        { role: '项目组长', employee_id: new Number(), plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
-        { role: '项目组员', employee_id: new Number(), plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false }
-        // {role:'监督人员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-        // {role:'配置管理员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
-        // {role:'质量保证员',employee_id:new Number(),plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false}
+        { role: '项目组长', employee_id: 0, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+        { role: '项目组员', employee_id: 0, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false }
+        // {role:'监督人员',employee_id:0,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
+        // {role:'配置管理员',employee_id:0,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false},
+        // {role:'质量保证员',employee_id:0,plan_workload:0,workload_note:'工作描述',actual_workload:0,isEdit:false}
       ],
       dialogStatus: '',
       textMap: {
@@ -110,11 +116,14 @@ export default {
   },
 
   methods: {
+    onHandleSelectChange(args, row) {
+      row.employee_id = args
+    },
     getData() {
       this.listLoading = true
       showProgramTeamRole(this.propProgramBasicId).then(response => {
         var data = response.data
-        if (data.isOkay == true) {
+        if (data.isOkay === true) {
           this.dialogStatus = 'update'
           this.programTeamRole = data.item
         } else {
@@ -133,7 +142,7 @@ export default {
         data: this.programTeamRole
       }
       updateProgramTeamRole(storeData).then(response => {
-        if (response.data.isOkay == true) {
+        if (response.data.isOkay === true) {
           var args = {
             type: this.$options.name,
             state: this.dialogStatus,
@@ -147,8 +156,6 @@ export default {
             type: 'success',
             duration: 2000
           })
-        } else {
-
         }
         this.onConfirming = false
       }).catch(error => {
@@ -162,7 +169,7 @@ export default {
         data: this.programTeamRole
       }
       storeProgramTeamRole(storeData).then(response => {
-        if (response.data.isOkay == true) {
+        if (response.data.isOkay === true) {
           this.dialogStatus = 'update'
           var args = {
             type: this.$options.name,
@@ -186,11 +193,11 @@ export default {
     getList() {
       this.listLoading = true
       var listQuery = {
-        checkALL: true
+        checkForSelect: true
       }
       indexEmployee(listQuery).then(response => {
         var data = response.data
-        this.employees = data.items
+        this.employees = Object.values(data.items)
         this.listLoading = false
       })
     },

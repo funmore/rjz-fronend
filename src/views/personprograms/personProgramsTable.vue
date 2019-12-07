@@ -169,12 +169,8 @@
   import { indexModel } from '@/api/model'
 import { indexEmployee } from '@/api/employee'
 
-import { indexProgramEdit, showProgramEdit, storeProgramEdit, updateProgramEdit,
-    destroyProgramEdit } from '@/api/programedit'
-import WorkflowItem from '@/components/Workflow'
-import SoftwareInfo from '@/components/SoftwareInfo'
-import Contact from '@/components/Contact'
-import ProgramTeamRole from '@/components/ProgramTeamRole'
+import { indexProgramEdit } from '@/api/programedit'
+
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils/index.js'
 
@@ -196,12 +192,11 @@ const constCpuType = ['cpu1', 'cpu2', 'cpu3', 'cpu4']
 const constSize = ['大', '中', '小']
 
 export default {
-  name: 'complexTable',
-  components: { WorkflowItem, ProgramTeamRole, SoftwareInfo, Contact },
-  directives: {
+    name: 'complexTable',
+    directives: {
       waves
-  },
-  data() {
+    },
+    data() {
       return {
   
         selection: {
@@ -233,7 +228,7 @@ export default {
         tableKey: 0,
 
         list: [],
-        total: new Number(),
+        total: 0,
 
         listQuery: {
           page: 1,
@@ -273,7 +268,7 @@ export default {
           ],
           softwareInfo: [{
             name: '',
-            version_id: new Number(),
+            version_id: 0,
             size: '',
             reduced_code_size: '',
             reduced_reason: '',
@@ -327,8 +322,8 @@ export default {
           isIndeterminate: true
         }
       }
-  },
-  filters: {
+    },
+    filters: {
       parseTime,
       statusFilter(status) {
         const statusMap = {
@@ -339,20 +334,20 @@ export default {
         return statusMap[status]
       }
 
-  },
-  created() {
+    },
+    created() {
       this.getList()
       this.getEmployeePrincal()
       this.getModel()
-  },
-  methods: {
+    },
+    methods: {
       getModel() {
         var listQuery = {
           isAll: true
         }
         indexModel(listQuery).then(response => {
           var data = response.data
-          if (data.total != 0) {
+          if (data.total !== 0) {
             this.selection.model = Object.values(data.items)
           }
         })
@@ -428,7 +423,7 @@ export default {
           ],
           softwareInfo: [{
             name: '',
-            version_id: new Number(),
+            version_id: 0,
             size: '',
             reduced_code_size: '',
             reduced_reason: '',
@@ -458,11 +453,11 @@ export default {
             ]
           },
           programTeamRole: [
-            { role: '项目组长', employee_id: new Number(), plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
-            { role: '项目组员', employee_id: new Number(), plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
-            { role: '监督人员', employee_id: new Number(), plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
-            { role: '配置管理员', employee_id: new Number(), plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
-            { role: '质量保证员', employee_id: new Number(), plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false }
+            { role: '项目组长', employee_id: 0, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+            { role: '项目组员', employee_id: 0, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+            { role: '监督人员', employee_id: 0, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+            { role: '配置管理员', employee_id: 0, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false },
+            { role: '质量保证员', employee_id: 0, plan_workload: 0, workload_note: '工作描述', actual_workload: 0, isEdit: false }
           ],
 
           step: 0
@@ -521,6 +516,6 @@ export default {
         this.check.checkAll = checkedCount === this.check.cities.length
         this.check.isIndeterminate = checkedCount > 0 && checkedCount < this.check.cities.length
       }
-  }
+    }
 }
 </script>

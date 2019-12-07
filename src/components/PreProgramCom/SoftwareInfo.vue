@@ -149,131 +149,127 @@ import mixin from './mixin'
 import selection_minx from '../PublicMixin/selection'
 
 import { indexSoftwareInfo, showSoftwareInfo, storeSoftwareInfo, updateSoftwareInfo,
-         destroySoftwareInfo } from '@/api/softwareinfo'
-
+  destroySoftwareInfo } from '@/api/softwareinfo'
 
 export default {
   name: 'SoftwareInfo',
 
-  props:{
-    propVisible:Boolean,
+  props: {
+    propVisible: Boolean,
     propProgramBasicId: Number
   },
-  mixins: [mixin,selection_minx],
+  mixins: [mixin, selection_minx],
   data() {
     return {
-      
 
-
-      softwareInfo:{
-                name:'',
-                version_id:new Number(),
-                size:'',
-                reduced_code_size:'',
-                reduced_reason:'',
-                software_type:'',
-                software_usage:'',
-                code_langu:'',
-                complier:'',
-                runtime:'',
-                cpu_type:'',
-                software_cate:'',
-                software_sub_cate:''
-              },
+      softwareInfo: {
+        name: '',
+        version_id: new Number(),
+        size: '',
+        reduced_code_size: '',
+        reduced_reason: '',
+        software_type: '',
+        software_usage: '',
+        code_langu: '',
+        complier: '',
+        runtime: '',
+        cpu_type: '',
+        software_cate: '',
+        software_sub_cate: ''
+      },
 
       rules: {
-           name:[ { required: true, message: '请输入名称', trigger: 'blur' } ],
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
 
       },
-      listLoading:false,
+      listLoading: false,
       dialogStatus: '',
-        textMap: {
-          update: '更新',
-          create: '创建'
-        },
-        onConfirming:false
+      textMap: {
+        update: '更新',
+        create: '创建'
+      },
+      onConfirming: false
     }
   },
-  watch:{
-      //propVisible start
-      propVisible:function(newVa,oldVa){
-        if(newVa==true){
-          this.getData()
-        }
-      },
-      //propVisible end
-  },
-   methods: {
-      getData(){
-        this.listLoading=true;
-        showSoftwareInfo(this.propProgramBasicId).then(response => {
-          var data=response.data
-          if(data.isOkay==true){
-            this.dialogStatus='update'
-            this.softwareInfo = data.item
-          }else{
-            this.dialogStatus='create'
-          }
-          this.listLoading = false
-        })
-    },
-    confirmUpdate(){
-      this.onConfirming=true
-      let storeData={
-        programId:this.propProgramBasicId,
-        data:this.softwareInfo
+  watch: {
+    // propVisible start
+    propVisible: function(newVa, oldVa) {
+      if (newVa == true) {
+        this.getData()
       }
-      updateSoftwareInfo(storeData).then(response => {
-        if(response.data.isOkay==true){
-                var args={
-                  type:this.$options.name,
-                  state:this.dialogStatus,
-                  programId:this.propProgramBasicId,
-                  value:response.data.item
-                }
-                this.$emit('close',args)
-                this.$notify({
-                  title: '信息已更新',
-                  message: '请在项目中查看此项目',
-                  type: 'success',
-                  duration: 2000
-                })
+    }
+    // propVisible end
+  },
+  methods: {
+    getData() {
+      this.listLoading = true
+      showSoftwareInfo(this.propProgramBasicId).then(response => {
+        var data = response.data
+        if (data.isOkay == true) {
+          this.dialogStatus = 'update'
+          this.softwareInfo = data.item
+        } else {
+          this.dialogStatus = 'create'
         }
-        this.onConfirming=false
-      }).catch(error => {
-        this.onConfirming=false
+        this.listLoading = false
       })
     },
-    confirmCreate(){
-      this.onConfirming=true
-      let storeData={
-        programId:this.propProgramBasicId,
-        data:this.softwareInfo
+    confirmUpdate() {
+      this.onConfirming = true
+      const storeData = {
+        programId: this.propProgramBasicId,
+        data: this.softwareInfo
+      }
+      updateSoftwareInfo(storeData).then(response => {
+        if (response.data.isOkay == true) {
+          var args = {
+            type: this.$options.name,
+            state: this.dialogStatus,
+            programId: this.propProgramBasicId,
+            value: response.data.item
+          }
+          this.$emit('close', args)
+          this.$notify({
+            title: '信息已更新',
+            message: '请在项目中查看此项目',
+            type: 'success',
+            duration: 2000
+          })
+        }
+        this.onConfirming = false
+      }).catch(error => {
+        this.onConfirming = false
+      })
+    },
+    confirmCreate() {
+      this.onConfirming = true
+      const storeData = {
+        programId: this.propProgramBasicId,
+        data: this.softwareInfo
       }
       storeSoftwareInfo(storeData).then(response => {
-        if(response.data.isOkay==true){
-                  this.dialogStatus='update'
-                  var args={
-                    type:this.$options.name,
-                    state:this.dialogStatus,
-                    programId:this.propProgramBasicId,
-                    value:response.data.item
-                  }
-                  this.$emit('close',args)
-                  this.$notify({
-                    title: '信息已更新',
-                    message: '请在项目中查看此项目',
-                    type: 'success',
-                    duration: 2000
-                  })
-              }
-              this.onConfirming=false
-            }).catch(error => {
-        this.onConfirming=false
+        if (response.data.isOkay == true) {
+          this.dialogStatus = 'update'
+          var args = {
+            type: this.$options.name,
+            state: this.dialogStatus,
+            programId: this.propProgramBasicId,
+            value: response.data.item
+          }
+          this.$emit('close', args)
+          this.$notify({
+            title: '信息已更新',
+            message: '请在项目中查看此项目',
+            type: 'success',
+            duration: 2000
+          })
+        }
+        this.onConfirming = false
+      }).catch(error => {
+        this.onConfirming = false
       })
     }
   }
-
 
 }
 </script>

@@ -94,10 +94,8 @@
 
 <script>
 
-import { indexStatisticPeople, showStatisticPeople, storeStatisticPeople, updateStatisticPeople,
-  destroyStatisticPeople } from '@/api/statisticpeople'
-import { indexTeam, showTeam, storeTeam, updateTeam,
-  destroyTeam } from '@/api/Team'
+import { indexStatisticPeople, showStatisticPeople } from '@/api/statisticpeople'
+import { indexTeam } from '@/api/Team'
 import waves from '@/directive/waves' // 水波纹指令
 import Task from './components/Task'
 
@@ -129,7 +127,7 @@ export default {
 
       program_list: [],
       detail_list: [],
-      total: new Number(),
+      total: 0,
       current_employee_id: null,
 
       listQuery: {
@@ -155,7 +153,7 @@ export default {
       const listQuery = { type: 'all' }
       indexTeam(listQuery).then(response => {
         const data = response.data
-        if (data.isOkay == true) {
+        if (data.isOkay === true) {
           this.selection.team = Object.values(data.items)
         }
       })
@@ -222,7 +220,7 @@ export default {
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
         if (j === '') {
-          return ''//parseTime(v[j])
+          return ''// parseTime(v[j])
         } else {
           return v[j]
         }

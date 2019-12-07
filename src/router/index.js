@@ -168,16 +168,6 @@ export const asyncRouterMap = [
           roles: ['管理员', '主任', '副主任', '测试人员', '主任设计师', '副主任设计师', '项目组长', '型号负责人'],
           icon: 'guide' }
       },
-      // //list
-      // {
-      //   path: 'programs',
-      //   name: 'programs',
-      //   component: () => import('@/views/management/programs/programsTable'),
-      //   meta: {
-      //     title: '正式项目',
-      //     roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员','测试人员'],
-      //     icon: 'form' }
-      // },
       // edit
       {
         path: 'programs/edit/:id(\\d+)',
@@ -189,25 +179,6 @@ export const asyncRouterMap = [
           icon: 'table' },
         hidden: true
       },
-
-      // {
-      //   path: 'preprograms',
-      //   name: 'preprograms',
-      //   component: () => import('@/views/management/preprograms/preProgramsTable'),
-      //   meta: {
-      //     title: '预备项目',
-      //     roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员'],
-      //     icon: 'form' }
-      // },
-      // {
-      //   path: 'intentprograms',
-      //   name: 'intentprograms',
-      //   component: () => import('@/views/management/preprograms/intentProgramsTable'),
-      //   meta: {
-      //     title: '意向项目',
-      //     roles: ['管理员','主任','副主任','主任设计师','副主任设计师','项目组长','型号负责人','质量保证员','配置管理人员','市场人员'],
-      //     icon: 'form' }
-      // },
       {
         path: 'batchimport',
         name: 'batchimport',
@@ -244,30 +215,30 @@ export const asyncRouterMap = [
           title: '型号名称管理',
           roles: ['管理员', '主任', '副主任', '主任设计师', '副主任设计师', '项目组长', '型号负责人', '质量保证员', '配置管理人员'],
           icon: 'tab' }
-      },
-
-      // contract
-      // list
-      {
-        path: 'contract',
-        name: 'contract',
-        component: () => import('@/views/management/contracts/contractsTable'),
-        meta: {
-          title: '合同管理',
-          roles: ['管理员', '市场人员'],
-          icon: 'table' }
-      },
-      // edit
-      {
-        path: 'contracts/edit/:id(\\d+)',
-        name: 'editContract',
-        component: () => import('@/views/management/contracts/edit'),
-        meta: {
-          title: '编辑合同',
-          roles: ['管理员', '市场人员'],
-          icon: 'table' },
-        hidden: true
       }
+
+      // // contract
+      // // list
+      // {
+      //   path: 'contract',
+      //   name: 'contract',
+      //   component: () => import('@/views/management/contracts/contractsTable'),
+      //   meta: {
+      //     title: '合同管理',
+      //     roles: ['管理员', '市场人员'],
+      //     icon: 'table' }
+      // },
+      // // edit
+      // {
+      //   path: 'contracts/edit/:id(\\d+)',
+      //   name: 'editContract',
+      //   component: () => import('@/views/management/contracts/edit'),
+      //   meta: {
+      //     title: '编辑合同',
+      //     roles: ['管理员', '市场人员'],
+      //     icon: 'table' },
+      //   hidden: true
+      // }
     ]
   },
 
